@@ -12,13 +12,11 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.listener.PermissionGrantedResponse
+import com.karumi.dexter.listener.single.BasePermissionListener
 
 class MainActivity : AppCompatActivity() {
-    /**
-     * Permission request code for all permissions.
-     */
-    val ASK_RECORD_AUDIO_ID = 1;
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -26,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         val button = findViewById<Button>(R.id.recording_start_button)
 
         button.setOnClickListener {
-            askPermission()
+            startRecordingService();
         }
     }
 
@@ -34,41 +32,16 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        when (requestCode) {
-            ASK_RECORD_AUDIO_ID -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startRecordingService()
-                } else {
-                    Toast.makeText(applicationContext, "Failed to get permission to record.", Toast.LENGTH_SHORT);
-                }
-            }
-
-            else -> {
-                // Ignore.
-            }
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
-
-    /**
-     * Requests all permissions for the app if necessary.
-     */
-    private fun askPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(arrayOf(android.Manifest.permission.RECORD_AUDIO), ASK_RECORD_AUDIO_ID);
-        } else {
-            startRecordingService()
-        }
-    }
-
     private fun startRecordingService() {
-        Intent(this, RecordingService::class.java).also {
-            startService(it)
-        }
+        Dexter.withContext(this)
+            .withPermission(android.Manifest.permission.RECORD_AUDIO)
+            .withListener(object : BasePermissionListener() {
+                override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
+                    Intent(this@MainActivity, RecordingService::class.java).also {
+                        startService(it)
+                    }
+                }
+            })
+            .check();
     }
 }
