@@ -7,8 +7,6 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.media.AudioFormat
-import android.media.AudioRecord
-import android.media.MediaRecorder
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
@@ -22,52 +20,29 @@ class RecordingService : Service() {
      */
     private val SERVICE_NOTIFICATION_ID = 1
 
-    /**
-     * Android provides this API to get access to microphone.
-     */
-    lateinit var recorder: AudioRecord
-
-    /**
-     * The size of the samples buffer.
-     */
-    var bufferSize: Int = 0
+    private var recordingSession : RecordingSession? = null
 
     override fun onCreate() {
-        // We can request the API to tell us the minimum size for its buffer.
-        bufferSize = AudioRecord.getMinBufferSize(AudioFormat.SAMPLE_RATE_UNSPECIFIED, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_FLOAT);
-
-        recorder = AudioRecord(
-            MediaRecorder.AudioSource.MIC,
-            AudioFormat.SAMPLE_RATE_UNSPECIFIED,
-            AudioFormat.CHANNEL_IN_MONO,
-            AudioFormat.ENCODING_PCM_16BIT,
-            bufferSize
-        )
-
-        recorder.setRecordPositionUpdateListener(object : AudioRecord.OnRecordPositionUpdateListener {
-            override fun onMarkerReached(p0: AudioRecord?) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onPeriodicNotification(p0: AudioRecord?) {
-                val bufferedAudio = ByteArray(bufferSize)
-                val read: Int = recorder.read(bufferedAudio, 0, bufferSize)
-
-                Log.d(javaClass.simpleName, "Read $read bytes worth of samples.");
-            }
-        })
-
-        recorder.startRecording()
-
         requestToBeForeground()
+
+        recordingSession = RecordingSession()
+
+        recordingSession?.sampleRate = 8000
+        recordingSession?.channel = AudioFormat.CHANNEL_IN_MONO
+        recordingSession?.encoding = AudioFormat.ENCODING_PCM_8BIT
+
+        recordingSession?.setSamplesListener { data ->
+            Log.d(javaClass.simpleName, "Read ${data.position()} bytes worth of samples.");
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        recordingSession?.start()
         return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onDestroy() {
-        //recorder.stop()
+        recordingSession?.close()
     }
 
     override fun onBind(p0: Intent?): IBinder? {
