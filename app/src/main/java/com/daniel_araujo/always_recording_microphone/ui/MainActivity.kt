@@ -1,17 +1,11 @@
-package com.daniel_araujo.always_recording_microphone
+package com.daniel_araujo.always_recording_microphone.ui
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.PendingIntent
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
-import android.widget.Toast
-import androidx.annotation.RequiresApi
-import androidx.core.app.NotificationCompat
+import com.daniel_araujo.always_recording_microphone.R
+import com.daniel_araujo.always_recording_microphone.RecordingService
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.single.BasePermissionListener

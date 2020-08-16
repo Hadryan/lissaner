@@ -1,11 +1,17 @@
 package com.daniel_araujo.always_recording_microphone
 
-import android.app.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.media.AudioFormat
+import android.media.AudioRecord
 import android.media.MediaRecorder
 import android.os.Build
 import android.os.IBinder
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 
@@ -19,13 +25,41 @@ class RecordingService : Service() {
     /**
      * Android provides this API to get access to microphone.
      */
-    lateinit var recorder: MediaRecorder
+    lateinit var recorder: AudioRecord
+
+    /**
+     * The size of the samples buffer.
+     */
+    var bufferSize: Int = 0
 
     override fun onCreate() {
-        recorder = MediaRecorder()
+        // We can request the API to tell us the minimum size for its buffer.
+        bufferSize = AudioRecord.getMinBufferSize(AudioFormat.SAMPLE_RATE_UNSPECIFIED, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_FLOAT);
+
+        recorder = AudioRecord(
+            MediaRecorder.AudioSource.MIC,
+            AudioFormat.SAMPLE_RATE_UNSPECIFIED,
+            AudioFormat.CHANNEL_IN_MONO,
+            AudioFormat.ENCODING_PCM_16BIT,
+            bufferSize
+        )
+
+        recorder.setRecordPositionUpdateListener(object : AudioRecord.OnRecordPositionUpdateListener {
+            override fun onMarkerReached(p0: AudioRecord?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onPeriodicNotification(p0: AudioRecord?) {
+                val bufferedAudio = ByteArray(bufferSize)
+                val read: Int = recorder.read(bufferedAudio, 0, bufferSize)
+
+                Log.d(javaClass.simpleName, "Read $read bytes worth of samples.");
+            }
+        })
+
+        recorder.startRecording()
 
         requestToBeForeground()
-
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
