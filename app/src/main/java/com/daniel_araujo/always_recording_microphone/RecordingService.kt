@@ -12,6 +12,8 @@ import android.os.IBinder
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import com.daniel_araujo.always_recording_microphone.rec.AndroidRecordingSession
+import com.daniel_araujo.always_recording_microphone.rec.RecordingSessionConfig
 
 class RecordingService : Service() {
     /**
@@ -20,29 +22,27 @@ class RecordingService : Service() {
      */
     private val SERVICE_NOTIFICATION_ID = 1
 
-    private var recordingSession : RecordingSession? = null
+    private var androidRecordingConfig : RecordingSessionConfig? = null
+
+    private var androidRecordingSession : AndroidRecordingSession? = null
 
     override fun onCreate() {
         requestToBeForeground()
 
-        recordingSession = RecordingSession()
-
-        recordingSession?.sampleRate = 8000
-        recordingSession?.channel = AudioFormat.CHANNEL_IN_MONO
-        recordingSession?.encoding = AudioFormat.ENCODING_PCM_8BIT
-
-        recordingSession?.setSamplesListener { data ->
-            Log.d(javaClass.simpleName, "Read ${data.position()} bytes worth of samples.");
+        androidRecordingConfig = RecordingSessionConfig().apply {
+            samplesListener = { data ->
+                Log.d(javaClass.simpleName, "Read ${data.position()} bytes worth of samples.");
+            }
         }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        recordingSession?.start()
+        androidRecordingSession = AndroidRecordingSession(androidRecordingConfig!!)
         return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onDestroy() {
-        recordingSession?.close()
+        androidRecordingSession?.close()
     }
 
     override fun onBind(p0: Intent?): IBinder? {
