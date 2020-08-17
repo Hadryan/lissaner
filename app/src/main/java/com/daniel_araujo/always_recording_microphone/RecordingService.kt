@@ -33,6 +33,12 @@ class RecordingService : Service() {
             samplesListener = { data ->
                 Log.d(javaClass.simpleName, "Read ${data.position()} bytes worth of samples.");
             }
+
+            errorListener = { ex ->
+                Log.d(javaClass.simpleName, "errorListener", ex);
+            }
+
+            setRecordingBufferSizeInMilliseconds(5000)
         }
     }
 

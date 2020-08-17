@@ -32,10 +32,28 @@ class RecordingSessionConfig {
     var samplesListener: ((ByteBuffer) -> Unit)? = null
 
     /**
+     * Listener for errors.
+     */
+    var errorListener: ((Exception) -> Unit)? = null
+
+    /**
+     * How many samples in bytes to send to the listener. If null then the recording session decides
+     * the size.
+     */
+    var recordingBufferSizeRequest: Int? = null
+
+    /**
      * Returns number of bytes per second.
      */
     fun bytesPerSecond(): Int {
-        val bytesPerSample = when (encoding) {
+        return sampleRate * bytesPerSample() * channels()
+    }
+
+    /**
+     * Returns how many bytes a sample occupies.
+     */
+    fun bytesPerSample(): Int {
+        return when (encoding) {
             AudioFormat.ENCODING_PCM_FLOAT,
             AudioFormat.ENCODING_PCM_16BIT -> 2
 
@@ -43,14 +61,24 @@ class RecordingSessionConfig {
 
             else -> error("Should never reach this branch.")
         }
+    }
 
-        val channels = when (channel) {
+    /**
+     * Returns number of channels.
+     */
+    fun channels(): Int {
+        return when (channel) {
             AudioFormat.CHANNEL_IN_MONO -> 1
             AudioFormat.CHANNEL_IN_STEREO -> 2
 
             else -> error("Should never reach this branch.")
         }
+    }
 
-        return bytesPerSample * channels * sampleRate
+    /**
+     * Sets recording buffer size in milliseconds.
+     */
+    fun setRecordingBufferSizeInMilliseconds(milli: Long) {
+        recordingBufferSizeRequest = (milli * sampleRate * bytesPerSample() * channels() / 1000).toInt()
     }
 }
