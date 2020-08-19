@@ -13,6 +13,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.daniel_araujo.always_recording_microphone.rec.AndroidRecordingSession
+import com.daniel_araujo.always_recording_microphone.rec.PureMemoryStorage
 import com.daniel_araujo.always_recording_microphone.rec.RecordingSessionConfig
 
 class RecordingService : Service() {
@@ -26,12 +27,26 @@ class RecordingService : Service() {
 
     private var androidRecordingSession : AndroidRecordingSession? = null
 
+    private var storage: PureMemoryStorage? = null
+
     override fun onCreate() {
+    }
+
+    override fun onDestroy() {
+        androidRecordingSession?.close()
+    }
+
+    override fun onBind(p0: Intent?): IBinder? {
+        return AutoServiceBinder(this)
+    }
+
+    fun startRecording() {
         requestToBeForeground()
 
         androidRecordingConfig = RecordingSessionConfig().apply {
             samplesListener = { data ->
                 Log.d(javaClass.simpleName, "Read ${data.position()} bytes worth of samples.");
+                storage!!.feed(data)
             }
 
             errorListener = { ex ->
@@ -40,19 +55,27 @@ class RecordingService : Service() {
 
             setRecordingBufferSizeInMilliseconds(5000)
         }
-    }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        storage = PureMemoryStorage(
+            PcmUtils.bufferSize(
+                10000,
+                androidRecordingConfig!!.sampleRate,
+                androidRecordingConfig!!.bytesPerSample(),
+                androidRecordingConfig!!.channels()))
+
         androidRecordingSession = AndroidRecordingSession(androidRecordingConfig!!)
-        return super.onStartCommand(intent, flags, startId)
     }
 
-    override fun onDestroy() {
+    fun stopRecording() {
+        stopForeground(true)
+
         androidRecordingSession?.close()
+
+        androidRecordingSession = null
     }
 
-    override fun onBind(p0: Intent?): IBinder? {
-        TODO("Not yet implemented")
+    fun isRecording(): Boolean {
+        return androidRecordingSession != null
     }
 
     /**
