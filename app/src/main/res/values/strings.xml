@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Always Recording Microphone</string>
     <string name="recording_start">Start recording</string>
+
+
+    <string name="rec_button_view_start">REC</string>
+    <string name="rec_button_view_stop">STOP</string>
 </resources>

@@ -13,7 +13,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.DevAudioRecordCombinationsActivity"></activity>
+
+        <activity android:name=".ui.dev.DevRecButtonActivity" android:exported="true"/>
+
+        <activity android:name=".ui.dev.DevAudioRecordCombinationsActivity" android:exported="true"/>
+
         <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
