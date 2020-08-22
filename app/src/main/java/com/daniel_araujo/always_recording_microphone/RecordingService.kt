@@ -6,7 +6,6 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.media.AudioFormat
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
@@ -15,6 +14,10 @@ import androidx.core.app.NotificationCompat
 import com.daniel_araujo.always_recording_microphone.rec.AndroidRecordingSession
 import com.daniel_araujo.always_recording_microphone.rec.PureMemoryStorage
 import com.daniel_araujo.always_recording_microphone.rec.RecordingSessionConfig
+import java.io.File
+import java.io.IOException
+import java.io.PipedInputStream
+import java.io.PipedOutputStream
 
 class RecordingService : Service() {
     /**
@@ -70,12 +73,33 @@ class RecordingService : Service() {
         stopForeground(true)
 
         androidRecordingSession?.close()
-
         androidRecordingSession = null
+
+        saveRecording()
     }
 
     fun isRecording(): Boolean {
         return androidRecordingSession != null
+    }
+
+    private fun saveRecording() {
+        try {
+            val file = File(applicationContext.getExternalFilesDir(null), "recording.wav")
+
+            val stream = file.outputStream()
+
+            val wav = PCM2WAV(
+                stream,
+                androidRecordingConfig!!.channels(),
+                androidRecordingConfig!!.sampleRate,
+                androidRecordingConfig!!.bytesPerSample() * 8)
+
+            wav.feed(storage!!.copy())
+
+            stream.close()
+        } catch (e: IOException) {
+            Log.e("Exception", "File write failed: " + e.toString())
+        }
     }
 
     /**
