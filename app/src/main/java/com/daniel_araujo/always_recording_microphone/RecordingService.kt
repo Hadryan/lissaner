@@ -86,17 +86,21 @@ class RecordingService : Service() {
         try {
             val file = File(applicationContext.getExternalFilesDir(null), "recording.wav")
 
+            Log.d(javaClass.simpleName, "Saving to ${file.absolutePath}")
+
             val stream = file.outputStream()
 
-            val wav = PCM2WAV(
-                stream,
-                androidRecordingConfig!!.channels(),
-                androidRecordingConfig!!.sampleRate,
-                androidRecordingConfig!!.bytesPerSample() * 8)
+            stream.use {
+                val wav = PCM2WAV(
+                    stream,
+                    androidRecordingConfig!!.channels(),
+                    androidRecordingConfig!!.sampleRate,
+                    androidRecordingConfig!!.bytesPerSample() * 8)
 
-            wav.feed(storage!!.copy())
-
-            stream.close()
+                wav.use {
+                    wav.feed(storage!!.copy())
+                }
+            }
         } catch (e: IOException) {
             Log.e("Exception", "File write failed: " + e.toString())
         }
