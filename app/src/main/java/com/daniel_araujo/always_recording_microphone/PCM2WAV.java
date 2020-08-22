@@ -33,6 +33,16 @@ public class PCM2WAV implements AutoCloseable {
      */
     private DataOutputStream dataWriter;
 
+    /**
+     * Accumulates chunks of samples. This holds the samples that will be used to create data chunks.
+     */
+    private BufferNotifier samplesBuffer;
+
+    /**
+     * The size of each data chunk.
+     */
+    private final int dataChunkSize = 5000;
+
     public PCM2WAV(OutputStream stream, int channels, int sampleRate, int bitsPerSample) {
         if (channels <= 0) {
             throw new PCM2WAVException("You must have at least 1 channel.");
@@ -58,6 +68,18 @@ public class PCM2WAV implements AutoCloseable {
         writer = stream;
         dataWriter =  new DataOutputStream(writer);
 
+        samplesBuffer = new BufferNotifier(dataChunkSize, sampleRate, getBytesPerSample());
+        samplesBuffer.setOnSamplesListener(new BufferNotifier.OnSamplesListener() {
+            @Override
+            public void onSamples(byte[] samples) {
+                try {
+                    writeData(samples);
+                } catch (IOException ex) {
+                    throw new PCM2WAVException("Failed to write data.", ex);
+                }
+            }
+        });
+
         try {
             writeRiff();
             writeFmt();
@@ -71,11 +93,7 @@ public class PCM2WAV implements AutoCloseable {
      * @param samples
      */
     public void feed(byte[] samples) {
-        try {
-            writeData(samples);
-        } catch (IOException ex) {
-            throw new PCM2WAVException("Failed to write data.", ex);
-        }
+        samplesBuffer.add(samples);
     }
 
     /**
