@@ -44,7 +44,7 @@ class RecButtonView : View {
     /**
      * Text for start.
      */
-    val textStart = "REC"
+    val textStart = "START"
 
     /**
      * Text for stop
