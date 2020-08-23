@@ -3,7 +3,7 @@ package com.daniel_araujo.always_recording_microphone.rec
 import android.media.AudioRecord
 import java.nio.ByteBuffer
 
-class AndroidRecordingSession : AutoCloseable {
+class AndroidRecordingSession : RecordingSession, AutoCloseable {
     /**
      * Android provides this API to get access to microphone.
      */

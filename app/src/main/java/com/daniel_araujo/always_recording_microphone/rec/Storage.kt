@@ -14,6 +14,11 @@ interface Storage {
     fun copy(): ByteArray
 
     /**
+     * Moves audio out of storage.
+     */
+    fun move(): ByteArray
+
+    /**
      * How much is in storage.
      */
     fun size(): Int

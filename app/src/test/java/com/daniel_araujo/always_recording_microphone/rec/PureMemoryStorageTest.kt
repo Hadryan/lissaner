@@ -95,4 +95,18 @@ class PureMemoryStorageTest {
         assertArrayEquals(byteArrayOf(1, 2), f.copy())
         assertEquals(2, f.size())
     }
+
+    @Test
+    fun move_clearsStorage() {
+        val f = PureMemoryStorage(4)
+
+        val data = byteArrayOf(1, 2)
+
+        val buffer = ByteBuffer.wrap(data)
+        buffer.position(buffer.limit())
+        f.feed(buffer)
+
+        assertArrayEquals(byteArrayOf(1, 2), f.move())
+        assertEquals(0, f.size())
+    }
 }

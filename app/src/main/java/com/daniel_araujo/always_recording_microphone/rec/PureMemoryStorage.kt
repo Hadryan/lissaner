@@ -32,6 +32,14 @@ class PureMemoryStorage : Storage {
         return result
     }
 
+    override fun move(): ByteArray {
+        val arr = copy()
+
+        fifo.clear()
+
+        return arr
+    }
+
     override fun size(): Int {
         return fifo.size
     }

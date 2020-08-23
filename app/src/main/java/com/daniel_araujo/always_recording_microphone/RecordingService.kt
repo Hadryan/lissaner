@@ -13,6 +13,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.daniel_araujo.always_recording_microphone.rec.AndroidRecordingSession
 import com.daniel_araujo.always_recording_microphone.rec.PureMemoryStorage
+import com.daniel_araujo.always_recording_microphone.rec.RecordingSession
 import com.daniel_araujo.always_recording_microphone.rec.RecordingSessionConfig
 import java.io.*
 
@@ -23,17 +24,18 @@ class RecordingService : Service() {
      */
     private val SERVICE_NOTIFICATION_ID = 1
 
-    private var androidRecordingConfig : RecordingSessionConfig? = null
-
-    private var androidRecordingSession : AndroidRecordingSession? = null
-
-    private var storage: PureMemoryStorage? = null
+    private lateinit var recording : RecordingManager
 
     override fun onCreate() {
+        recording = RecordingManager(object: RecordingManagerInt {
+            override fun createSession(config: RecordingSessionConfig): RecordingSession {
+                return AndroidRecordingSession(config)
+            }
+        })
     }
 
     override fun onDestroy() {
-        androidRecordingSession?.close()
+        recording.close()
     }
 
     override fun onBind(p0: Intent?): IBinder? {
@@ -43,54 +45,21 @@ class RecordingService : Service() {
     fun startRecording() {
         requestToBeForeground()
 
-        androidRecordingConfig = RecordingSessionConfig().apply {
-            samplesListener = { data ->
-                Log.d(javaClass.simpleName, "Read ${data.position()} bytes worth of samples.");
-                storage!!.feed(data)
-            }
-
-            errorListener = { ex ->
-                Log.d(javaClass.simpleName, "errorListener", ex);
-            }
-
-            setRecordingBufferSizeInMilliseconds(5000)
-        }
-
-        storage = PureMemoryStorage(
-            PcmUtils.bufferSize(
-                10000,
-                androidRecordingConfig!!.sampleRate,
-                androidRecordingConfig!!.bytesPerSample(),
-                androidRecordingConfig!!.channels()))
-
-        androidRecordingSession = AndroidRecordingSession(androidRecordingConfig!!)
+        recording.startRecording()
     }
 
     fun stopRecording() {
         stopForeground(true)
 
-        androidRecordingSession?.close()
-        androidRecordingSession = null
+        recording.stopRecording()
     }
 
     fun isRecording(): Boolean {
-        return androidRecordingSession != null
+        return recording.isRecording()
     }
 
     fun saveRecording(stream: OutputStream) {
-        if (storage!!.size() == 0) {
-            return;
-        }
-
-        val wav = PCM2WAV(
-            stream,
-            androidRecordingConfig!!.channels(),
-            androidRecordingConfig!!.sampleRate,
-            androidRecordingConfig!!.bytesPerSample() * 8)
-
-        wav.use {
-            wav.feed(storage!!.copy())
-        }
+        recording.saveRecording(stream)
     }
 
     /**
