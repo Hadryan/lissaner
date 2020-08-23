@@ -11,10 +11,7 @@ import android.os.IBinder
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import com.daniel_araujo.always_recording_microphone.rec.AndroidRecordingSession
-import com.daniel_araujo.always_recording_microphone.rec.PureMemoryStorage
-import com.daniel_araujo.always_recording_microphone.rec.RecordingSession
-import com.daniel_araujo.always_recording_microphone.rec.RecordingSessionConfig
+import com.daniel_araujo.always_recording_microphone.rec.*
 import java.io.*
 
 class RecordingService : Service() {
@@ -26,10 +23,23 @@ class RecordingService : Service() {
 
     private lateinit var recording : RecordingManager
 
+    var onAccumulateListener: (() -> Unit)?
+        get() = recording.onAccumulateListener
+        set(listener) { recording.onAccumulateListener = listener }
+
     override fun onCreate() {
         recording = RecordingManager(object: RecordingManagerInt {
             override fun createSession(config: RecordingSessionConfig): RecordingSession {
                 return AndroidRecordingSession(config)
+            }
+
+            override fun createStorage(config: RecordingSessionConfig): Storage {
+                return PureMemoryStorage(
+                    PcmUtils.bufferSize(
+                        10000,
+                        config.sampleRate,
+                        config.bytesPerSample(),
+                        config.channels()))
             }
         })
     }
@@ -60,6 +70,10 @@ class RecordingService : Service() {
 
     fun saveRecording(stream: OutputStream) {
         recording.saveRecording(stream)
+    }
+
+    fun accumulated(): Long {
+        return recording.accumulated()
     }
 
     /**

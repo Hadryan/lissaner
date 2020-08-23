@@ -17,22 +17,34 @@ typealias runnable<T> = (T) -> Unit
  */
 class AutoServiceBind<T : Any> {
 
-    val queue = ArrayList<runnable<T>>()
+    /**
+     * Listener that gets called when service is bound.
+     */
+    var onConnectListener: ((T) -> Unit)? = null
 
-    val serviceClass: kotlin.reflect.KClass<T>
+    /**
+     * Listener that gets called when service is unbound.
+     */
+    var onDisconnectListener: (() -> Unit)? = null
 
-    val activity: AppCompatActivity
+    private val queue = ArrayList<runnable<T>>()
 
-    var binder: AutoServiceBinder<T>? = null
+    private val serviceClass: kotlin.reflect.KClass<T>
 
-    val serviceConnection = object : ServiceConnection {
+    private val activity: AppCompatActivity
+
+    private var binder: AutoServiceBinder<T>? = null
+
+    private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             binder = service as AutoServiceBinder<T>
+            onConnectListener?.invoke(binder!!.service)
             work()
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
             binder = null
+            onDisconnectListener?.invoke()
         }
     }
 

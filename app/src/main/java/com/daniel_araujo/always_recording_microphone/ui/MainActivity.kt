@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.Chronometer
 import android.widget.ImageButton
 import com.daniel_araujo.always_recording_microphone.AutoServiceBind
 import com.daniel_araujo.always_recording_microphone.R
@@ -23,11 +24,21 @@ class MainActivity : Activity() {
 
     lateinit var buttonSave: ImageButton
 
+    lateinit var accumulatedTime: TextCounter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         recordingService = AutoServiceBind(RecordingService::class, this)
+
+        recordingService.onConnectListener = { service ->
+            service.onAccumulateListener = {
+                accumulatedTime.time = service.accumulated()
+            }
+        }
+
+        accumulatedTime = findViewById<TextCounter>(R.id.accumulated_time)
 
         buttonRecord = findViewById<RecButtonView>(R.id.button_record).also {
             it.setOnClickListener {
@@ -73,6 +84,7 @@ class MainActivity : Activity() {
 
         recordingService.run {
             it.stopRecording()
+            accumulatedTime.time = it.accumulated()
             buttonRecord.isActivated = false;
         }
     }

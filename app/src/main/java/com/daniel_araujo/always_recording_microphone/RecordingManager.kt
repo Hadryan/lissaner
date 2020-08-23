@@ -13,6 +13,16 @@ class RecordingManager : AutoCloseable {
 
     private var config: RecordingSessionConfig? = null
 
+    /**
+     * Called whenever an error occurs during recording.
+     */
+    var onRecordError: ((Exception) -> Unit)? = null
+
+    /**
+     * Called each time more audio is accumulated in storage.
+     */
+    var onAccumulateListener: (() -> Unit)? = null
+
     constructor(int: RecordingManagerInt) {
         this.int = int
     }
@@ -20,23 +30,19 @@ class RecordingManager : AutoCloseable {
     fun startRecording() {
         config = RecordingSessionConfig().apply {
             samplesListener = { data ->
-                Log.d(javaClass.simpleName, "Read ${data.position()} bytes worth of samples.");
                 storage!!.feed(data)
+
+                onAccumulateListener?.invoke()
             }
 
             errorListener = { ex ->
-                Log.d(javaClass.simpleName, "errorListener", ex);
+                onRecordError?.invoke(ex)
             }
 
             setRecordingBufferSizeInMilliseconds(5000)
         }
 
-        storage = PureMemoryStorage(
-            PcmUtils.bufferSize(
-                10000,
-                config!!.sampleRate,
-                config!!.bytesPerSample(),
-                config!!.channels()))
+        storage = int.createStorage(config!!)
 
         recordingSession = int.createSession(config!!)
     }
@@ -66,6 +72,21 @@ class RecordingManager : AutoCloseable {
         }
     }
 
+    /**
+     * How much time has been accumulated in temporary storage.
+     */
+    fun accumulated(): Long {
+        if (storage != null) {
+            return PcmUtils.duration(
+                storage!!.size(),
+                config!!.sampleRate,
+                config!!.bytesPerSample(),
+                config!!.channels())
+        } else {
+            return 0
+        }
+    }
+
     override fun close() {
         recordingSession?.close()
     }
@@ -73,4 +94,6 @@ class RecordingManager : AutoCloseable {
 
 interface RecordingManagerInt {
     fun createSession(config: RecordingSessionConfig): RecordingSession
+
+    fun createStorage(config: RecordingSessionConfig): Storage
 }
