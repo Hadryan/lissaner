@@ -1,109 +1,49 @@
 package com.daniel_araujo.always_recording_microphone.ui
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.widget.Button
-import android.widget.Chronometer
-import android.widget.ImageButton
-import com.daniel_araujo.always_recording_microphone.AutoServiceBind
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.daniel_araujo.always_recording_microphone.R
-import com.daniel_araujo.always_recording_microphone.RecordingService
-import com.daniel_araujo.always_recording_microphone.ui.dev.DevAudioRecordCombinationsActivity
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.listener.PermissionGrantedResponse
-import com.karumi.dexter.listener.single.BasePermissionListener
-import java.io.File
-import java.io.IOException
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : Activity() {
-    lateinit var recordingService: AutoServiceBind<RecordingService>
-
-    lateinit var buttonRecord: RecButtonView
-
-    lateinit var buttonSave: ImageButton
-
-    lateinit var accumulatedTime: TextCounter
+    private lateinit var viewPager: ViewPager2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        recordingService = AutoServiceBind(RecordingService::class, this)
+        supportActionBar?.hide()
 
-        recordingService.onConnectListener = { service ->
-            service.onAccumulateListener = {
-                accumulatedTime.time = service.accumulated()
+        viewPager = findViewById(R.id.view_pager)
+
+        viewPager.adapter = MainActivityFragmentStateAdapter(this)
+
+        val tabLayout = findViewById<TabLayout>(R.id.tab_layout)
+
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            tab.text = when (position) {
+                0 -> getText(R.string.main_activity_tab_info)
+                1 -> getText(R.string.main_activity_tab_record)
+                2 -> getText(R.string.main_activity_tab_files)
+                else -> "Tab"
             }
-        }
-
-        accumulatedTime = findViewById<TextCounter>(R.id.accumulated_time)
-
-        buttonRecord = findViewById<RecButtonView>(R.id.button_record).also {
-            it.setOnClickListener {
-                toggleRecordingService()
-            }
-        }
-
-        buttonSave = findViewById<ImageButton>(R.id.button_save).also {
-            it.setOnClickListener {
-                saveRecordingService()
-            }
-        }
+        }.attach()
     }
+}
 
-    private fun toggleRecordingService() {
-        recordingService.run {
-            if (!it.isRecording()) {
-                startRecordingService()
-            } else {
-                stopRecordingService()
-            }
-        }
-    }
+class MainActivityFragmentStateAdapter(fragment: FragmentActivity) : FragmentStateAdapter(fragment) {
 
-    private fun startRecordingService() {
-        Log.v(javaClass.simpleName, "startRecordingService")
+    override fun getItemCount(): Int = 3
 
-        Dexter.withContext(this)
-            .withPermission(android.Manifest.permission.RECORD_AUDIO)
-            .withListener(object : BasePermissionListener() {
-                override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
-                    recordingService.run {
-                        it.startRecording()
-                        buttonRecord.isActivated = true;
-                    }
-                }
-            })
-            .check();
-    }
-
-    private fun stopRecordingService() {
-        Log.v(javaClass.simpleName, "stopRecordingService")
-
-        recordingService.run {
-            it.stopRecording()
-            accumulatedTime.time = it.accumulated()
-            buttonRecord.isActivated = false;
-        }
-    }
-
-    private fun saveRecordingService() {
-        Log.v(javaClass.simpleName, "saveRecordingService")
-
-        recordingService.run { service ->
-            try {
-                val file = File(applicationContext.getExternalFilesDir(null), "recording.wav")
-
-                Log.d(javaClass.simpleName, "Saving to ${file.absolutePath}")
-
-                file.outputStream().use { stream ->
-                    service.saveRecording(stream)
-                }
-            } catch (e: IOException) {
-                Log.e("Exception", "File write failed: " + e.toString())
-            }
+    override fun createFragment(position: Int): Fragment {
+        return when (position) {
+            0 -> InfoFragment()
+            1 -> RecordFragment()
+            2 -> Fragment()
+            else -> Fragment()
         }
     }
 }

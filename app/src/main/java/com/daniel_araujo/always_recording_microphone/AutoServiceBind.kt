@@ -1,5 +1,6 @@
 package com.daniel_araujo.always_recording_microphone
 
+import android.app.Activity
 import android.app.Service
 import android.content.ComponentName
 import android.content.Intent
@@ -31,7 +32,7 @@ class AutoServiceBind<T : Any> {
 
     private val serviceClass: kotlin.reflect.KClass<T>
 
-    private val activity: AppCompatActivity
+    private val activity: Activity
 
     private var binder: AutoServiceBinder<T>? = null
 
@@ -48,7 +49,7 @@ class AutoServiceBind<T : Any> {
         }
     }
 
-    constructor(serviceClass: kotlin.reflect.KClass<T>, activity: AppCompatActivity) {
+    constructor(serviceClass: kotlin.reflect.KClass<T>, activity: Activity) {
         this.serviceClass = serviceClass
         this.activity = activity
     }

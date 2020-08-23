@@ -45,6 +45,13 @@ dependencies {
     // So that the use method can be used on objects that implement Autocloseable, too.
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
 
+    // For the viewpager
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.viewpager2:viewpager2:1.0.0'
+
+    // For TabLayoutMediator
+    implementation 'com.google.android.material:material:1.2.0'
+
     testImplementation 'junit:junit:4.12'
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
