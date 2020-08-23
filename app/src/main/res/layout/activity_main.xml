@@ -38,5 +38,14 @@
 
         </com.daniel_araujo.always_recording_microphone.ui.WellView>
 
+        <ImageButton
+            android:id="@+id/button_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/separator"
+            app:layout_constraintStart_toEndOf="@+id/button_record"
+            app:srcCompat="@android:drawable/ic_menu_save"
+            tools:layout_editor_absoluteY="28dp" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

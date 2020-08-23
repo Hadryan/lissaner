@@ -17,6 +17,7 @@ class PureMemoryStorageTest {
         f.feed(buffer)
 
         assertArrayEquals(data, f.copy())
+        assertEquals(4, f.size())
     }
 
     @Test
@@ -30,6 +31,7 @@ class PureMemoryStorageTest {
         f.feed(buffer)
 
         assertArrayEquals(byteArrayOf(3, 4, 5, 6), f.copy())
+        assertEquals(4, f.size())
     }
 
     @Test
@@ -43,6 +45,7 @@ class PureMemoryStorageTest {
         f.feed(buffer)
 
         assertArrayEquals(byteArrayOf(9, 10, 11, 12), f.copy())
+        assertEquals(4, f.size())
     }
 
     @Test
@@ -56,6 +59,7 @@ class PureMemoryStorageTest {
         f.feed(buffer)
 
         assertArrayEquals(byteArrayOf(9, 10, 11, 12), f.copy())
+        assertEquals(4, f.size())
     }
 
     @Test
@@ -75,6 +79,7 @@ class PureMemoryStorageTest {
         f.feed(buffer2)
 
         assertArrayEquals(byteArrayOf(3, 4, 5, 6), f.copy())
+        assertEquals(4, f.size())
     }
 
     @Test
@@ -88,5 +93,6 @@ class PureMemoryStorageTest {
         f.feed(buffer)
 
         assertArrayEquals(byteArrayOf(1, 2), f.copy())
+        assertEquals(2, f.size())
     }
 }

@@ -12,4 +12,9 @@ interface Storage {
      * Returns a copy of the current buffer.
      */
     fun copy(): ByteArray
+
+    /**
+     * How much is in storage.
+     */
+    fun size(): Int
 }

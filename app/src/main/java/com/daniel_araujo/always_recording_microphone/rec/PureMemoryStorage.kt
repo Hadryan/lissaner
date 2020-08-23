@@ -31,4 +31,8 @@ class PureMemoryStorage : Storage {
 
         return result
     }
+
+    override fun size(): Int {
+        return fifo.size
+    }
 }

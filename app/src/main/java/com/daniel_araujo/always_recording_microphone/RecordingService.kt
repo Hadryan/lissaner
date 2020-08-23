@@ -14,10 +14,7 @@ import androidx.core.app.NotificationCompat
 import com.daniel_araujo.always_recording_microphone.rec.AndroidRecordingSession
 import com.daniel_araujo.always_recording_microphone.rec.PureMemoryStorage
 import com.daniel_araujo.always_recording_microphone.rec.RecordingSessionConfig
-import java.io.File
-import java.io.IOException
-import java.io.PipedInputStream
-import java.io.PipedOutputStream
+import java.io.*
 
 class RecordingService : Service() {
     /**
@@ -74,35 +71,25 @@ class RecordingService : Service() {
 
         androidRecordingSession?.close()
         androidRecordingSession = null
-
-        saveRecording()
     }
 
     fun isRecording(): Boolean {
         return androidRecordingSession != null
     }
 
-    private fun saveRecording() {
-        try {
-            val file = File(applicationContext.getExternalFilesDir(null), "recording.wav")
+    fun saveRecording(stream: OutputStream) {
+        if (storage!!.size() == 0) {
+            return;
+        }
 
-            Log.d(javaClass.simpleName, "Saving to ${file.absolutePath}")
+        val wav = PCM2WAV(
+            stream,
+            androidRecordingConfig!!.channels(),
+            androidRecordingConfig!!.sampleRate,
+            androidRecordingConfig!!.bytesPerSample() * 8)
 
-            val stream = file.outputStream()
-
-            stream.use {
-                val wav = PCM2WAV(
-                    stream,
-                    androidRecordingConfig!!.channels(),
-                    androidRecordingConfig!!.sampleRate,
-                    androidRecordingConfig!!.bytesPerSample() * 8)
-
-                wav.use {
-                    wav.feed(storage!!.copy())
-                }
-            }
-        } catch (e: IOException) {
-            Log.e("Exception", "File write failed: " + e.toString())
+        wav.use {
+            wav.feed(storage!!.copy())
         }
     }
 
