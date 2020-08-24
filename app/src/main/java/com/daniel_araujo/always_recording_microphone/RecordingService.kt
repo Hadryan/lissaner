@@ -1,18 +1,16 @@
 package com.daniel_araujo.always_recording_microphone
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.Service
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.daniel_araujo.always_recording_microphone.rec.*
-import java.io.*
+import com.daniel_araujo.always_recording_microphone.ui.MainActivity
+import java.io.OutputStream
+
 
 class RecordingService : Service() {
     /**
@@ -86,10 +84,16 @@ class RecordingService : Service() {
             createNotificationChannel()
         }
 
+        val contentIntent = PendingIntent.getActivity(
+            this, 0,
+            Intent(this, MainActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
         val notification: Notification = NotificationCompat.Builder(this, Application.NOTIFICATION_CHANNEL_FOREGROUND_SERVICE)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle("Always Recording Microphone")
             .setContentText("Open the app to stop recording.")
+            .setContentIntent(contentIntent)
             .build()
 
         startForeground(SERVICE_NOTIFICATION_ID, notification);
