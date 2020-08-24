@@ -70,6 +70,10 @@ class RecordingService : Service() {
         recording.saveRecording(stream)
     }
 
+    fun discardRecording() {
+        recording.discardRecording()
+    }
+
     fun accumulated(): Long {
         return recording.accumulated()
     }

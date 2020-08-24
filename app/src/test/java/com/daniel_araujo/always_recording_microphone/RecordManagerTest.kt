@@ -236,4 +236,35 @@ class RecordManagerTest {
 
         assertEquals("Storage must be intact.", 1000, recorder.accumulated())
     }
+
+    @Test
+    fun discardRecording_emptiesStorage() {
+        lateinit var session: RecordingSessionSilence
+
+        val recorder = RecordingManager(object: RecordingManagerInt {
+            override fun createSession(config: RecordingSessionConfig): RecordingSession {
+                session = RecordingSessionSilence(config)
+                return session
+            }
+
+            override fun createStorage(config: RecordingSessionConfig): Storage {
+                val oneSecond = PcmUtils.bufferSize(
+                    1000,
+                    config.sampleRate,
+                    config.bytesPerSample(),
+                    config.channels())
+                return PureMemoryStorage(oneSecond)
+            }
+        })
+
+        recorder.startRecording()
+
+        session.generate(1000)
+
+        assertEquals("Must have something in storage.", 1000, recorder.accumulated())
+
+        recorder.discardRecording()
+
+        assertEquals(0, recorder.accumulated())
+    }
 }

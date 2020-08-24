@@ -57,6 +57,12 @@ class RecordFragment : Fragment() {
             }
         }
 
+        view.findViewById<ImageButton>(R.id.button_delete).also {
+            it.setOnClickListener {
+                discardRecording()
+            }
+        }
+
         recordingService.run {
             // Synchronize recording button state.
             buttonRecord.isActivated = it.isRecording();
@@ -117,6 +123,14 @@ class RecordFragment : Fragment() {
             } catch (e: IOException) {
                 Log.e("Exception", "File write failed.", e)
             }
+        }
+    }
+
+    private fun discardRecording() {
+        Log.v(javaClass.simpleName, "saveRecordingService")
+
+        recordingService.run {
+            it.discardRecording()
         }
     }
 }

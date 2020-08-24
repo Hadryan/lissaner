@@ -75,6 +75,13 @@ class RecordingManager : AutoCloseable {
     }
 
     /**
+     * Empties storage.
+     */
+    fun discardRecording() {
+        storage?.move()
+    }
+
+    /**
      * How much time has been accumulated in temporary storage.
      */
     fun accumulated(): Long {
