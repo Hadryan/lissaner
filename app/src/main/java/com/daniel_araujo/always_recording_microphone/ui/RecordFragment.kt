@@ -56,6 +56,14 @@ class RecordFragment : Fragment() {
                 saveRecordingService()
             }
         }
+
+        recordingService.run {
+            // Synchronize recording button state.
+            buttonRecord.isActivated = it.isRecording();
+
+            // Synchronize accumulated time.
+            accumulatedTime.time = it.accumulated()
+        }
     }
 
     private fun toggleRecordingService() {
