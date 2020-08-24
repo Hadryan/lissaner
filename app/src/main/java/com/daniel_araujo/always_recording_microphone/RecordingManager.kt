@@ -42,7 +42,9 @@ class RecordingManager : AutoCloseable {
             setRecordingBufferSizeInMilliseconds(1000)
         }
 
-        storage = int.createStorage(config!!)
+        if (storage == null) {
+            storage = int.createStorage(config!!)
+        }
 
         recordingSession = int.createSession(config!!)
     }
