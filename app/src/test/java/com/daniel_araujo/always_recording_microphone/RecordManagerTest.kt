@@ -39,7 +39,7 @@ class RecordManagerTest {
         /**
          * Generates silence samples.
          */
-        fun generate(duration: Int) {
+        fun generate(duration: Long) {
             val oneSecond = PcmUtils.bufferSize(
                 duration,
                 config.sampleRate,

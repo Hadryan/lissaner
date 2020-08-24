@@ -36,7 +36,7 @@ class RecordingService : Service() {
             override fun createStorage(config: RecordingSessionConfig): Storage {
                 return PureMemoryStorage(
                     PcmUtils.bufferSize(
-                        10000,
+                        10 * 60 * 1000,
                         config.sampleRate,
                         config.bytesPerSample(),
                         config.channels()))
@@ -88,8 +88,8 @@ class RecordingService : Service() {
 
         val notification: Notification = NotificationCompat.Builder(this, Application.NOTIFICATION_CHANNEL_FOREGROUND_SERVICE)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle("TITLE")
-            .setContentText("TEXT")
+            .setContentTitle("Always Recording Microphone")
+            .setContentText("Open the app to stop recording.")
             .build()
 
         startForeground(SERVICE_NOTIFICATION_ID, notification);

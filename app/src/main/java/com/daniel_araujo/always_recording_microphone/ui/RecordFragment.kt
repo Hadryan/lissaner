@@ -14,6 +14,7 @@ import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.single.BasePermissionListener
 import java.io.File
 import java.io.IOException
+import java.util.*
 
 class RecordFragment : Fragment() {
     lateinit var recordingService: AutoServiceBind<RecordingService>
@@ -98,7 +99,7 @@ class RecordFragment : Fragment() {
 
         recordingService.run { service ->
             try {
-                val file = File(context!!.getExternalFilesDir(null), "recording.wav")
+                val file = File(context!!.getExternalFilesDir(null), System.currentTimeMillis().toString() + ".wav")
 
                 Log.d(javaClass.simpleName, "Saving to ${file.absolutePath}")
 

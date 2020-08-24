@@ -39,7 +39,7 @@ class RecordingManager : AutoCloseable {
                 onRecordError?.invoke(ex)
             }
 
-            setRecordingBufferSizeInMilliseconds(5000)
+            setRecordingBufferSizeInMilliseconds(1000)
         }
 
         storage = int.createStorage(config!!)
