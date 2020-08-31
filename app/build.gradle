@@ -34,9 +34,6 @@ dependencies {
     // Permission checks without too much boilerplate code.
     implementation 'com.karumi:dexter:6.2.1'
 
-    // I needed a circular buffer.
-    implementation 'org.apache.commons:commons-collections4:4.4'
-
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.1.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
