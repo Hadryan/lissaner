@@ -36,6 +36,11 @@ public class PCM2WAV implements AutoCloseable {
     private BufferNotifier samplesBuffer;
 
     /**
+     * Is writing data.
+     */
+    private boolean writingData;
+
+    /**
      * The duration in milliseconds of each data chunk.
      */
     private final int dataChunkSize = 5000;
@@ -96,8 +101,19 @@ public class PCM2WAV implements AutoCloseable {
     /**
      * Disposes resources and writes remaining samples to the stream.
      */
+    @Override
     public void close() {
-        // TODO
+        if (writingData) {
+            byte[] remaining = samplesBuffer.copy();
+
+            if (remaining.length > 0) {
+                try {
+                    writeData(remaining);
+                } catch (IOException ex) {
+                    throw new PCM2WAVException("Failed to write data.", ex);
+                }
+            }
+        }
     }
 
     /**
@@ -192,9 +208,18 @@ public class PCM2WAV implements AutoCloseable {
      * @throws IOException
      */
     private void writeData(byte[] samples) throws IOException {
-        // Subchunk2ID.
-        writer.write(new byte[] { 'd', 'a', 't', 'a' });
-        dataWriter.writeInt(Integer.reverseBytes(samples.length));
+        if (!writingData) {
+            // Subchunk2ID.
+            writer.write(new byte[] { 'd', 'a', 't', 'a' });
+
+            // Subchunk2Size. The number of bytes that follow. Since we're constructing the file as
+            // we go, we cannot guess the size so I put a really huge value, just like I saw the
+            // arecord command doing
+            dataWriter.writeInt(Integer.reverseBytes(0x80000000));
+
+            writingData = true;
+        }
+
         writer.write(samples);
     }
 }

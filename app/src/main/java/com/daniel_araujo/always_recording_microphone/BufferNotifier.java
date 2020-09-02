@@ -1,9 +1,16 @@
 package com.daniel_araujo.always_recording_microphone;
 
+import java.util.Arrays;
+
 /**
  * Accumulates data until it reaches a threshold.
  */
-public class BufferNotifier {
+public class BufferNotifier implements AutoCloseable {
+    @Override
+    public void close() throws Exception {
+
+    }
+
     public interface OnThresholdListener {
         /**
          * Receives samples. The samples array will be reused after the method is called so make
@@ -80,5 +87,13 @@ public class BufferNotifier {
                 size -= size;
             }
         }
+    }
+
+    /**
+     * Creates a copy of the current contents of the buffer.
+     * @return
+     */
+    public byte[] copy() {
+        return Arrays.copyOfRange(buffer, 0, accumulated);
     }
 }

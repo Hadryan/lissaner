@@ -70,10 +70,27 @@ public class PCM2WAVTest {
             assertRiffHeader(dataInput, 0x80000000);
             assertFmtChunk(dataInput, channels, sampleRate, bitsPerSample);
 
+            assertEquals(0x64617461, dataInput.readInt());
+            assertEquals(0x80000000, Integer.reverseBytes(dataInput.readInt()));
+        }
+
+        @Test
+        public void expectedAmountOfData() throws IOException {
+            PipedOutputStream stream = new PipedOutputStream();
+            PipedInputStream input = new PipedInputStream(stream, 2000000);
+            DataInputStream dataInput = new DataInputStream(input);
+
+            try (PCM2WAV p2w = new PCM2WAV(stream, channels, sampleRate, bitsPerSample)) {
+                p2w.feed(generateSilence(5000, channels, sampleRate, bitsPerSample));
+            }
+
+            assertRiffHeader(dataInput, 0x80000000);
+            assertFmtChunk(dataInput, channels, sampleRate, bitsPerSample);
+
             int expectedSize = PcmUtils.INSTANCE.bufferSize(5000, sampleRate, calcBytesPerSample(bitsPerSample), channels);
 
             assertEquals(0x64617461, dataInput.readInt());
-            assertEquals(expectedSize, Integer.reverseBytes(dataInput.readInt()));
+            dataInput.readInt();
             assertEquals(expectedSize, input.available());
         }
     }
@@ -136,5 +153,63 @@ public class PCM2WAVTest {
         }
 
         assertEquals(36, input.available());
+    }
+
+    @Test
+    public void singleDataChunk() throws IOException {
+        // I used to create multiple data chunks, each one having 5 seconds of data. Turns out
+        // you're only meant to create a single data chunk. Unless I use Wave list Chunk,
+        // but I won't.
+
+        PipedOutputStream stream = new PipedOutputStream();
+        PipedInputStream input = new PipedInputStream(stream, 2000000);
+        DataInputStream dataInput = new DataInputStream(input);
+
+        final int sampleRate = 8000;
+        final int bitsPerSample = 8;
+        final int channels = 1;
+
+        try (PCM2WAV p2w = new PCM2WAV(stream, channels, sampleRate, bitsPerSample)) {
+            p2w.feed(generateSilence(10000, channels, sampleRate, bitsPerSample));
+        }
+
+        int expectedSize = PcmUtils.INSTANCE.bufferSize(10000, sampleRate, calcBytesPerSample(bitsPerSample), channels);
+
+        assertRiffHeader(dataInput, 0x80000000);
+        assertFmtChunk(dataInput, channels, sampleRate, bitsPerSample);
+
+        assertEquals(0x64617461, dataInput.readInt());
+        dataInput.readInt();
+        assertEquals(expectedSize, input.available());
+    }
+
+    @Test
+    public void flushesBufferedSamplesOnClose() throws IOException {
+        // I used to create multiple data chunks, each one having 5 seconds of data. Turns out
+        // you're only meant to create a single data chunk. Unless I use Wave list Chunk,
+        // but I won't.
+
+        PipedOutputStream stream = new PipedOutputStream();
+        PipedInputStream input = new PipedInputStream(stream, 2000000);
+        DataInputStream dataInput = new DataInputStream(input);
+
+        final int sampleRate = 8000;
+        final int bitsPerSample = 8;
+        final int channels = 1;
+
+        PCM2WAV p2w = new PCM2WAV(stream, channels, sampleRate, bitsPerSample);
+        p2w.feed(generateSilence(6000, channels, sampleRate, bitsPerSample));
+
+        int expectedSize = PcmUtils.INSTANCE.bufferSize(6000, sampleRate, calcBytesPerSample(bitsPerSample), channels);
+
+        assertRiffHeader(dataInput, 0x80000000);
+        assertFmtChunk(dataInput, channels, sampleRate, bitsPerSample);
+
+        assertEquals(0x64617461, dataInput.readInt());
+        dataInput.readInt();
+
+        assertNotEquals(expectedSize, input.available());
+        p2w.close();
+        assertEquals(expectedSize, input.available());
     }
 }
