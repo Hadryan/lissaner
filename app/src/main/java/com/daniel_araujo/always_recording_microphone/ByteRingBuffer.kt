@@ -43,7 +43,7 @@ class ByteRingBuffer {
 
         if (!overflows(bytesRemaining)) {
             // Fast route.
-            System.arraycopy(bytes, bytesOffset, buffer, start, bytesRemaining)
+            System.arraycopy(bytes, bytesOffset, buffer, offset(), bytesRemaining)
             advance(bytesRemaining)
         } else {
             do {

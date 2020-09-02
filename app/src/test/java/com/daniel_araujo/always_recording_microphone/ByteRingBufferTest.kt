@@ -19,6 +19,20 @@ class ByteRingBufferTest {
     }
 
     @Test
+    fun add_callTwiceWithoutFilling() {
+        val buffer = ByteRingBuffer(3)
+
+        buffer.add(byteArrayOf(1, 2))
+        buffer.add(byteArrayOf(3))
+
+        assertEquals(3, buffer.size)
+
+        val result = ByteArray(3)
+        buffer.peek(result)
+        assertArrayEquals(byteArrayOf(1, 2, 3), result)
+    }
+
+    @Test
     fun add_fillHalf() {
         val buffer = ByteRingBuffer(4)
 
