@@ -1,6 +1,8 @@
-package com.daniel_araujo.always_recording_microphone.rec
+package com.daniel_araujo.always_recording_microphone.android
 
 import android.media.AudioRecord
+import com.daniel_araujo.always_recording_microphone.rec.RecordingSession
+import com.daniel_araujo.always_recording_microphone.rec.RecordingSessionConfig
 import java.nio.ByteBuffer
 
 class AndroidRecordingSession : RecordingSession, AutoCloseable {

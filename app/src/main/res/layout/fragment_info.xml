@@ -12,7 +12,7 @@
         android:orientation="vertical"
         android:padding="@dimen/windowPadding">
 
-        <com.daniel_araujo.always_recording_microphone.ui.WellView
+        <com.daniel_araujo.always_recording_microphone.android.ui.WellView
             android:id="@+id/wellView"
             style="@style/PaddedWell"
             android:layout_width="match_parent"
@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/recording_description" />
 
-        </com.daniel_araujo.always_recording_microphone.ui.WellView>
+        </com.daniel_araujo.always_recording_microphone.android.ui.WellView>
 
     </LinearLayout>
 

@@ -1,4 +1,4 @@
-package com.daniel_araujo.always_recording_microphone
+package com.daniel_araujo.always_recording_microphone.android
 
 import android.app.*
 import android.content.Context
@@ -7,8 +7,12 @@ import android.os.Build
 import android.os.IBinder
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import com.daniel_araujo.always_recording_microphone.PcmUtils
+import com.daniel_araujo.always_recording_microphone.R
+import com.daniel_araujo.always_recording_microphone.RecordingManager
+import com.daniel_araujo.always_recording_microphone.RecordingManagerInt
 import com.daniel_araujo.always_recording_microphone.rec.*
-import com.daniel_araujo.always_recording_microphone.ui.MainActivity
+import com.daniel_araujo.always_recording_microphone.android.ui.MainActivity
 import java.io.OutputStream
 
 
@@ -26,20 +30,26 @@ class RecordingService : Service() {
         set(listener) { recording.onAccumulateListener = listener }
 
     override fun onCreate() {
-        recording = RecordingManager(object: RecordingManagerInt {
-            override fun createSession(config: RecordingSessionConfig): RecordingSession {
-                return AndroidRecordingSession(config)
-            }
+        recording =
+            RecordingManager(object :
+                RecordingManagerInt {
+                override fun createSession(config: RecordingSessionConfig): RecordingSession {
+                    return AndroidRecordingSession(
+                        config
+                    )
+                }
 
-            override fun createStorage(config: RecordingSessionConfig): Storage {
-                return PureMemoryStorage(
-                    PcmUtils.bufferSize(
-                        30 * 60 * 1000,
-                        config.sampleRate,
-                        config.bytesPerSample(),
-                        config.channels()))
-            }
-        })
+                override fun createStorage(config: RecordingSessionConfig): Storage {
+                    return PureMemoryStorage(
+                        PcmUtils.bufferSize(
+                            30 * 60 * 1000,
+                            config.sampleRate,
+                            config.bytesPerSample(),
+                            config.channels()
+                        )
+                    )
+                }
+            })
     }
 
     override fun onDestroy() {
@@ -47,7 +57,9 @@ class RecordingService : Service() {
     }
 
     override fun onBind(p0: Intent?): IBinder? {
-        return AutoServiceBinder(this)
+        return AutoServiceBinder(
+            this
+        )
     }
 
     fun startRecording() {
@@ -105,7 +117,9 @@ class RecordingService : Service() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel() {
-        val chan = NotificationChannel(Application.NOTIFICATION_CHANNEL_FOREGROUND_SERVICE, getText(R.string.app_name), NotificationManager.IMPORTANCE_LOW)
+        val chan = NotificationChannel(Application.NOTIFICATION_CHANNEL_FOREGROUND_SERVICE, getText(
+            R.string.app_name
+        ), NotificationManager.IMPORTANCE_LOW)
         val service = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         service.createNotificationChannel(chan)
     }

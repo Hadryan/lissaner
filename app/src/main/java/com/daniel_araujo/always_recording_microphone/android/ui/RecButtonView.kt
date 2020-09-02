@@ -1,4 +1,4 @@
-package com.daniel_araujo.always_recording_microphone.ui
+package com.daniel_araujo.always_recording_microphone.android.ui
 
 import android.content.Context
 import android.graphics.Canvas

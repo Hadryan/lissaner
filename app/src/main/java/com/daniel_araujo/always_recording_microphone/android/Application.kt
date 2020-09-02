@@ -1,4 +1,4 @@
-package com.daniel_araujo.always_recording_microphone
+package com.daniel_araujo.always_recording_microphone.android
 
 import android.app.ActivityManager
 import android.content.Context

@@ -1,4 +1,4 @@
-package com.daniel_araujo.always_recording_microphone.ui.dev
+package com.daniel_araujo.always_recording_microphone.android.ui.dev
 
 import android.media.AudioFormat
 import android.media.AudioRecord

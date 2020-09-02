@@ -1,17 +1,13 @@
-package com.daniel_araujo.always_recording_microphone.ui
+package com.daniel_araujo.always_recording_microphone.android.ui
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
-import android.graphics.drawable.Drawable
-import android.text.TextPaint
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import com.daniel_araujo.always_recording_microphone.R
-import java.lang.RuntimeException
 
 /**
  * TODO: document your custom view class.

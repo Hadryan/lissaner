@@ -1,10 +1,9 @@
-package com.daniel_araujo.always_recording_microphone.ui
+package com.daniel_araujo.always_recording_microphone.android.ui
 
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatTextView
-import com.daniel_araujo.always_recording_microphone.R
 import java.util.*
 
 class TextCounter : FrameLayout {

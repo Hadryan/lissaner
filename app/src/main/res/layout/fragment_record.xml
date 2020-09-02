@@ -21,7 +21,7 @@
             app:layout_constraintTop_toBottomOf="@+id/button_record"
             app:srcCompat="@android:drawable/ic_menu_delete" />
 
-        <com.daniel_araujo.always_recording_microphone.ui.RecButtonView
+        <com.daniel_araujo.always_recording_microphone.android.ui.RecButtonView
             android:id="@+id/button_record"
             android:layout_width="100dp"
             android:layout_height="100dp"
@@ -39,7 +39,7 @@
             app:layout_constraintTop_toBottomOf="@+id/button_record"
             app:srcCompat="@android:drawable/ic_menu_save" />
 
-        <com.daniel_araujo.always_recording_microphone.ui.TextCounter
+        <com.daniel_araujo.always_recording_microphone.android.ui.TextCounter
             android:id="@+id/accumulated_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

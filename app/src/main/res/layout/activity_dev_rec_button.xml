@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.dev.DevRecButtonActivity">
+    tools:context=".android.ui.dev.DevRecButtonActivity">
 
-    <com.daniel_araujo.always_recording_microphone.ui.RecButtonView
+    <com.daniel_araujo.always_recording_microphone.android.ui.RecButtonView
         android:id="@+id/dev_rec_button"
         android:layout_width="240dp"
         android:layout_height="264dp"

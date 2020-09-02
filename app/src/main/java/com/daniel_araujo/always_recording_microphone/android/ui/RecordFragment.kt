@@ -1,4 +1,4 @@
-package com.daniel_araujo.always_recording_microphone.ui
+package com.daniel_araujo.always_recording_microphone.android.ui
 
 import android.os.Bundle
 import android.util.Log
@@ -6,15 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import com.daniel_araujo.always_recording_microphone.AutoServiceBind
+import com.daniel_araujo.always_recording_microphone.android.AutoServiceBind
 import com.daniel_araujo.always_recording_microphone.R
-import com.daniel_araujo.always_recording_microphone.RecordingService
+import com.daniel_araujo.always_recording_microphone.android.RecordingService
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.single.BasePermissionListener
 import java.io.File
 import java.io.IOException
-import java.util.*
 
 class RecordFragment : Fragment() {
     lateinit var recordingService: AutoServiceBind<RecordingService>
@@ -35,7 +34,11 @@ class RecordFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recordingService = AutoServiceBind(RecordingService::class, activity!!)
+        recordingService =
+            AutoServiceBind(
+                RecordingService::class,
+                activity!!
+            )
 
         recordingService.onConnectListener = { service ->
             service.onAccumulateListener = {

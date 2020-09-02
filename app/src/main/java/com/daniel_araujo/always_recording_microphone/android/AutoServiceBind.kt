@@ -1,13 +1,11 @@
-package com.daniel_araujo.always_recording_microphone
+package com.daniel_araujo.always_recording_microphone.android
 
 import android.app.Activity
-import android.app.Service
 import android.content.ComponentName
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Binder
 import android.os.IBinder
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import java.util.*
 
