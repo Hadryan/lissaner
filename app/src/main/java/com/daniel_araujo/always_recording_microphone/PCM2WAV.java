@@ -2,10 +2,7 @@ package com.daniel_araujo.always_recording_microphone;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 
 public class PCM2WAV implements AutoCloseable {
     /**
@@ -39,7 +36,7 @@ public class PCM2WAV implements AutoCloseable {
     private BufferNotifier samplesBuffer;
 
     /**
-     * The size of each data chunk.
+     * The duration in milliseconds of each data chunk.
      */
     private final int dataChunkSize = 5000;
 
@@ -68,10 +65,10 @@ public class PCM2WAV implements AutoCloseable {
         writer = stream;
         dataWriter =  new DataOutputStream(writer);
 
-        samplesBuffer = new BufferNotifier(dataChunkSize, sampleRate, getBytesPerSample());
-        samplesBuffer.setOnSamplesListener(new BufferNotifier.OnSamplesListener() {
+        samplesBuffer = new BufferNotifier(PcmUtils.INSTANCE.bufferSize(dataChunkSize, sampleRate, getBytesPerSample(), channels));
+        samplesBuffer.setOnThresholdListener(new BufferNotifier.OnThresholdListener() {
             @Override
-            public void onSamples(byte[] samples) {
+            public void onThreshold(byte[] samples) {
                 try {
                     writeData(samples);
                 } catch (IOException ex) {
