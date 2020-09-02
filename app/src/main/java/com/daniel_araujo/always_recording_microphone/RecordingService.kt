@@ -34,7 +34,7 @@ class RecordingService : Service() {
             override fun createStorage(config: RecordingSessionConfig): Storage {
                 return PureMemoryStorage(
                     PcmUtils.bufferSize(
-                        10 * 60 * 1000,
+                        30 * 60 * 1000,
                         config.sampleRate,
                         config.bytesPerSample(),
                         config.channels()))
