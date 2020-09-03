@@ -118,9 +118,12 @@ class RecordFragment : Fragment() {
             try {
                 val recordingsDir = File(context!!.getExternalFilesDir(null), "Recordings")
 
-                if (!recordingsDir.mkdirs()) {
-                    Log.e("Exception", "Failed to create recordings directory.")
-                    return@run;
+                if (!recordingsDir.exists()) {
+                    // Gotta create it.
+                    if (!recordingsDir.mkdirs()) {
+                        Log.e("Exception", "Failed to create recordings directory.")
+                        return@run;
+                    }
                 }
 
                 val file = File(recordingsDir, System.currentTimeMillis().toString() + ".wav")
