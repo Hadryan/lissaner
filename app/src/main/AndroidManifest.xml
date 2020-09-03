@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.daniel_araujo.always_recording_microphone">
+
     <!-- Necessary to use microphone. -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <!-- So that the microphone can be recorded even if the user closes the app or locks phone -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
