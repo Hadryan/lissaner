@@ -235,6 +235,23 @@ class ByteRingBufferTest {
     }
 
     @Test
+    fun bugfix_peekCrashesAfterWrappingAroundTwiceAndALittleBitMore() {
+        // The start position would be set incorrectly after wrapping around circular buffer twice.
+        val rounds = 2
+        val payloadSize = 2
+        val total = rounds * payloadSize
+
+        val buffer = ByteRingBuffer(total)
+
+        for (x in 0 until payloadSize * rounds + 1) {
+            buffer.add(ByteArray(payloadSize))
+        }
+
+        val result = ByteArray(total)
+        assertEquals(total, buffer.peek(result))
+    }
+
+    @Test
     fun pop_noargs_withPartition_readEverything() {
         val buffer = ByteRingBuffer(4)
 

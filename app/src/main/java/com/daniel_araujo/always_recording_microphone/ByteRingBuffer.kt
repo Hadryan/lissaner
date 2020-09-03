@@ -81,7 +81,6 @@ class ByteRingBuffer {
 
         // Split buffer in two halves.
         val offset = offset();
-
         var firstHalfStart = start
         var firstHalfSize = buffer.size - start
 
@@ -199,7 +198,8 @@ class ByteRingBuffer {
             size = sumSize;
         }
 
-        start += overflow % buffer.size;
+        // Quite important to not use the += operator when doing a Modulo operation like this.
+        start = (start + overflow) % buffer.size;
     }
 
     /**
