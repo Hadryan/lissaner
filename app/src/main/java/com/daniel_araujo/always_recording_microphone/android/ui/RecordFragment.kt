@@ -116,7 +116,14 @@ class RecordFragment : Fragment() {
 
         recordingService.run { service ->
             try {
-                val file = File(context!!.getExternalFilesDir(null), System.currentTimeMillis().toString() + ".wav")
+                val recordingsDir = File(context!!.getExternalFilesDir(null), "Recordings")
+
+                if (!recordingsDir.mkdirs()) {
+                    Log.e("Exception", "Failed to create recordings directory.")
+                    return@run;
+                }
+
+                val file = File(recordingsDir, System.currentTimeMillis().toString() + ".wav")
 
                 Log.d(javaClass.simpleName, "Saving to ${file.absolutePath}")
 
