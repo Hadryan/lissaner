@@ -8,6 +8,10 @@
     <!-- So that the microphone can be recorded even if the user closes the app or locks phone -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
+    <!-- So that files can be saved to external files dir in old versions of Android. -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:name=".android.Application"
         android:allowBackup="true"
