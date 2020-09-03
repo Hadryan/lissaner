@@ -3,11 +3,18 @@ package com.daniel_araujo.always_recording_microphone.android
 import android.app.ActivityManager
 import android.content.Context
 import android.os.Debug
-
+import com.daniel_araujo.always_recording_microphone.files.RecordingFiles
 
 class Application : android.app.Application() {
     companion object {
         const val NOTIFICATION_CHANNEL_FOREGROUND_SERVICE = "channel_0"
+    }
+
+    /**
+     * Application's RecordingFiles object.
+     */
+    val recordingFiles: RecordingFiles by lazy {
+        AndroidRecordingFiles(applicationContext)
     }
 
     /**
