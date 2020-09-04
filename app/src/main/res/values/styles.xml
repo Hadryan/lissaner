@@ -1,16 +1,44 @@
 <resources>
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
+        <!-- General -->
         <item name="colorPrimary">@color/colorPrimary</item>
-
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-
         <item name="colorAccent">@color/colorAccent</item>
-
         <item name="android:textColor">@color/textColor</item>
 
+        <!-- Window -->
         <item name="android:windowBackground">@color/background</item>
+
+        <!-- Buttons. -->
+        <item name="buttonStyle">@style/AppTheme.Button</item>
+        <item name="imageButtonStyle">@style/AppTheme.ImageButton</item>
+
+        <!-- Tabs. -->
+        <item name="tabStyle">@style/AppTheme.TabLayout</item>
     </style>
 
+    <!-- Default style for tabs. -->
+    <style name="AppTheme.TabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabSelectedTextColor">@color/textColor</item>
+        <item name="tabTextColor">@color/textColor</item>
+        <item name="tabBackground">@color/colorPrimary</item>
+    </style>
+
+    <!-- Default style for buttons. -->
+    <style name="AppTheme.Button" parent="Widget.AppCompat.Button">
+        <item name="android:textColor">@color/textColor</item>
+        <item name="android:background">@color/colorAccent</item>
+    </style>
+    <style name="AppTheme.ImageButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:textColor">@color/textColor</item>
+        <item name="android:background">@color/colorAccent</item>
+    </style>
+
+    <!-- For lists of things -->
+    <style name="AppTheme.ListThings" parent="@android:style/Widget.ListView">
+        <item name="android:divider">@drawable/separator</item>
+        <item name="android:showDividers">middle</item>
+    </style>
 
     <style name="PaddedWell">
         <item name="android:padding">@dimen/wellPadding</item>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- The separator dimension as a drawable. -->
+    <size
+        android:height="@dimen/separator"
+        android:width="@dimen/separator" />
+</shape>
