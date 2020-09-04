@@ -1,23 +1,30 @@
 <resources>
     <string name="app_name">Always Recording Microphone</string>
 
-    <string name="recording_description">\n
+    <string name="recording_description">
+        #### What is this?\n
+        \n
         This app can record your microphone in the background while only keeping the last 30 minutes
         stored in memory. You can save those last 30 minutes to a file if you choose. This allows
         you to record spontaneous moments that you otherwise would have missed out.\n
         \n
-        How to start recording\n
+        \n
+        #### How to start recording?\n
         Swipe right and you will find a page with a red button. Press start to begin recording. A
         notification should pop up. You can safely close the app and go on your normal day. As long
         as the notification is present, you can be rest assured that the app is still recording.
         You can open the app at any time to save the last 30 minutes to a file if something
         interesting happens.\n
         \n
+        \n
+        #### Can I trust this app?\n
         This project is open-source. That means the code can be read, studied and improved by other
         programmers. This app only records with your explicit consent and only stores audio files on
         your device, anyone able to understand the code will confirm that fact.\n
         \n
-        To get the source code, visit:\nhttps://github.com/daniel-araujo/always-recording-microphone
+        To get the source code, visit:\n
+        \n
+        [https://github.com/daniel-araujo/always-recording-microphone](https://github.com/daniel-araujo/always-recording-microphone)
     </string>
 
     <string name="main_activity_tab_info">Info</string>
