@@ -42,7 +42,7 @@ class MainActivityFragmentStateAdapter(fragment: FragmentActivity) : FragmentSta
         return when (position) {
             0 -> InfoFragment()
             1 -> RecordFragment()
-            2 -> Fragment()
+            2 -> FilesFragment()
             else -> Fragment()
         }
     }

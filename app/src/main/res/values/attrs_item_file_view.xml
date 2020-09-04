@@ -1,0 +1,8 @@
+<resources>
+    <declare-styleable name="ItemFileView">
+        <attr name="fileName" format="string" />
+        <attr name="fileSize" format="integer" />
+        <attr name="fileTimestamp" format="integer" />
+        <attr name="duration" format="integer" />
+    </declare-styleable>
+</resources>

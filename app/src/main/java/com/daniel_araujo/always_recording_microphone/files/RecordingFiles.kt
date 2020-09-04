@@ -13,4 +13,14 @@ interface RecordingFiles {
      * closing the stream.
      */
     fun create(name: String): OutputStream
+
+    /**
+     * Retrieves the timestap of a file. Returns null if file does not exist.
+     */
+    fun timestamp(name: String): Long?
+
+    /**
+     * Retrieves the size of a file. Returns null if file does not exist.
+     */
+    fun size(name: String): Long?
 }

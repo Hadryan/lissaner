@@ -28,4 +28,24 @@ class AndroidRecordingFiles : RecordingFiles {
 
         return file.outputStream()
     }
+
+    override fun timestamp(name: String): Long? {
+        val file = File(recordingsDir, name)
+
+        if (file.exists()) {
+            return file.lastModified()
+        } else {
+            return null
+        }
+    }
+
+    override fun size(name: String): Long? {
+        val file = File(recordingsDir, name)
+
+        if (file.exists()) {
+            return file.length()
+        } else {
+            return null
+        }
+    }
 }
