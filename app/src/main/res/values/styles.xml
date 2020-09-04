@@ -1,4 +1,8 @@
 <resources>
+    <declare-styleable name="AppTheme">
+        <attr name="wellStyle" format="reference"/>
+    </declare-styleable>
+
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <!-- General -->
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -15,6 +19,9 @@
 
         <!-- Tabs. -->
         <item name="tabStyle">@style/AppTheme.TabLayout</item>
+
+        <!-- Well. -->
+        <item name="wellStyle">@style/AppTheme.Well</item>
     </style>
 
     <!-- Default style for tabs. -->
@@ -40,7 +47,8 @@
         <item name="android:showDividers">middle</item>
     </style>
 
-    <style name="PaddedWell">
+    <!-- For wells -->
+    <style name="AppTheme.Well">
         <item name="android:padding">@dimen/wellPadding</item>
     </style>
 

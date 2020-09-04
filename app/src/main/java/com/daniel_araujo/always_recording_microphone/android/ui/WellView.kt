@@ -20,7 +20,7 @@ class WellView : FrameLayout {
         init(null, 0)
     }
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
+    constructor(context: Context, attrs: AttributeSet) : this(context, attrs, R.attr.wellStyle) {
         init(attrs, 0)
     }
 
