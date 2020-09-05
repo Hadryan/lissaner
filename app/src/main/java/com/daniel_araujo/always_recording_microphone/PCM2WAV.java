@@ -53,6 +53,12 @@ public class PCM2WAV implements AutoCloseable {
      */
     private Integer dataChunkSize = null;
 
+    /**
+     * How many samples in bytes were written to the stream. This is so we can check at the end if
+     * the expected size matches what was written.
+     */
+    private long dataReceived = 0;
+
     public PCM2WAV(OutputStream stream, int channels, int sampleRate, int bitsPerSample) {
         if (channels <= 0) {
             throw new PCM2WAVException("You must have at least 1 channel.");
@@ -121,6 +127,12 @@ public class PCM2WAV implements AutoCloseable {
         if (!prefixWritten) {
             writePrefix();
             prefixWritten = true;
+        }
+
+        if (dataChunkSize != null) {
+            if (dataChunkSize.equals(dataReceived)) {
+                throw new PCM2WAVException(String.format("Amount of data written does not match expected size (written: %d, expected: %d)", dataReceived, dataChunkSize));
+            }
         }
     }
 
@@ -246,6 +258,7 @@ public class PCM2WAV implements AutoCloseable {
      */
     private void writeData(byte[] samples) throws IOException {
         writer.write(samples);
+        dataReceived += samples.length;
     }
 }
 
