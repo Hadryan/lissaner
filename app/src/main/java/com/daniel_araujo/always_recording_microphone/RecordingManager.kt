@@ -93,7 +93,9 @@ class RecordingManager : AutoCloseable {
             config!!.bytesPerSample() * 8)
 
         wav.use {
-            wav.feed(storage!!.move())
+            val data = storage!!.move()
+            wav.expectSize(data.size)
+            wav.feed(data)
         }
 
         onAccumulateListener?.invoke()
