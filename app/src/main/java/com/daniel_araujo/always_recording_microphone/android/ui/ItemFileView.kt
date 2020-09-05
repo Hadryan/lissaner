@@ -42,6 +42,15 @@ class ItemFileView : FrameLayout {
             updateFileTimestamp()
         }
 
+    /**
+     * The size of the file in bytes
+     */
+    var fileSize: Long? = null
+        set(value) {
+            field = value
+            updateFileSize()
+        }
+
     constructor(context: Context) : super(context) {
         init(null, 0)
     }
@@ -68,6 +77,10 @@ class ItemFileView : FrameLayout {
             if (it.hasValue(R.styleable.ItemFileView_fileTimestamp)) {
                 fileTimestamp = it.getInteger(R.styleable.ItemFileView_fileTimestamp, 0).toLong()
             }
+
+            if (it.hasValue(R.styleable.ItemFileView_fileSize)) {
+                fileSize = it.getInteger(R.styleable.ItemFileView_fileSize, 0).toLong()
+            }
         }
     }
 
@@ -84,6 +97,14 @@ class ItemFileView : FrameLayout {
             findViewById<TextView>(R.id.file_timestamp).text = DateFormatUtils.localeDateAndTime(fileTimestamp!!)
         } else {
             findViewById<TextView>(R.id.file_timestamp).text = ""
+        }
+    }
+
+    fun updateFileSize() {
+        if (fileSize != null) {
+            findViewById<TextView>(R.id.file_size).text = android.text.format.Formatter.formatShortFileSize(context, fileSize!!);
+        } else {
+            findViewById<TextView>(R.id.file_size).text = ""
         }
     }
 }

@@ -68,7 +68,9 @@
 
         <com.daniel_araujo.always_recording_microphone.android.ui.ItemFileView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            app:fileName="filename.wav"
+            app:fileTimestamp="234222222" />
 
         <com.daniel_araujo.always_recording_microphone.android.ui.WellView
             android:layout_width="match_parent"

@@ -24,6 +24,7 @@ class FilesFragment : Fragment() {
 
             view.fileName = fileName
             view.fileTimestamp = ourActivity.ourApplication.recordingFiles.timestamp(fileName)
+            view.fileSize = ourActivity.ourApplication.recordingFiles.size(fileName)
 
             return view
         }
