@@ -22,6 +22,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".android.ui.dev.DevAudioPlayerActivity"
+            android:exported="true" />
+        <activity
             android:name=".android.ui.dev.DevStyleDemoActivity"
             android:exported="true" />
         <activity
@@ -30,7 +33,6 @@
         <activity
             android:name=".android.ui.dev.DevAudioRecordCombinationsActivity"
             android:exported="true" />
-
         <activity android:name=".android.ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -3,4 +3,5 @@
     <dimen name="windowPadding">20dp</dimen>
     <dimen name="wellPadding">20dp</dimen>
     <dimen name="separator">20dp</dimen>
+    <dimen name="doubleSeparator">40dp</dimen>
 </resources>
