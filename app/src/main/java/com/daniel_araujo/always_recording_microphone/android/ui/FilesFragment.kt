@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ListView
-import android.widget.TextView
 import com.daniel_araujo.always_recording_microphone.R
 
 
@@ -25,6 +24,7 @@ class FilesFragment : Fragment() {
             view.fileName = fileName
             view.fileTimestamp = ourActivity.ourApplication.recordingFiles.timestamp(fileName)
             view.fileSize = ourActivity.ourApplication.recordingFiles.size(fileName)
+            view.duration = ourActivity.ourApplication.recordingFiles.duration(fileName)
 
             return view
         }

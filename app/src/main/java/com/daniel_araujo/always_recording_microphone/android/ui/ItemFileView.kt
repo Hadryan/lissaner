@@ -11,19 +11,12 @@ import android.widget.TextView
 import androidx.core.content.res.use
 import com.daniel_araujo.always_recording_microphone.DateFormatUtils
 import com.daniel_araujo.always_recording_microphone.R
+import java.text.DateFormat
 
 /**
  * TODO: document your custom view class.
  */
 class ItemFileView : FrameLayout {
-
-    private var _exampleColor: Int = Color.RED // TODO: use a default from R.color...
-    private var _exampleDimension: Float = 0f // TODO: use a default from R.dimen...
-
-    private var textPaint: TextPaint? = null
-    private var textWidth: Float = 0f
-    private var textHeight: Float = 0f
-
     /**
      * The name of the file.
      */
@@ -49,6 +42,15 @@ class ItemFileView : FrameLayout {
         set(value) {
             field = value
             updateFileSize()
+        }
+
+    /**
+     * Duration in seconds.
+     */
+    var duration: Int? = null
+        set(value) {
+            field = value
+            updateDuration()
         }
 
     constructor(context: Context) : super(context) {
@@ -81,6 +83,10 @@ class ItemFileView : FrameLayout {
             if (it.hasValue(R.styleable.ItemFileView_fileSize)) {
                 fileSize = it.getInteger(R.styleable.ItemFileView_fileSize, 0).toLong()
             }
+
+            if (it.hasValue(R.styleable.ItemFileView_duration)) {
+                duration = it.getInteger(R.styleable.ItemFileView_duration, 0)
+            }
         }
     }
 
@@ -102,9 +108,17 @@ class ItemFileView : FrameLayout {
 
     fun updateFileSize() {
         if (fileSize != null) {
-            findViewById<TextView>(R.id.file_size).text = android.text.format.Formatter.formatShortFileSize(context, fileSize!!);
+            findViewById<TextView>(R.id.file_size).text = android.text.format.Formatter.formatShortFileSize(context, fileSize!!)
         } else {
             findViewById<TextView>(R.id.file_size).text = ""
+        }
+    }
+
+    fun updateDuration() {
+        if (duration != null) {
+            findViewById<TextView>(R.id.duration).text = DateFormatUtils.mmss(duration!!)
+        } else {
+            findViewById<TextView>(R.id.duration).text = ""
         }
     }
 }

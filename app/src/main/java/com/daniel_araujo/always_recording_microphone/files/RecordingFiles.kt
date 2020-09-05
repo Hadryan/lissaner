@@ -23,4 +23,9 @@ interface RecordingFiles {
      * Retrieves the size of a file. Returns null if file does not exist.
      */
     fun size(name: String): Long?
+
+    /**
+     * Retrieves duration. Returns null if file does not exist or if duration can't be read.
+     */
+    fun duration(name: String): Int?
 }

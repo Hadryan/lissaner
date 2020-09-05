@@ -29,10 +29,20 @@
         android:id="@+id/file_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/separator"
         android:layout_marginEnd="@dimen/separator"
         android:text="2.3 MB"
         android:textSize="8sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/duration" />
+
+    <TextView
+        android:id="@+id/duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/separator"
+        android:layout_marginEnd="@dimen/separator"
+        android:text="00:21"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
