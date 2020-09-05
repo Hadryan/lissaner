@@ -29,6 +29,10 @@
         <item name="tabSelectedTextColor">@color/textColor</item>
         <item name="tabTextColor">@color/textColor</item>
         <item name="tabBackground">@color/colorPrimary</item>
+
+        <!-- Makes sure that the TabLayout occupies the entire width in landscape mode. -->
+        <item name="tabMaxWidth">0dp</item>
+        <item name="tabGravity">fill</item>
     </style>
 
     <!-- Default style for buttons. -->
