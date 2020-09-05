@@ -5,47 +5,50 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
         android:padding="@dimen/windowPadding">
 
-        <ImageButton
-            android:id="@+id/button_delete"
+        <TextView
+            android:id="@+id/label_record"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="160dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.698"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button_record"
-            app:srcCompat="@android:drawable/ic_menu_delete" />
+            android:text="@string/record_start" />
 
         <com.daniel_araujo.always_recording_microphone.android.ui.RecButtonView
             android:id="@+id/button_record"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_marginTop="@dimen/separator"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/accumulated_time" />
-
-        <ImageButton
-            android:id="@+id/button_save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button_record"
-            app:srcCompat="@android:drawable/ic_menu_save" />
+            android:layout_marginTop="@dimen/separator" />
 
         <com.daniel_araujo.always_recording_microphone.android.ui.TextCounter
             android:id="@+id/accumulated_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginTop="@dimen/separator" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <LinearLayout
+            android:id="@+id/controls"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/separator"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Save" />
+
+            <Button
+                android:id="@+id/button_discard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Discard" />
+        </LinearLayout>
+
+    </LinearLayout>
 </ScrollView>

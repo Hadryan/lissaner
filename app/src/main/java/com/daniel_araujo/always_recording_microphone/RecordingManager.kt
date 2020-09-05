@@ -23,11 +23,26 @@ class RecordingManager : AutoCloseable {
      */
     var onAccumulateListener: (() -> Unit)? = null
 
+    /**
+     * Called when recording starts.
+     */
+    var onRecordStart: (() -> Unit)? = null
+
+    /**
+     * Called when recording stops.
+     */
+    var onRecordStop: (() -> Unit)? = null
+
     constructor(int: RecordingManagerInt) {
         this.int = int
     }
 
     fun startRecording() {
+        if (recordingSession != null) {
+            // Already recording.
+            return
+        }
+
         config = RecordingSessionConfig().apply {
             samplesListener = { data ->
                 storage!!.feed(data)
@@ -47,11 +62,19 @@ class RecordingManager : AutoCloseable {
         }
 
         recordingSession = int.createSession(config!!)
+
+        onRecordStart?.invoke()
     }
 
     fun stopRecording() {
+        if (recordingSession == null) {
+            // Already stopped.
+            return
+        }
+
         recordingSession?.close()
         recordingSession = null
+        onRecordStop?.invoke()
     }
 
     fun isRecording(): Boolean {
@@ -72,13 +95,21 @@ class RecordingManager : AutoCloseable {
         wav.use {
             wav.feed(storage!!.move())
         }
+
+        onAccumulateListener?.invoke()
     }
 
     /**
      * Empties storage.
      */
     fun discardRecording() {
-        storage?.move()
+        if (storage != null) {
+            if (storage!!.size() > 0) {
+                storage!!.move()
+
+                onAccumulateListener?.invoke()
+            }
+        }
     }
 
     /**

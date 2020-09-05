@@ -5,23 +5,42 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.TextView
 import com.daniel_araujo.always_recording_microphone.android.AutoServiceBind
 import com.daniel_araujo.always_recording_microphone.R
+import com.daniel_araujo.always_recording_microphone.RecordingManager
 import com.daniel_araujo.always_recording_microphone.android.RecordingService
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.single.BasePermissionListener
-import java.io.File
 import java.io.IOException
 
 class RecordFragment : Fragment() {
+    /**
+     * We only have a service so that we can record with the app closed.
+     */
     lateinit var recordingService: AutoServiceBind<RecordingService>
 
+    /**
+     * The button that starts and stops recording.
+     */
     lateinit var buttonRecord: RecButtonView
 
-    lateinit var buttonSave: ImageButton
+    /**
+     * Complements recording button.
+     */
+    lateinit var labelRecord: TextView
 
+    /**
+     * The container that holds recording controls.
+     */
+    lateinit var controls: View
+
+    /**
+     * A view that shows how many seconds have been recorded.
+     */
     lateinit var accumulatedTime: TextCounter
 
     override fun onCreateView(
@@ -42,11 +61,20 @@ class RecordFragment : Fragment() {
 
         recordingService.onConnectListener = { service ->
             service.onAccumulateListener = {
-                accumulatedTime.time = service.accumulated()
+                accumulatedTime.time = service.recording.accumulated()
+
+                updateControls(service.recording)
             }
         }
 
         accumulatedTime = view.findViewById<TextCounter>(R.id.accumulated_time)
+
+        controls = view.findViewById<LinearLayout>(R.id.controls)
+        // They are supposed to be invisible by default but I leave them visible so I can see them
+        // in the designer.
+        controls.visibility = View.GONE
+
+        labelRecord = view.findViewById<TextView>(R.id.label_record)
 
         buttonRecord = view.findViewById<RecButtonView>(R.id.button_record).also {
             it.setOnClickListener {
@@ -54,13 +82,13 @@ class RecordFragment : Fragment() {
             }
         }
 
-        buttonSave = view.findViewById<ImageButton>(R.id.button_save).also {
+        view.findViewById<Button>(R.id.button_save).also {
             it.setOnClickListener {
                 saveRecordingService()
             }
         }
 
-        view.findViewById<ImageButton>(R.id.button_delete).also {
+        view.findViewById<Button>(R.id.button_discard).also {
             it.setOnClickListener {
                 discardRecording()
             }
@@ -68,16 +96,18 @@ class RecordFragment : Fragment() {
 
         recordingService.run {
             // Synchronize recording button state.
-            buttonRecord.isActivated = it.isRecording();
+            buttonRecord.isActivated = it.recording.isRecording();
 
             // Synchronize accumulated time.
-            accumulatedTime.time = it.accumulated()
+            accumulatedTime.time = it.recording.accumulated()
+
+            updateControls(it.recording)
         }
     }
 
     private fun toggleRecordingService() {
         recordingService.run {
-            if (!it.isRecording()) {
+            if (!it.recording.isRecording()) {
                 startRecordingService()
             } else {
                 stopRecordingService()
@@ -93,8 +123,8 @@ class RecordFragment : Fragment() {
             .withListener(object : BasePermissionListener() {
                 override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
                     recordingService.run {
-                        it.startRecording()
-                        buttonRecord.isActivated = true;
+                        it.recording.startRecording()
+                        updateControls(it.recording)
                     }
                 }
             })
@@ -105,9 +135,8 @@ class RecordFragment : Fragment() {
         Log.v(javaClass.simpleName, "stopRecordingService")
 
         recordingService.run {
-            it.stopRecording()
-            accumulatedTime.time = it.accumulated()
-            buttonRecord.isActivated = false;
+            it.recording.stopRecording()
+            updateControls(it.recording)
         }
     }
 
@@ -122,7 +151,7 @@ class RecordFragment : Fragment() {
                 Log.d(javaClass.simpleName, "Creating ${name}")
 
                 stream.use { stream ->
-                    service.saveRecording(stream)
+                    service.recording.saveRecording(stream)
                 }
             } catch (e: IOException) {
                 Log.e("Exception", "File write failed.", e)
@@ -134,7 +163,23 @@ class RecordFragment : Fragment() {
         Log.v(javaClass.simpleName, "saveRecordingService")
 
         recordingService.run {
-            it.discardRecording()
+            it.recording.discardRecording()
+        }
+    }
+
+    private fun updateControls(recording: RecordingManager) {
+        buttonRecord.isActivated = recording.isRecording()
+
+        controls.visibility = if (recording.accumulated() > 0) View.VISIBLE else View.GONE
+
+        labelRecord.text = if (recording.isRecording()) {
+             context!!.getText(R.string.record_stop)
+        } else {
+            if (recording.accumulated() > 0) {
+                context!!.getText(R.string.record_continue)
+            } else {
+                context!!.getText(R.string.record_start)
+            }
         }
     }
 }

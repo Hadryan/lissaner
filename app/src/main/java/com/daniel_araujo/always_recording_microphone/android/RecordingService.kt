@@ -23,7 +23,10 @@ class RecordingService : Service() {
      */
     private val SERVICE_NOTIFICATION_ID = 1
 
-    private lateinit var recording : RecordingManager
+    /**
+     * The recording object. This is public on purpose.
+     */
+    lateinit var recording : RecordingManager
 
     var onAccumulateListener: (() -> Unit)?
         get() = recording.onAccumulateListener
@@ -50,6 +53,14 @@ class RecordingService : Service() {
                     )
                 }
             })
+
+        recording.onRecordStart = {
+            requestToBeForeground()
+        }
+
+        recording.onRecordStop = {
+            stopForeground(true)
+        }
     }
 
     override fun onDestroy() {
@@ -60,34 +71,6 @@ class RecordingService : Service() {
         return AutoServiceBinder(
             this
         )
-    }
-
-    fun startRecording() {
-        requestToBeForeground()
-
-        recording.startRecording()
-    }
-
-    fun stopRecording() {
-        stopForeground(true)
-
-        recording.stopRecording()
-    }
-
-    fun isRecording(): Boolean {
-        return recording.isRecording()
-    }
-
-    fun saveRecording(stream: OutputStream) {
-        recording.saveRecording(stream)
-    }
-
-    fun discardRecording() {
-        recording.discardRecording()
-    }
-
-    fun accumulated(): Long {
-        return recording.accumulated()
     }
 
     /**
