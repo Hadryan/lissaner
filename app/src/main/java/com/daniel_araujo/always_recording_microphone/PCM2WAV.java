@@ -6,6 +6,16 @@ import java.io.OutputStream;
 
 public class PCM2WAV implements AutoCloseable {
     /**
+     * The size that is used when data size is not explicitly set.
+     */
+    private static final int UNKNOWN_DATA_SIZE = 0x80000000;
+
+    /**
+     * The offset from chunk size to the byte of the first sample.
+     */
+    private static final int OFFSET_TO_DATA = 36;
+
+    /**
      * Number of channels.
      */
     int channels;
@@ -31,19 +41,17 @@ public class PCM2WAV implements AutoCloseable {
     private DataOutputStream dataWriter;
 
     /**
-     * Accumulates chunks of samples. This holds the samples that will be used to create data chunks.
+     * Whether headers have been written.
      */
-    private BufferNotifier samplesBuffer;
+    private boolean prefixWritten;
 
     /**
-     * Is writing data.
+     * How many bytes worth of samples are expected to be written to the file. The RIFF format
+     * demands that the total size be specified. That can be problematic when the source is a
+     * stream. I have seen software put a huge number in place of the real size. A lot of players
+     * seem to read those files without problems. Too bad android's MediaPlayer is not one of them.
      */
-    private boolean writingData;
-
-    /**
-     * The duration in milliseconds of each data chunk.
-     */
-    private final int dataChunkSize = 5000;
+    private Integer dataChunkSize = null;
 
     public PCM2WAV(OutputStream stream, int channels, int sampleRate, int bitsPerSample) {
         if (channels <= 0) {
@@ -69,25 +77,23 @@ public class PCM2WAV implements AutoCloseable {
 
         writer = stream;
         dataWriter =  new DataOutputStream(writer);
+    }
 
-        samplesBuffer = new BufferNotifier(PcmUtils.INSTANCE.bufferSize(dataChunkSize, sampleRate, getBytesPerSample(), channels));
-        samplesBuffer.setOnThresholdListener(new BufferNotifier.OnThresholdListener() {
-            @Override
-            public void onThreshold(byte[] samples) {
-                try {
-                    writeData(samples);
-                } catch (IOException ex) {
-                    throw new PCM2WAVException("Failed to write data.", ex);
-                }
-            }
-        });
-
-        try {
-            writeRiff();
-            writeFmt();
-        } catch (IOException ex) {
-            throw new PCM2WAVException("Failed to generate header.", ex);
+    /**
+     * Sets the amount of bytes that will be fed. The wave format requires the total size to be
+     * specified in the file. If you don't provide the total size, then a number will be set
+     * in its place. Most software will deal with this just fine. Android's MediaPlayer is not one
+     * of them, though.
+     *
+     * You must call this before you provide samples.
+     * @param size
+     */
+    public void expectSize(int size) {
+        if (prefixWritten) {
+            throw new PCM2WAVException("You can no longer set data size. The chunk sizes have already been written to the stream.");
         }
+
+        dataChunkSize = size;
     }
 
     /**
@@ -95,7 +101,16 @@ public class PCM2WAV implements AutoCloseable {
      * @param samples
      */
     public void feed(byte[] samples) {
-        samplesBuffer.add(samples);
+        if (!prefixWritten) {
+            writePrefix();
+            prefixWritten = true;
+        }
+
+        try {
+            writeData(samples);
+        } catch (IOException ex) {
+            throw new PCM2WAVException("Failed to write data.", ex);
+        }
     }
 
     /**
@@ -103,16 +118,9 @@ public class PCM2WAV implements AutoCloseable {
      */
     @Override
     public void close() {
-        if (writingData) {
-            byte[] remaining = samplesBuffer.copy();
-
-            if (remaining.length > 0) {
-                try {
-                    writeData(remaining);
-                } catch (IOException ex) {
-                    throw new PCM2WAVException("Failed to write data.", ex);
-                }
-            }
+        if (!prefixWritten) {
+            writePrefix();
+            prefixWritten = true;
         }
     }
 
@@ -157,6 +165,31 @@ public class PCM2WAV implements AutoCloseable {
     }
 
     /**
+     * Writes RIFF, FMT and part of the DATA chunk.
+     */
+    private void writePrefix() {
+        try {
+            writeRiff();
+            writeFmt();
+
+            // Part of the data chunk.
+            // Subchunk2ID.
+            writer.write(new byte[] { 'd', 'a', 't', 'a' });
+
+            // Subchunk2Size. The number of bytes that follow.
+            if (dataChunkSize != null) {
+                dataWriter.writeInt(Integer.reverseBytes(dataChunkSize));
+            } else {
+                // Since we're constructing the file as we go, we cannot guess the size so I put a
+                // really huge value, just like what I saw the arecord command doing.
+                dataWriter.writeInt(Integer.reverseBytes(UNKNOWN_DATA_SIZE));
+            }
+        } catch (IOException ex) {
+            throw new PCM2WAVException("Failed to generate header.", ex);
+        }
+    }
+
+    /**
      * Writes the part that identifies the file format.
      * @throws IOException
      */
@@ -164,10 +197,14 @@ public class PCM2WAV implements AutoCloseable {
         // ChunkID. Always RIFF.
         writer.write(new byte[] { 'R', 'I', 'F', 'F' });
 
-        // ChunkSize. The number of bytes that follow. Since we're constructing the file as we go,
-        // we cannot guess the final size so I put a really huge value, just like I saw the arecord
-        // command doing
-        dataWriter.writeInt(Integer.reverseBytes(0x80000000));
+        // ChunkSize. The number of bytes that follow.
+        if (dataChunkSize != null) {
+            dataWriter.writeInt(Integer.reverseBytes(dataChunkSize + OFFSET_TO_DATA));
+        } else {
+            // Since we're constructing the file as we go, we cannot guess the final size so
+            // I put a really huge value, just like I saw the arecord command doing
+            dataWriter.writeInt(Integer.reverseBytes(UNKNOWN_DATA_SIZE + OFFSET_TO_DATA));
+        }
 
         // Format. Always WAVE.
         writer.write(new byte[] { 'W', 'A', 'V', 'E' });
@@ -208,18 +245,6 @@ public class PCM2WAV implements AutoCloseable {
      * @throws IOException
      */
     private void writeData(byte[] samples) throws IOException {
-        if (!writingData) {
-            // Subchunk2ID.
-            writer.write(new byte[] { 'd', 'a', 't', 'a' });
-
-            // Subchunk2Size. The number of bytes that follow. Since we're constructing the file as
-            // we go, we cannot guess the size so I put a really huge value, just like I saw the
-            // arecord command doing
-            dataWriter.writeInt(Integer.reverseBytes(0x80000000));
-
-            writingData = true;
-        }
-
         writer.write(samples);
     }
 }
