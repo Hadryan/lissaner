@@ -8,47 +8,68 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="@dimen/windowPadding">
-
-        <TextView
-            android:id="@+id/label_record"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/record_start" />
-
-        <com.daniel_araujo.always_recording_microphone.android.ui.RecButtonView
-            android:id="@+id/button_record"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginTop="@dimen/separator" />
-
-        <com.daniel_araujo.always_recording_microphone.android.ui.TextCounter
-            android:id="@+id/accumulated_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/separator" />
+        android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/controls"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/separator"
-            android:orientation="horizontal">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="@dimen/windowPadding"
+            android:orientation="vertical">
 
-            <Button
-                android:id="@+id/button_save"
+            <TextView
+                android:id="@+id/label_record"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Save" />
+                android:text="@string/record_start" />
 
-            <Button
-                android:id="@+id/button_discard"
+            <com.daniel_araujo.always_recording_microphone.android.ui.RecButtonView
+                android:id="@+id/button_record"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="@dimen/separator" />
+
+            <com.daniel_araujo.always_recording_microphone.android.ui.TextCounter
+                android:id="@+id/accumulated_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Discard" />
+                android:layout_marginTop="@dimen/separator" />
+
+            <LinearLayout
+                android:id="@+id/controls"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/separator"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_save"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Save" />
+
+                <Button
+                    android:id="@+id/button_discard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Discard" />
+            </LinearLayout>
+
         </LinearLayout>
+
+        <com.daniel_araujo.always_recording_microphone.android.ui.WellView
+            android:id="@+id/wellView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.daniel_araujo.always_recording_microphone.android.ui.MarkdownView
+                android:id="@+id/textView"
+                style="@style/Note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/recording_description" />
+
+        </com.daniel_araujo.always_recording_microphone.android.ui.WellView>
 
     </LinearLayout>
 </ScrollView>

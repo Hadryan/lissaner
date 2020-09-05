@@ -25,9 +25,8 @@ class MainActivity : Activity() {
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = when (position) {
-                0 -> getText(R.string.main_activity_tab_info)
-                1 -> getText(R.string.main_activity_tab_record)
-                2 -> getText(R.string.main_activity_tab_files)
+                0 -> getText(R.string.main_activity_tab_record)
+                1 -> getText(R.string.main_activity_tab_files)
                 else -> "Tab"
             }
         }.attach()
@@ -36,13 +35,12 @@ class MainActivity : Activity() {
 
 class MainActivityFragmentStateAdapter(fragment: FragmentActivity) : FragmentStateAdapter(fragment) {
 
-    override fun getItemCount(): Int = 3
+    override fun getItemCount(): Int = 2
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> InfoFragment()
-            1 -> RecordFragment()
-            2 -> FilesFragment()
+            0 -> RecordFragment()
+            1 -> FilesFragment()
             else -> Fragment()
         }
     }
