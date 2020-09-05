@@ -1,5 +1,6 @@
 package com.daniel_araujo.always_recording_microphone.files
 
+import java.io.FileDescriptor
 import java.io.OutputStream
 
 interface RecordingFiles {
@@ -25,7 +26,12 @@ interface RecordingFiles {
     fun size(name: String): Long?
 
     /**
-     * Retrieves duration. Returns null if file does not exist or if duration can't be read.
+     * Retrieves duration in milliseconds. Returns null if file does not exist or if duration can't be read.
      */
-    fun duration(name: String): Int?
+    fun duration(name: String): Long?
+
+    /**
+     * Opens a file. Returns null if file does not exist.
+     */
+    fun open(name: String): FileDescriptor?
 }

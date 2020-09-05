@@ -39,7 +39,7 @@
         app:srcCompat="@drawable/ic_audio_fastforward" />
 
     <SeekBar
-        android:id="@+id/progressBar"
+        android:id="@+id/seek_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/separator"

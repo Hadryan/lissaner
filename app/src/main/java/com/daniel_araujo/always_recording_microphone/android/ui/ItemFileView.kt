@@ -78,14 +78,20 @@ class ItemFileView : FrameLayout {
 
             if (it.hasValue(R.styleable.ItemFileView_fileTimestamp)) {
                 fileTimestamp = it.getInteger(R.styleable.ItemFileView_fileTimestamp, 0).toLong()
+            } else {
+                fileTimestamp = null
             }
 
             if (it.hasValue(R.styleable.ItemFileView_fileSize)) {
                 fileSize = it.getInteger(R.styleable.ItemFileView_fileSize, 0).toLong()
+            } else {
+                fileSize = null
             }
 
             if (it.hasValue(R.styleable.ItemFileView_duration)) {
                 duration = it.getInteger(R.styleable.ItemFileView_duration, 0)
+            } else {
+                duration = null
             }
         }
     }

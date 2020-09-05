@@ -6,6 +6,7 @@
     <color name="colorAccent">#DA872E</color>
 
     <color name="textColor">#ffffff</color>
+    <color name="disabledTextColor">#4DFFFFFF</color>
     <color name="well">#111111</color>
     <color name="background">#222222</color>
 

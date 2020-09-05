@@ -5,6 +5,7 @@ import android.media.MediaMetadataRetriever
 import android.util.Log
 import com.daniel_araujo.always_recording_microphone.files.RecordingFiles
 import java.io.File
+import java.io.FileDescriptor
 import java.io.OutputStream
 import java.lang.Exception
 
@@ -60,11 +61,11 @@ class AndroidRecordingFiles : RecordingFiles {
         }
     }
 
-    override fun duration(name: String): Int? {
+    override fun duration(name: String): Long? {
         val file = File(recordingsDir, name)
 
         try {
-            file.outputStream().use {
+            file.inputStream().use {
                 mmr.setDataSource(it.fd)
             }
         } catch (e: Exception) {
@@ -79,6 +80,16 @@ class AndroidRecordingFiles : RecordingFiles {
             return null
         }
 
-        return Integer.parseInt(durationStr);
+        return durationStr.toLong();
+    }
+
+    override fun open(name: String): FileDescriptor? {
+        val file = File(recordingsDir, name)
+
+        if (file.exists()) {
+            return file.inputStream().fd
+        } else {
+            return null
+        }
     }
 }

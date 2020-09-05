@@ -33,11 +33,11 @@
 
     <!-- Default style for buttons. -->
     <style name="AppTheme.Button" parent="Widget.AppCompat.Button">
-        <item name="android:textColor">@color/textColor</item>
+        <item name="android:textColor">@color/main_text_color</item>
         <item name="android:backgroundTint">@color/colorPrimary</item>
     </style>
     <style name="AppTheme.ImageButton" parent="Widget.AppCompat.ImageButton">
-        <item name="android:textColor">@color/textColor</item>
+        <item name="android:textColor">@color/main_text_color</item>
         <item name="android:backgroundTint">@color/colorPrimary</item>
     </style>
 
