@@ -82,13 +82,9 @@ class FilesFragment : Fragment() {
         fileList.adapter = FileListAdapter(ourActivity.ourApplication.recordingFiles.list())
         fileList.setOnItemClickListener { listView: AdapterView<*>, view: View, position: Int, id: Long ->
             val realAdapter = fileList.adapter as FileListAdapter
-            val realView = view as ItemFileView
 
             val selectedFile = realAdapter.files[position]
             audioPlayer.load(ourActivity.ourApplication.recordingFiles.open(selectedFile)!!)
-
-            // Now we know duration.
-            //realView.duration = mediaPlayer!!.duration / 1000
         }
     }
 }
