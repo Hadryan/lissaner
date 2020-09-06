@@ -40,4 +40,5 @@
     <string name="rec_button_view_stop">STOP</string>
 
     <string name="audio_player_error_loading">Unable to play this file.</string>
+    <string name="item_remove_permanently">Delete</string>
 </resources>

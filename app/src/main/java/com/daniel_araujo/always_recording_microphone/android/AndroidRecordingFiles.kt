@@ -92,4 +92,12 @@ class AndroidRecordingFiles : RecordingFiles {
             return null
         }
     }
+
+    override fun delete(name: String) {
+        val file = File(recordingsDir, name)
+
+        if (file.exists()) {
+            file.delete()
+        }
+    }
 }

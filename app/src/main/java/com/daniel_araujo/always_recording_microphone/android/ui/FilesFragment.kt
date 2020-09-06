@@ -1,6 +1,5 @@
 package com.daniel_araujo.always_recording_microphone.android.ui
 
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,9 +7,8 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.BaseAdapter
 import android.widget.ListView
-import androidx.core.net.toUri
 import com.daniel_araujo.always_recording_microphone.R
-import java.io.File
+import java.util.ArrayList
 
 
 class FilesFragment : Fragment() {
@@ -25,10 +23,10 @@ class FilesFragment : Fragment() {
     private lateinit var audioPlayer: AudioPlayerView
 
     inner class FileListAdapter : BaseAdapter {
-        val files: List<String>
+        val files: ArrayList<String>
 
         constructor(files: List<String>) {
-            this.files = files.sorted().reversed()
+            this.files = ArrayList(files.sorted().reversed())
         }
 
         override fun getView(position: Int, convertView: View?, container: ViewGroup): View? {
@@ -41,6 +39,10 @@ class FilesFragment : Fragment() {
             view.fileTimestamp = ourActivity.ourApplication.recordingFiles.timestamp(fileName)
             view.fileSize = ourActivity.ourApplication.recordingFiles.size(fileName)
             view.duration = ourActivity.ourApplication.recordingFiles.duration(fileName)?.div(1000)?.toInt()
+            view.onDeleteListener = {
+                ourActivity.ourApplication.recordingFiles.delete(fileName)
+                removeItem(position)
+            }
 
             return view
         }
@@ -55,6 +57,12 @@ class FilesFragment : Fragment() {
 
         override fun getCount(): Int {
             return files.size
+        }
+
+        private fun removeItem(position: Int) {
+            files.removeAt(position)
+
+            notifyDataSetChanged()
         }
     }
 

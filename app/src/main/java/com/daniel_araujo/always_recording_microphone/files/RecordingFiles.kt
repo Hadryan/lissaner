@@ -34,4 +34,9 @@ interface RecordingFiles {
      * Opens a file. Returns null if file does not exist.
      */
     fun open(name: String): FileDescriptor?
+
+    /**
+     * Deletes file. Does nothing if file does not exist.
+     */
+    fun delete(name: String)
 }

@@ -1,17 +1,16 @@
 package com.daniel_araujo.always_recording_microphone.android.ui
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.drawable.Drawable
-import android.text.TextPaint
 import android.util.AttributeSet
+import android.view.MenuItem
+import android.view.View
 import android.widget.FrameLayout
+import android.widget.ImageButton
 import android.widget.TextView
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.res.use
 import com.daniel_araujo.always_recording_microphone.DateFormatUtils
 import com.daniel_araujo.always_recording_microphone.R
-import java.text.DateFormat
 
 /**
  * TODO: document your custom view class.
@@ -52,6 +51,11 @@ class ItemFileView : FrameLayout {
             field = value
             updateDuration()
         }
+
+    /**
+     * Called when the user requests to permanently delete the file.
+     */
+    var onDeleteListener: (() -> Unit)? = null
 
     constructor(context: Context) : super(context) {
         init(null, 0)
@@ -94,6 +98,10 @@ class ItemFileView : FrameLayout {
                 duration = null
             }
         }
+
+        findViewById<ImageButton>(R.id.more).setOnClickListener(OnClickListener {
+            showPopup(it)
+        })
     }
 
     fun updateFilename() {
@@ -126,5 +134,22 @@ class ItemFileView : FrameLayout {
         } else {
             findViewById<TextView>(R.id.duration).text = ""
         }
+    }
+
+    private fun showPopup(view: View) {
+        val popup = PopupMenu(context, view)
+        popup.inflate(R.menu.item_file_more_menu)
+
+        popup.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item: MenuItem? ->
+            when (item!!.itemId) {
+                R.id.delete -> {
+                    onDeleteListener?.invoke()
+                }
+            }
+
+            false
+        })
+
+        popup.show()
     }
 }
