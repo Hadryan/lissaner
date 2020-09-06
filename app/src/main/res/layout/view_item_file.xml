@@ -7,21 +7,27 @@
 
     <TextView
         android:id="@+id/file_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/separator"
         android:layout_marginTop="@dimen/separator"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:text="file name.wav"
+        app:layout_constraintEnd_toStartOf="@+id/duration"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/file_timestamp"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/separator"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:text="March 3, 13:13"
         android:textSize="8sp"
+        app:layout_constraintEnd_toStartOf="@+id/file_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/file_name" />
 
