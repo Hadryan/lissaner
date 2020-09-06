@@ -130,8 +130,16 @@ public class PCM2WAV implements AutoCloseable {
         }
 
         if (dataChunkSize != null) {
-            if (dataChunkSize.equals(dataReceived)) {
+            if (dataChunkSize != dataReceived) {
                 throw new PCM2WAVException(String.format("Amount of data written does not match expected size (written: %d, expected: %d)", dataReceived, dataChunkSize));
+            }
+
+            if ((dataReceived % 2) != 0) {
+                try {
+                    writer.write(0);
+                } catch (IOException ex) {
+                    throw new PCM2WAVException("Failed to write padding data.", ex);
+                }
             }
         }
     }

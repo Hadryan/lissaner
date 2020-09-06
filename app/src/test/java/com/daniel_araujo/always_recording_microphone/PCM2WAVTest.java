@@ -248,4 +248,25 @@ public class PCM2WAVTest {
             p2w.feed(generateSilence(4, channels, sampleRate, bitsPerSample));
         }
     }
+
+    @Test
+    public void close_addsPaddingByteIfDataChunkLengthIsNotEven() throws IOException {
+        PipedOutputStream stream = new PipedOutputStream();
+        PipedInputStream input = new PipedInputStream(stream, 2000000);
+        DataInputStream dataInput = new DataInputStream(input);
+
+        final int sampleRate = 8000;
+        final int bitsPerSample = 8;
+        final int channels = 1;
+
+        try (PCM2WAV p2w = new PCM2WAV(stream, channels, sampleRate, bitsPerSample)) {
+            p2w.expectSize(1);
+            p2w.feed(new byte[1]);
+        }
+
+        assertRiffHeader(dataInput, 1 + OFFSET_TO_DATA);
+        assertFmtChunk(dataInput, channels, sampleRate, bitsPerSample);
+        assertDataChunkWithoutSamples(dataInput, 1);
+        assertEquals(2, input.available());
+    }
 }
