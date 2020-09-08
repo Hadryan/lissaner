@@ -9,6 +9,4 @@
     <color name="disabledTextColor">#4DFFFFFF</color>
     <color name="well">#111111</color>
     <color name="background">#222222</color>
-
-    <color name="colorRecord">#C70000</color>
 </resources>

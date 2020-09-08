@@ -60,5 +60,4 @@
     <style name="Note" parent="Widget.AppCompat.TextView">
         <item name="android:lineSpacingExtra">2dp</item>
     </style>
-
 </resources>

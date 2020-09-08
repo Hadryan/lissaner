@@ -1,55 +1,14 @@
 package com.daniel_araujo.always_recording_microphone.android.ui
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Rect
 import android.util.AttributeSet
-import android.view.View
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.ColorUtils
+import android.widget.Button
+import android.widget.FrameLayout
 import com.daniel_araujo.always_recording_microphone.R
+import kotlinx.android.synthetic.main.activity_dev_style_demo.view.*
 
-
-/**
- * TODO: document your custom view class.
- */
-class RecButtonView : View {
-    /**
-     * Values that are cached so as to not slow down the onDraw method.
-     */
-    private val cache = object {
-        var centerX = 0f
-        var centerY = 0f
-        var radius = 0f
-        var radiusBorder = 0f
-        var textStartCenter = 0f
-        var textStopCenter = 0f
-    }
-
-    /**
-     * Objects used for drawing.
-     */
-    private val drawTools = object {
-        lateinit var borderPaint: Paint
-
-        lateinit var bgPaint: Paint
-
-        lateinit var activatePaint: Paint
-
-        lateinit var textPaint: Paint
-    }
-
-    /**
-     * Text for start.
-     */
-    val textStart = "START"
-
-    /**
-     * Text for stop
-     */
-    val textStop = "STOP"
+class RecButtonView : FrameLayout {
+    private lateinit var buttonView: Button
 
     constructor(context: Context) : super(context) {
         init(null, 0)
@@ -68,68 +27,21 @@ class RecButtonView : View {
     }
 
     private fun init(attrs: AttributeSet?, defStyle: Int) {
-        val bgColor = ContextCompat.getColor(context, R.color.colorRecord)
+        buttonView = Button(context)
+        buttonView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+        buttonView.setBackgroundResource(R.drawable.view_rec_button_background);
 
-        drawTools.bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            setStyle(Paint.Style.FILL);
-            setColor(bgColor);
+        buttonView.setOnClickListener {
+            isActivated = !isActivated
+            callOnClick()
         }
 
-        drawTools.activatePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            setColor(ColorUtils.blendARGB(bgColor, Color.BLACK, 0.4f))
-            setStyle(Paint.Style.FILL);
-        }
-
-        drawTools.borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            setColor(ColorUtils.blendARGB(bgColor, Color.BLACK, 0.2f))
-            setStyle(Paint.Style.STROKE)
-            strokeWidth = 20f
-        }
-
-        drawTools.textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            val isBgBright = ColorUtils.calculateLuminance(bgColor) > 0.5
-            val textColor = if (isBgBright) Color.BLACK else Color.WHITE
-            color = textColor
-            textAlign = Paint.Align.CENTER
-        }
+        addView(buttonView)
     }
 
-    override fun onDraw(canvas: Canvas) {
-        // The inside.
-        if (isActivated) {
-            canvas.drawCircle(cache.centerX, cache.centerY, cache.radius, drawTools.activatePaint)
-        } else {
-            canvas.drawCircle(cache.centerX, cache.centerY, cache.radius, drawTools.bgPaint)
-        }
-
-        // The perimeter.
-        canvas.drawCircle(cache.centerX, cache.centerY, cache.radiusBorder, drawTools.borderPaint)
-
-        // The text.
-        if (isActivated) {
-            canvas.drawText(textStop, cache.centerX, cache.centerY - cache.textStopCenter, drawTools.textPaint)
-        } else {
-            canvas.drawText(textStart, cache.centerX, cache.centerY - cache.textStartCenter, drawTools.textPaint)
-        }
-    }
-
-    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        super.onSizeChanged(w, h, oldw, oldh)
-
-        cache.centerX = w.toFloat() / 2;
-        cache.centerY = h.toFloat() / 2;
-        cache.radius = w.toFloat() / 2;
-        cache.radiusBorder - drawTools.borderPaint.strokeWidth / 2
-
-        drawTools.textPaint.textSize = (cache.centerY * 0.6).toFloat()
-
-        val textBounds = Rect()
-
-        drawTools.textPaint.getTextBounds(textStart, 0, textStart.length, textBounds);
-        cache.textStartCenter = textBounds.exactCenterY()
-
-        drawTools.textPaint.getTextBounds(textStop, 0, textStop.length, textBounds);
-        cache.textStopCenter = textBounds.exactCenterY()
+    override fun setActivated(activated: Boolean) {
+        super.setActivated(activated)
+        buttonView.isActivated = activated
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -151,6 +63,10 @@ class RecButtonView : View {
             height = width
         }
 
-        setMeasuredDimension(width, height)
+        // Gotta call the super method for the FrameLayout to work. Otherwise child views are not
+        // rendered.
+        val newWidthMeasureSpec = MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY);
+        val newHeightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+        super.onMeasure(newWidthMeasureSpec, newHeightMeasureSpec);
     }
 }
