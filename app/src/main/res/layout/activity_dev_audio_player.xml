@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".android.ui.dev.DevAudioPlayerActivity">
 
-    <com.daniel_araujo.always_recording_microphone.android.ui.AudioPlayerView
+    <com.daniel_araujo.lissaner.android.ui.AudioPlayerView
         android:id="@+id/audioPlayerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

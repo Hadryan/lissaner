@@ -71,22 +71,22 @@
             android:ems="10"
             android:inputType="textEmailAddress" />
 
-        <com.daniel_araujo.always_recording_microphone.android.ui.RecButtonView
+        <com.daniel_araujo.lissaner.android.ui.RecButtonView
             android:id="@+id/recButtonView"
             android:layout_width="100dp"
             android:layout_height="100dp" />
 
-        <com.daniel_araujo.always_recording_microphone.android.ui.TextCounter
+        <com.daniel_araujo.lissaner.android.ui.TextCounter
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <com.daniel_araujo.always_recording_microphone.android.ui.ItemFileView
+        <com.daniel_araujo.lissaner.android.ui.ItemFileView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:fileName="filename.wav"
             app:fileTimestamp="234222222" />
 
-        <com.daniel_araujo.always_recording_microphone.android.ui.WellView
+        <com.daniel_araujo.lissaner.android.ui.WellView
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -95,9 +95,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="this is text inside a well" />
-        </com.daniel_araujo.always_recording_microphone.android.ui.WellView>
+        </com.daniel_araujo.lissaner.android.ui.WellView>
 
-        <com.daniel_araujo.always_recording_microphone.android.ui.MarkdownView
+        <com.daniel_araujo.lissaner.android.ui.MarkdownView
             android:id="@+id/markdownView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

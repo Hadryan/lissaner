@@ -11,7 +11,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.daniel_araujo.always_recording_microphone"
+        applicationId "com.daniel_araujo.lissaner"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1

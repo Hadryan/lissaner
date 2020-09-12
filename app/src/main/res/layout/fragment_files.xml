@@ -14,7 +14,7 @@
 
     </ListView>
 
-    <com.daniel_araujo.always_recording_microphone.android.ui.AudioPlayerView
+    <com.daniel_araujo.lissaner.android.ui.AudioPlayerView
         android:id="@+id/audio_player"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

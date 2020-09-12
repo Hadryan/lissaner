@@ -23,13 +23,13 @@
                 android:layout_height="wrap_content"
                 android:text="@string/record_start" />
 
-            <com.daniel_araujo.always_recording_microphone.android.ui.RecButtonView
+            <com.daniel_araujo.lissaner.android.ui.RecButtonView
                 android:id="@+id/button_record"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_marginTop="@dimen/separator" />
 
-            <com.daniel_araujo.always_recording_microphone.android.ui.TextCounter
+            <com.daniel_araujo.lissaner.android.ui.TextCounter
                 android:id="@+id/accumulated_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -57,19 +57,19 @@
 
         </LinearLayout>
 
-        <com.daniel_araujo.always_recording_microphone.android.ui.WellView
+        <com.daniel_araujo.lissaner.android.ui.WellView
             android:id="@+id/wellView"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.daniel_araujo.always_recording_microphone.android.ui.MarkdownView
+            <com.daniel_araujo.lissaner.android.ui.MarkdownView
                 android:id="@+id/textView"
                 style="@style/Note"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/recording_description" />
 
-        </com.daniel_araujo.always_recording_microphone.android.ui.WellView>
+        </com.daniel_araujo.lissaner.android.ui.WellView>
 
     </LinearLayout>
 </ScrollView>

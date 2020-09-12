@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Always Recording Microphone</string>
+    <string name="app_name">Lissaner</string>
 
     <string name="recording_description">
         #### What is this?\n
@@ -25,7 +25,7 @@
         \n
         To get the source code, visit:\n
         \n
-        [https://github.com/daniel-araujo/always-recording-microphone](https://github.com/daniel-araujo/always-recording-microphone)
+        [https://github.com/daniel-araujo/lissan](https://github.com/daniel-araujo/lissan)
     </string>
 
     <string name="main_activity_tab_info">Info</string>
