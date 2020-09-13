@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.daniel_araujo.lissaner.ByteFormatUtils
 import com.daniel_araujo.lissaner.android.AutoServiceBind
 import com.daniel_araujo.lissaner.R
 import com.daniel_araujo.lissaner.RecordingManager
@@ -16,6 +17,7 @@ import com.karumi.dexter.Dexter
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.single.BasePermissionListener
 import java.io.IOException
+import java.util.*
 
 class RecordFragment : Fragment() {
     /**
@@ -43,6 +45,16 @@ class RecordFragment : Fragment() {
      */
     lateinit var accumulatedTime: TextCounter
 
+    /**
+     * Shows available memory.
+     */
+    lateinit var memoryInfo: TextView
+
+    /**
+     * The timer that queries memory info.
+     */
+    var memoryTimer: Timer? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -68,6 +80,7 @@ class RecordFragment : Fragment() {
         }
 
         accumulatedTime = view.findViewById<TextCounter>(R.id.accumulated_time)
+        memoryInfo = view.findViewById<TextView>(R.id.memory_info)
 
         controls = view.findViewById<LinearLayout>(R.id.controls)
         // They are supposed to be invisible by default but I leave them visible so I can see them
@@ -173,7 +186,7 @@ class RecordFragment : Fragment() {
         controls.visibility = if (recording.accumulated() > 0) View.VISIBLE else View.GONE
 
         labelRecord.text = if (recording.isRecording()) {
-             context!!.getText(R.string.record_stop)
+            context!!.getText(R.string.record_stop)
         } else {
             if (recording.accumulated() > 0) {
                 context!!.getText(R.string.record_continue)
@@ -181,5 +194,33 @@ class RecordFragment : Fragment() {
                 context!!.getText(R.string.record_start)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        memoryTimer = Timer("MemoryTimer")
+        memoryTimer!!.scheduleAtFixedRate(object : TimerTask() {
+            override fun run() {
+                val runtime = Runtime.getRuntime()
+
+                val total = runtime.maxMemory()
+                val used = runtime.totalMemory() - runtime.freeMemory()
+
+                activity!!.runOnUiThread {
+                    memoryInfo.text =
+                        ByteFormatUtils.shortSize(context!!, used) +
+                                '/' +
+                                ByteFormatUtils.shortSize(context!!, total)
+                }
+            }
+        }, 0, 5000)
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        memoryTimer!!.cancel()
+        memoryTimer = null
     }
 }

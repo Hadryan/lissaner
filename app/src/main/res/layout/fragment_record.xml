@@ -55,6 +55,26 @@
                     android:text="Discard" />
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/separator">
+
+                <TextView
+                    android:id="@+id/memory_info_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Memory:" />
+
+                <TextView
+                    android:id="@+id/memory_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="-" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <com.daniel_araujo.lissaner.android.ui.WellView

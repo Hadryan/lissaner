@@ -9,6 +9,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.res.use
+import com.daniel_araujo.lissaner.ByteFormatUtils
 import com.daniel_araujo.lissaner.DateFormatUtils
 import com.daniel_araujo.lissaner.R
 
@@ -122,7 +123,7 @@ class ItemFileView : FrameLayout {
 
     fun updateFileSize() {
         if (fileSize != null) {
-            findViewById<TextView>(R.id.file_size).text = android.text.format.Formatter.formatShortFileSize(context, fileSize!!)
+            findViewById<TextView>(R.id.file_size).text = ByteFormatUtils.shortSize(context, fileSize!!)
         } else {
             findViewById<TextView>(R.id.file_size).text = ""
         }
