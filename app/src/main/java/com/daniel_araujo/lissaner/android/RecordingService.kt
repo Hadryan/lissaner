@@ -27,14 +27,9 @@ class RecordingService : Service() {
      */
     lateinit var recording : RecordingManager
 
-    var onAccumulateListener: (() -> Unit)?
-        get() = recording.onAccumulateListener
-        set(listener) { recording.onAccumulateListener = listener }
-
     override fun onCreate() {
         recording =
-            RecordingManager(object :
-                RecordingManagerInt {
+            RecordingManager(object : RecordingManagerInt {
                 override fun createSession(config: RecordingSessionConfig): RecordingSession {
                     return AndroidRecordingSession(
                         config

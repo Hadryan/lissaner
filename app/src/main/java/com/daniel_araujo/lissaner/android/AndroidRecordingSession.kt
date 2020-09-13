@@ -113,6 +113,7 @@ class AndroidRecordingSession : RecordingSession, AutoCloseable {
     }
 
     override fun close() {
+        recorder.stop()
         recorder.release()
     }
 }

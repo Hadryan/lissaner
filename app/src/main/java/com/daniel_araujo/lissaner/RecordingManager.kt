@@ -130,6 +130,13 @@ class RecordingManager : AutoCloseable {
 
     override fun close() {
         recordingSession?.close()
+
+        storage = null
+
+        onRecordError = null
+        onRecordStart = null
+        onRecordStop = null
+        onAccumulateListener = null
     }
 }
 

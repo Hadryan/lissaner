@@ -8,10 +8,11 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import com.daniel_araujo.lissaner.ByteFormatUtils
-import com.daniel_araujo.lissaner.android.AutoServiceBind
 import com.daniel_araujo.lissaner.R
 import com.daniel_araujo.lissaner.RecordingManager
+import com.daniel_araujo.lissaner.android.AutoServiceBind
 import com.daniel_araujo.lissaner.android.RecordingService
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.listener.PermissionGrantedResponse
@@ -23,7 +24,7 @@ class RecordFragment : Fragment() {
     /**
      * We only have a service so that we can record with the app closed.
      */
-    lateinit var recordingService: AutoServiceBind<RecordingService>
+    var recordingService: AutoServiceBind<RecordingService>? = null
 
     /**
      * The button that starts and stops recording.
@@ -65,20 +66,6 @@ class RecordFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recordingService =
-            AutoServiceBind(
-                RecordingService::class,
-                activity!!
-            )
-
-        recordingService.onConnectListener = { service ->
-            service.onAccumulateListener = {
-                accumulatedTime.time = service.recording.accumulated()
-
-                updateControls(service.recording)
-            }
-        }
-
         accumulatedTime = view.findViewById<TextCounter>(R.id.accumulated_time)
         memoryInfo = view.findViewById<TextView>(R.id.memory_info)
 
@@ -91,13 +78,13 @@ class RecordFragment : Fragment() {
 
         buttonRecord = view.findViewById<RecButtonView>(R.id.button_record).also {
             it.setOnClickListener {
-                toggleRecordingService()
+                toggleRecording()
             }
         }
 
         view.findViewById<Button>(R.id.button_save).also {
             it.setOnClickListener {
-                saveRecordingService()
+                saveRecording()
             }
         }
 
@@ -106,37 +93,38 @@ class RecordFragment : Fragment() {
                 discardRecording()
             }
         }
-
-        recordingService.run {
-            // Synchronize recording button state.
-            buttonRecord.isActivated = it.recording.isRecording();
-
-            // Synchronize accumulated time.
-            accumulatedTime.time = it.recording.accumulated()
-
-            updateControls(it.recording)
-        }
     }
 
-    private fun toggleRecordingService() {
-        recordingService.run {
+    private fun toggleRecording() {
+        recordingService?.run {
             if (!it.recording.isRecording()) {
-                startRecordingService()
+                startRecording()
             } else {
-                stopRecordingService()
+                stopRecording()
             }
         }
     }
 
-    private fun startRecordingService() {
-        Log.v(javaClass.simpleName, "startRecordingService")
+    private fun startRecording() {
+        Log.v(javaClass.simpleName, "startRecording")
 
         Dexter.withContext(activity)
             .withPermission(android.Manifest.permission.RECORD_AUDIO)
             .withListener(object : BasePermissionListener() {
                 override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
-                    recordingService.run {
-                        it.recording.startRecording()
+                    recordingService?.run {
+                        try {
+                            it.recording.startRecording()
+                        } catch (e: OutOfMemoryError) {
+                            // We may have some left to show an error message.
+                            AlertDialog.Builder(context!!)
+                                .setTitle("Unable to record")
+                                .setMessage("Out of memory.")
+                                .setNeutralButton(android.R.string.ok) { dialog, which -> dialog.cancel() }
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .show()
+                        }
+
                         updateControls(it.recording)
                     }
                 }
@@ -144,19 +132,19 @@ class RecordFragment : Fragment() {
             .check();
     }
 
-    private fun stopRecordingService() {
-        Log.v(javaClass.simpleName, "stopRecordingService")
+    private fun stopRecording() {
+        Log.v(javaClass.simpleName, "stopRecording")
 
-        recordingService.run {
+        recordingService?.run {
             it.recording.stopRecording()
             updateControls(it.recording)
         }
     }
 
-    private fun saveRecordingService() {
-        Log.v(javaClass.simpleName, "saveRecordingService")
+    private fun saveRecording() {
+        Log.v(javaClass.simpleName, "saveRecording")
 
-        recordingService.run { service ->
+        recordingService?.run { service ->
             try {
                 val name = System.currentTimeMillis().toString() + ".wav"
                 val stream = ourActivity.ourApplication.recordingFiles.create(name);
@@ -167,15 +155,15 @@ class RecordFragment : Fragment() {
                     service.recording.saveRecording(stream)
                 }
             } catch (e: IOException) {
-                Log.e("Exception", "File write failed.", e)
+                Log.e(javaClass.simpleName, "File write failed.", e)
             }
         }
     }
 
     private fun discardRecording() {
-        Log.v(javaClass.simpleName, "saveRecordingService")
+        Log.v(javaClass.simpleName, "discardRecording")
 
-        recordingService.run {
+        recordingService?.run {
             it.recording.discardRecording()
         }
     }
@@ -199,6 +187,27 @@ class RecordFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
+        recordingService = AutoServiceBind(
+            RecordingService::class,
+            activity!!.application
+        )
+
+        recordingService?.run {
+            it.recording.onAccumulateListener = {
+                accumulatedTime.time = it.recording.accumulated()
+
+                updateControls(it.recording)
+            }
+
+            // Synchronize recording button state.
+            buttonRecord.isActivated = it.recording.isRecording();
+
+            // Synchronize accumulated time.
+            accumulatedTime.time = it.recording.accumulated()
+
+            updateControls(it.recording)
+        }
+
         memoryTimer = Timer("MemoryTimer")
         memoryTimer!!.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
@@ -219,6 +228,10 @@ class RecordFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
+
+        recordingService?.run {
+            it.recording.onAccumulateListener = null
+        }
 
         memoryTimer!!.cancel()
         memoryTimer = null
