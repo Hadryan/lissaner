@@ -1,6 +1,8 @@
 package com.daniel_araujo.lissaner.android.ui
 
 import android.os.Bundle
+import android.os.Environment
+import android.os.StatFs
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -52,9 +54,14 @@ class RecordFragment : Fragment() {
     lateinit var memoryInfo: TextView
 
     /**
+     * Shows available storage space.
+     */
+    lateinit var storageInfo: TextView
+
+    /**
      * The timer that queries memory info.
      */
-    var memoryTimer: Timer? = null
+    var systemStatusTimer: Timer? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,6 +75,7 @@ class RecordFragment : Fragment() {
 
         accumulatedTime = view.findViewById<TextCounter>(R.id.accumulated_time)
         memoryInfo = view.findViewById<TextView>(R.id.memory_info)
+        storageInfo = view.findViewById<TextView>(R.id.storage_info)
 
         controls = view.findViewById<LinearLayout>(R.id.controls)
         // They are supposed to be invisible by default but I leave them visible so I can see them
@@ -208,19 +216,36 @@ class RecordFragment : Fragment() {
             updateControls(it.recording)
         }
 
-        memoryTimer = Timer("MemoryTimer")
-        memoryTimer!!.scheduleAtFixedRate(object : TimerTask() {
+        systemStatusTimer = Timer("SystemStatusTimer")
+        systemStatusTimer!!.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
-                val runtime = Runtime.getRuntime()
+                // Memory.
+                run {
+                    val runtime = Runtime.getRuntime()
 
-                val total = runtime.maxMemory()
-                val used = runtime.totalMemory() - runtime.freeMemory()
+                    val total = runtime.maxMemory()
+                    val used = runtime.totalMemory() - runtime.freeMemory()
 
-                activity!!.runOnUiThread {
-                    memoryInfo.text =
-                        ByteFormatUtils.shortSize(context!!, used) +
+                    activity!!.runOnUiThread {
+                        memoryInfo.text =
+                            ByteFormatUtils.shortSize(context!!, used) +
+                                    '/' +
+                                    ByteFormatUtils.shortSize(context!!, total)
+                    }
+                }
+
+                // Storage.
+                run {
+                    val stat = StatFs(Environment.getExternalStorageDirectory().getPath())
+
+                    val bytesAvailable = stat.availableBytes
+                    val bytesTotal = stat.totalBytes
+
+                    activity!!.runOnUiThread {
+                        storageInfo.text = ByteFormatUtils.shortSize(context!!, bytesAvailable) +
                                 '/' +
-                                ByteFormatUtils.shortSize(context!!, total)
+                                ByteFormatUtils.shortSize(context!!, bytesTotal)
+                    }
                 }
             }
         }, 0, 5000)
@@ -233,7 +258,7 @@ class RecordFragment : Fragment() {
             it.recording.onAccumulateListener = null
         }
 
-        memoryTimer!!.cancel()
-        memoryTimer = null
+        systemStatusTimer!!.cancel()
+        systemStatusTimer = null
     }
 }
