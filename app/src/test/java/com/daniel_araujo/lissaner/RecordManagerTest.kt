@@ -248,7 +248,7 @@ class RecordManagerTest {
     }
 
     @Test
-    fun savesRecordingWhileSessionIsStillActive() {
+    fun saveRecording_whileSessionIsStillActive() {
         lateinit var session: RecordingSessionSilence
 
         val recorder = RecordingManager(object: RecordingManagerInt {
@@ -280,7 +280,7 @@ class RecordManagerTest {
     }
 
     @Test
-    fun savingDoesNotInterruptRecording() {
+    fun saveRecording_doesNotInterruptRecording() {
         lateinit var session: RecordingSessionSilence
 
         val recorder = RecordingManager(object: RecordingManagerInt {

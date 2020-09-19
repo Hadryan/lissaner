@@ -30,15 +30,16 @@ class PureMemoryStorage : Storage {
         return result
     }
 
-    override fun move(): ByteArray {
-        val result = ByteArray(buf.size)
-
-        buf.pop(result)
-
-        return result
+    override fun move(cb: (ByteBuffer) -> Unit) {
+        buf.peek(cb)
+        buf.clear()
     }
 
     override fun size(): Int {
         return buf.size
+    }
+
+    override fun clear() {
+        buf.clear()
     }
 }

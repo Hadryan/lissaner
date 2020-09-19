@@ -220,6 +220,76 @@ class ByteRingBufferTest {
     }
 
     @Test
+    fun peek_cb_callsFunctionIfBufferIsEmpty() {
+        val buffer = ByteRingBuffer(4)
+
+        val calls: ArrayList<Int> = ArrayList()
+
+        buffer.peek {
+            calls.add(it.remaining())
+        }
+
+        assertEquals(1, calls.size)
+        assertEquals(0, calls[0])
+    }
+
+    @Test
+    fun peek_cb_callsFunctionOnceWhenBufferIsContinuous() {
+        val buffer = ByteRingBuffer(4)
+
+        buffer.add(byteArrayOf(1, 2, 3))
+
+        val calls: ArrayList<ByteArray> = ArrayList()
+
+        buffer.peek {
+            val arr = ByteArray(it.remaining())
+            it.get(arr)
+            calls.add(arr)
+        }
+
+        assertEquals(1, calls.size)
+        assertArrayEquals(byteArrayOf(1, 2, 3), calls[0])
+    }
+
+    @Test
+    fun peek_cb_callsFunctionOnceWhenBufferIsContinuousButDoesNotStartAtIndex0() {
+        val buffer = ByteRingBuffer(4)
+
+        buffer.add(byteArrayOf(1, 2, 3))
+        buffer.drop(1)
+
+        val calls: ArrayList<ByteArray> = ArrayList()
+
+        buffer.peek {
+            val arr = ByteArray(it.remaining())
+            it.get(arr)
+            calls.add(arr)
+        }
+
+        assertEquals(1, calls.size)
+        assertArrayEquals(byteArrayOf(2, 3), calls[0])
+    }
+
+    @Test
+    fun peek_cb_callsFunctionTwiceWhenBufferIsPartitioned() {
+        val buffer = ByteRingBuffer(4)
+
+        buffer.add(byteArrayOf(1, 2, 3, 4, 5))
+
+        val calls: ArrayList<ByteArray> = ArrayList()
+
+        buffer.peek {
+            val arr = ByteArray(it.remaining())
+            it.get(arr)
+            calls.add(arr)
+        }
+
+        assertEquals(2, calls.size)
+        assertArrayEquals(byteArrayOf(2, 3, 4), calls[0])
+        assertArrayEquals(byteArrayOf(5), calls[1])
+    }
+
+    @Test
     fun peek_noargs_withPartition_firstPartitionIsNotFilled() {
         // Some math bugs could show up.
         val buffer = ByteRingBuffer(4)
@@ -284,7 +354,7 @@ class ByteRingBufferTest {
     }
 
     @Test
-    fun drop_withoutPartition_firstElement() {
+    fun drop_continuousBuffer_firstElement() {
         // Some math bugs could show up.
         val buffer = ByteRingBuffer(4)
 
@@ -299,7 +369,7 @@ class ByteRingBufferTest {
     }
 
     @Test
-    fun drop_withoutPartition_bufferSize() {
+    fun drop_continuousBuffer_bufferSize() {
         // Some math bugs could show up.
         val buffer = ByteRingBuffer(4)
 
@@ -313,7 +383,7 @@ class ByteRingBufferTest {
     }
 
     @Test
-    fun drop_withPartition_allElementsFromFirstPartition() {
+    fun drop_partitionedBuffer_allElementsFromFirstPartition() {
         // Some math bugs could show up.
         val buffer = ByteRingBuffer(4)
 
@@ -325,6 +395,43 @@ class ByteRingBufferTest {
         val result = ByteArray(2)
         assertEquals(2, buffer.peek(result))
         assertArrayEquals(byteArrayOf(5, 6), result)
+    }
+
+    @Test
+    fun drop_droppingMoreElementsThanItHasDoesNotCrashOrBreakInternalState() {
+        val buffer = ByteRingBuffer(4)
+
+        buffer.add(byteArrayOf(1, 2))
+        buffer.drop(3);
+
+        // There was a bug that set size to -1.
+        assertEquals(0, buffer.size)
+    }
+
+    @Test
+    fun clear_putsBufferInInitialState() {
+        val buffer = ByteRingBuffer(4)
+
+        // Now it becomes partitioned.
+        buffer.add(byteArrayOf(1, 2, 3, 4, 5, 6))
+
+        buffer.clear()
+
+        assertEquals(0, buffer.size)
+
+        // Now we check whether the start position went back to 0.
+        buffer.add(byteArrayOf(1, 2, 3, 4))
+
+        val calls: ArrayList<ByteArray> = ArrayList()
+
+        buffer.peek {
+            val arr = ByteArray(it.remaining())
+            it.get(arr)
+            calls.add(arr)
+        }
+
+        assertEquals(1, calls.size)
+        assertArrayEquals(byteArrayOf(1, 2, 3, 4), calls[0])
     }
 
     @Test

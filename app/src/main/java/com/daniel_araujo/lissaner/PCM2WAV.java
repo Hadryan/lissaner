@@ -3,6 +3,7 @@ package com.daniel_araujo.lissaner;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 
 public class PCM2WAV implements AutoCloseable {
     /**
@@ -107,16 +108,38 @@ public class PCM2WAV implements AutoCloseable {
      * @param samples
      */
     public void feed(byte[] samples) {
+        feed(samples, 0, samples.length);
+    }
+
+    /**
+     * Feeds audio samples.
+     * @param samples
+     * @param index Where to start reading.
+     * @param length How many bytes to read.
+     */
+    public void feed(byte[] samples, int index, int length) {
         if (!prefixWritten) {
             writePrefix();
             prefixWritten = true;
         }
 
         try {
-            writeData(samples);
+            writeData(samples, index, length);
         } catch (IOException ex) {
             throw new PCM2WAVException("Failed to write data.", ex);
         }
+    }
+
+    /**
+     * Feeds audio samples from a byte buffer. It reads from position() until remaining(). It does
+     * not update position().
+     * @param buf
+     * @return
+     */
+    public void feed(ByteBuffer buf) {
+        byte[] arr = buf.array();
+
+        feed(arr, buf.arrayOffset() + buf.position(), buf.remaining());
     }
 
     /**
@@ -262,11 +285,14 @@ public class PCM2WAV implements AutoCloseable {
 
     /**
      * Writes a chunk of audio.
+     * @param samples
+     * @param index
+     * @param length
      * @throws IOException
      */
-    private void writeData(byte[] samples) throws IOException {
-        writer.write(samples);
-        dataReceived += samples.length;
+    private void writeData(byte[] samples, int index, int length) throws IOException {
+        writer.write(samples, index, length);
+        dataReceived += length - index;
     }
 }
 

@@ -146,6 +146,35 @@ class ByteRingBuffer {
     }
 
     /**
+     * The most space efficient method for peeking into the contents of the buffer. The callback
+     * function will be called once if the buffer is continuous or twice if the buffer is
+     * partitioned. The ByteBuffer is valid for as long as the callback runs.
+     */
+    fun peek(cb: (ByteBuffer) -> Unit) {
+        var firstHalfStart = start
+        var firstHalfSize = buffer.size - start
+
+        if (firstHalfSize > size) {
+            // Can't read what's not there.
+            firstHalfSize = size;
+        }
+
+        val first = ByteBuffer.wrap(buffer, firstHalfStart, firstHalfSize)
+        cb(first)
+
+        if (firstHalfSize == size) {
+            // Done.
+            return
+        }
+
+        var secondHalfStart = 0
+        var secondHalfSize = size - firstHalfSize;
+
+        val second = ByteBuffer.wrap(buffer, secondHalfStart, secondHalfSize)
+        cb(second)
+    }
+
+    /**
      * Reads data from the buffer and removes it.
      */
     fun pop(bytes: ByteArray): Int {
@@ -167,11 +196,25 @@ class ByteRingBuffer {
      * Drop elements from the start.
      */
     fun drop(elements: Int) {
-        val newSize = size - elements
+        var toDrop = elements
+
+        if (toDrop > size) {
+            toDrop = size
+        }
+
+        val newSize = size - toDrop
         val diff = size - newSize
 
         start = (start + diff) % buffer.size
         size = newSize
+    }
+
+    /**
+     * Clears contents in buffer.
+     */
+    fun clear() {
+        start = 0
+        size = 0
     }
 
     /**
