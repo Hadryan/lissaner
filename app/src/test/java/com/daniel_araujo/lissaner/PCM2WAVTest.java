@@ -219,6 +219,32 @@ public class PCM2WAVTest {
         assertEquals(expectedSize, input.available());
     }
 
+    @Test
+    public void feed_indexAndLength_calculatesReceivedDataCorrectly() throws IOException {
+        PipedOutputStream stream = new PipedOutputStream();
+        PipedInputStream input = new PipedInputStream(stream, 2000000);
+        DataInputStream dataInput = new DataInputStream(input);
+
+        final int sampleRate = 8000;
+        final int bitsPerSample = 8;
+        final int channels = 1;
+
+        int expectedSize = PcmUtils.INSTANCE.bufferSize(5000, sampleRate, calcBytesPerSample(bitsPerSample), channels);
+
+        try (PCM2WAV p2w = new PCM2WAV(stream, channels, sampleRate, bitsPerSample)) {
+            final byte[] data = generateSilence(5000, channels, sampleRate, bitsPerSample);
+
+            p2w.expectSize(expectedSize);
+            p2w.feed(data, 0, data.length / 2);
+            p2w.feed(data, data.length / 2, data.length / 2);
+        }
+
+        assertRiffHeader(dataInput, expectedSize + OFFSET_TO_DATA);
+        assertFmtChunk(dataInput, channels, sampleRate, bitsPerSample);
+        assertDataChunkWithoutSamples(dataInput, expectedSize);
+        assertEquals(expectedSize, input.available());
+    }
+
     @Test(expected = RuntimeException.class)
     public void expectSize_throwsErrorIfChunksAlreadyWritten() throws IOException {
         PipedOutputStream stream = new PipedOutputStream();

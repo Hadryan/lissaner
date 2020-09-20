@@ -292,7 +292,7 @@ public class PCM2WAV implements AutoCloseable {
      */
     private void writeData(byte[] samples, int index, int length) throws IOException {
         writer.write(samples, index, length);
-        dataReceived += length - index;
+        dataReceived += length;
     }
 }
 
