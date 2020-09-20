@@ -44,9 +44,11 @@ class RecordingManager : AutoCloseable {
 
         config = RecordingSessionConfig().apply {
             samplesListener = { data ->
-                storage!!.feed(data)
+                synchronized(storage!!) {
+                    storage!!.feed(data)
 
-                onAccumulateListener?.invoke()
+                    onAccumulateListener?.invoke()
+                }
             }
 
             errorListener = { ex ->
@@ -92,9 +94,11 @@ class RecordingManager : AutoCloseable {
             config!!.bytesPerSample() * 8)
 
         wav.use {
-            wav.expectSize(storage!!.size())
-            storage!!.move {
-                wav.feed(it)
+            synchronized(storage!!) {
+                wav.expectSize(storage!!.size())
+                storage!!.move {
+                    wav.feed(it)
+                }
             }
         }
 

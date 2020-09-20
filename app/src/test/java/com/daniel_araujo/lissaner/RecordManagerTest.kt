@@ -8,6 +8,8 @@ import org.junit.Test
 
 import org.junit.Assert.*
 import java.nio.ByteBuffer
+import java.util.*
+import kotlin.collections.ArrayList
 
 class RecordManagerTest {
     /**
@@ -24,7 +26,7 @@ class RecordManagerTest {
     /**
      * This implementation always sends silence samples.
      */
-    class RecordingSessionSilence: RecordingSession {
+    open class RecordingSessionSilence: RecordingSession {
         /**
          * Whether the session has been closed.
          */
@@ -52,6 +54,55 @@ class RecordManagerTest {
 
         override fun close() {
             closed = true
+        }
+    }
+
+    /**
+     * Generate silence samples in a separate thread.
+     */
+    class RecordingSessionThreadedSilence: RecordingSessionSilence {
+        var running: Boolean = false
+
+        val timer: Timer
+
+        lateinit var task: TimerTask
+
+        constructor(config: RecordingSessionConfig) : super(config) {
+            timer = Timer("RecordingSessionThreadedSilence")
+            task = object : TimerTask() {
+                override fun run() {
+                    if (!running) {
+                        task.cancel();
+                        return;
+                    }
+
+                    generate(100)
+                }
+            }
+        }
+
+        fun start() {
+            if (running) {
+                return;
+            }
+
+            running = true
+
+            timer.scheduleAtFixedRate(task, 0, 1)
+        }
+
+        fun stop() {
+            if (!running) {
+                return;
+            }
+
+            running = false
+        }
+
+        override fun close() {
+            super.close()
+            stop()
+            timer.cancel()
         }
     }
 
@@ -312,6 +363,34 @@ class RecordManagerTest {
         session.generate(1000)
 
         assertEquals("Must continue to store new samples in storage.", 1000, recorder.accumulated())
+    }
+
+    @Test
+    fun saveRecording_doesNotAccumulateSamplesWhileSaving() {
+        // This test relies on a race condition.
+
+        val recorder = RecordingManager(object: RecordingManagerInt {
+            override fun createSession(config: RecordingSessionConfig): RecordingSession {
+                val session = RecordingSessionThreadedSilence(config)
+                session.start()
+                return session
+            }
+
+            override fun createStorage(config: RecordingSessionConfig): Storage {
+                val oneSecond = PcmUtils.bufferSize(
+                    6000000,
+                    config.sampleRate,
+                    config.bytesPerSample(),
+                    config.channels())
+                return PureMemoryStorage(oneSecond)
+            }
+        })
+
+        recorder.use {
+            recorder.startRecording()
+            Thread.sleep(1)
+            recorder.saveRecording(NullOutputStream())
+        }
     }
 
     @Test
