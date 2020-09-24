@@ -94,6 +94,12 @@
                     android:text="-" />
             </LinearLayout>
 
+            <Button
+                android:layout_marginTop="@dimen/separator"
+                android:id="@+id/settings_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Settings" />
         </LinearLayout>
 
         <com.daniel_araujo.lissaner.android.ui.WellView

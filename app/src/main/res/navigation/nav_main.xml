@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_main"
+    app:startDestination="@id/productivityFragment">
+
+    <fragment
+        android:id="@+id/productivityFragment"
+        android:name="com.daniel_araujo.lissaner.android.ui.ProductivityFragment"
+        android:label="RecordFragment" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.daniel_araujo.lissaner.android.ui.SettingsFragment"
+        android:label="SettingsFragment" /><action android:id="@+id/action_global_settingsFragment" app:destination="@id/settingsFragment"/>
+
+</navigation>

@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.navigation.fragment.findNavController
 import com.daniel_araujo.lissaner.ByteFormatUtils
 import com.daniel_araujo.lissaner.R
 import com.daniel_araujo.lissaner.RecordingManager
@@ -59,6 +60,11 @@ class RecordFragment : Fragment() {
     lateinit var storageInfo: TextView
 
     /**
+     * The button that starts and stops recording.
+     */
+    lateinit var settingsButton: Button
+
+    /**
      * The timer that queries memory info.
      */
     var systemStatusTimer: Timer? = null
@@ -99,6 +105,12 @@ class RecordFragment : Fragment() {
         view.findViewById<Button>(R.id.button_discard).also {
             it.setOnClickListener {
                 discardRecording()
+            }
+        }
+
+        settingsButton = view.findViewById<Button>(R.id.settings_button).also {
+             it.setOnClickListener {
+                findNavController().navigate(R.id.action_global_settingsFragment)
             }
         }
     }
