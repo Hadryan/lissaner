@@ -7,27 +7,19 @@ import org.junit.Assert.*
 
 class RecordingSessionConfigTest {
     @Test
-    fun bytesPerSample_ENCODING_PCM_16BIT() {
+    fun bytesPerSample_8Bits() {
         val config = RecordingSessionConfig()
-        config.encoding = AudioFormat.ENCODING_PCM_16BIT
+        config.bitsPerSample = 8
 
-        assertEquals(2, config.bytesPerSample());
+        assertEquals(1, config.bytesPerSample);
     }
 
     @Test
-    fun bytesPerSample_ENCODING_PCM_FLOAT() {
+    fun bytesPerSample_16Bits() {
         val config = RecordingSessionConfig()
-        config.encoding = AudioFormat.ENCODING_PCM_FLOAT
+        config.bitsPerSample = 16
 
-        assertEquals(2, config.bytesPerSample());
-    }
-
-    @Test
-    fun bytesPerSample_ENCODING_PCM_8BIT() {
-        val config = RecordingSessionConfig()
-        config.encoding = AudioFormat.ENCODING_PCM_8BIT
-
-        assertEquals(1, config.bytesPerSample());
+        assertEquals(2, config.bytesPerSample);
     }
 
     @Test
@@ -35,65 +27,49 @@ class RecordingSessionConfigTest {
         val config = RecordingSessionConfig()
 
         // 1 byte.
-        config.encoding = AudioFormat.ENCODING_PCM_8BIT
+        config.bitsPerSample = 8
 
-        assertEquals(44100, config.bytesPerSecond());
+        assertEquals(44100, config.bytesPerSecond);
 
         // 2 bytes.
-        config.encoding = AudioFormat.ENCODING_PCM_16BIT
+        config.bitsPerSample = 16
 
-        assertEquals(88200, config.bytesPerSecond());
+        assertEquals(88200, config.bytesPerSecond);
     }
 
     @Test
     fun bytesPerSecond_takesSampleRateIntoAccount() {
         val config = RecordingSessionConfig()
-        config.encoding = AudioFormat.ENCODING_PCM_8BIT
+        config.bitsPerSample = 8
         config.sampleRate = 11000
 
-        assertEquals(11000, config.bytesPerSecond());
+        assertEquals(11000, config.bytesPerSecond);
 
         config.sampleRate = 44100
 
-        assertEquals(44100, config.bytesPerSecond());
+        assertEquals(44100, config.bytesPerSecond);
     }
 
     @Test
     fun bytesPerSecond_numberOfChannelsIntoAccount() {
         val config = RecordingSessionConfig()
-        config.encoding = AudioFormat.ENCODING_PCM_8BIT
-        config.channel = AudioFormat.CHANNEL_IN_STEREO
+        config.bitsPerSample = 8
+        config.channels = 2
         config.sampleRate = 11000
 
-        assertEquals(22000, config.bytesPerSecond());
+        assertEquals(22000, config.bytesPerSecond);
 
-        config.channel = AudioFormat.CHANNEL_IN_MONO
+        config.channels = 1
         config.sampleRate = 44100
 
-        assertEquals(44100, config.bytesPerSecond());
-    }
-
-    @Test
-    fun channels_CHANNEL_IN_MONO() {
-        val config = RecordingSessionConfig()
-        config.channel = AudioFormat.CHANNEL_IN_MONO
-
-        assertEquals(1, config.channels());
-    }
-
-    @Test
-    fun channels_CHANNEL_IN_STEREO() {
-        val config = RecordingSessionConfig()
-        config.channel = AudioFormat.CHANNEL_IN_STEREO
-
-        assertEquals(2, config.channels());
+        assertEquals(44100, config.bytesPerSecond);
     }
 
     @Test
     fun setRecordingBufferSizeInMilliseconds_usesCurrentSampleRateBytesPerSampleAndChannels() {
         val config = RecordingSessionConfig()
-        config.encoding = AudioFormat.ENCODING_PCM_8BIT
-        config.channel = AudioFormat.CHANNEL_IN_MONO
+        config.bitsPerSample = 8
+        config.channels = 1
         config.sampleRate = 11000
 
         config.setRecordingBufferSizeInMilliseconds(3000)
@@ -101,14 +77,14 @@ class RecordingSessionConfigTest {
         assertEquals(33000, config.recordingBufferSizeRequest);
 
         // 2 bytes per sample.
-        config.encoding = AudioFormat.ENCODING_PCM_16BIT
+        config.bitsPerSample = 16
         config.setRecordingBufferSizeInMilliseconds(3000)
 
         assertEquals(66000, config.recordingBufferSizeRequest);
 
         // 2 channels.
-        config.channel = AudioFormat.CHANNEL_IN_STEREO
-        config.encoding = AudioFormat.ENCODING_PCM_8BIT
+        config.bitsPerSample = 8
+        config.channels = 2
         config.setRecordingBufferSizeInMilliseconds(3000)
 
         assertEquals(66000, config.recordingBufferSizeRequest);
@@ -117,8 +93,8 @@ class RecordingSessionConfigTest {
     @Test
     fun setRecordingBufferSizeInMilliseconds_changingSampleRateWillNotAutomaticallyUpdateBufferSize() {
         val config = RecordingSessionConfig()
-        config.encoding = AudioFormat.ENCODING_PCM_8BIT
-        config.channel = AudioFormat.CHANNEL_IN_MONO
+        config.bitsPerSample = 8
+        config.channels = 1
         config.sampleRate = 11000
 
         config.setRecordingBufferSizeInMilliseconds(3000)

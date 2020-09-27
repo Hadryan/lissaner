@@ -45,8 +45,8 @@ class RecordManagerTest {
             val oneSecond = PcmUtils.bufferSize(
                 duration,
                 config.sampleRate,
-                config.bytesPerSample(),
-                config.channels())
+                config.bytesPerSample,
+                config.channels)
             val buffer = ByteBuffer.allocate(oneSecond)
             buffer.position(oneSecond)
             config.samplesListener?.invoke(buffer)
@@ -144,8 +144,8 @@ class RecordManagerTest {
                 val oneSecond = PcmUtils.bufferSize(
                     1000,
                     config.sampleRate,
-                    config.bytesPerSample(),
-                    config.channels())
+                    config.bytesPerSample,
+                    config.channels)
                 return PureMemoryStorage(oneSecond)
             }
         })
@@ -178,8 +178,8 @@ class RecordManagerTest {
                 val oneSecond = PcmUtils.bufferSize(
                     1000,
                     config.sampleRate,
-                    config.bytesPerSample(),
-                    config.channels())
+                    config.bytesPerSample,
+                    config.channels)
                 return PureMemoryStorage(oneSecond)
             }
         })
@@ -215,8 +215,8 @@ class RecordManagerTest {
                 val oneSecond = PcmUtils.bufferSize(
                     1000,
                     config.sampleRate,
-                    config.bytesPerSample(),
-                    config.channels())
+                    config.bytesPerSample,
+                    config.channels)
                 return PureMemoryStorage(oneSecond)
             }
         })
@@ -250,8 +250,8 @@ class RecordManagerTest {
                 val oneSecond = PcmUtils.bufferSize(
                     1000,
                     config.sampleRate,
-                    config.bytesPerSample(),
-                    config.channels())
+                    config.bytesPerSample,
+                    config.channels)
                 return PureMemoryStorage(oneSecond)
             }
         })
@@ -286,8 +286,8 @@ class RecordManagerTest {
                 val oneSecond = PcmUtils.bufferSize(
                     1000,
                     config.sampleRate,
-                    config.bytesPerSample(),
-                    config.channels())
+                    config.bytesPerSample,
+                    config.channels)
                 return PureMemoryStorage(oneSecond)
             }
         })
@@ -312,8 +312,8 @@ class RecordManagerTest {
                 val oneSecond = PcmUtils.bufferSize(
                     1000,
                     config.sampleRate,
-                    config.bytesPerSample(),
-                    config.channels())
+                    config.bytesPerSample,
+                    config.channels)
                 return PureMemoryStorage(oneSecond)
             }
         })
@@ -344,8 +344,8 @@ class RecordManagerTest {
                 val oneSecond = PcmUtils.bufferSize(
                     1000,
                     config.sampleRate,
-                    config.bytesPerSample(),
-                    config.channels())
+                    config.bytesPerSample,
+                    config.channels)
                 return PureMemoryStorage(oneSecond)
             }
         })
@@ -380,8 +380,8 @@ class RecordManagerTest {
                 val oneSecond = PcmUtils.bufferSize(
                     6000000,
                     config.sampleRate,
-                    config.bytesPerSample(),
-                    config.channels())
+                    config.bytesPerSample,
+                    config.channels)
                 return PureMemoryStorage(oneSecond)
             }
         })
@@ -407,8 +407,8 @@ class RecordManagerTest {
                 val oneSecond = PcmUtils.bufferSize(
                     1000,
                     config.sampleRate,
-                    config.bytesPerSample(),
-                    config.channels())
+                    config.bytesPerSample,
+                    config.channels)
                 return PureMemoryStorage(oneSecond)
             }
         })
@@ -438,8 +438,8 @@ class RecordManagerTest {
                 val oneSecond = PcmUtils.bufferSize(
                     1000,
                     config.sampleRate,
-                    config.bytesPerSample(),
-                    config.channels())
+                    config.bytesPerSample,
+                    config.channels)
                 return PureMemoryStorage(oneSecond)
             }
         })
@@ -466,8 +466,8 @@ class RecordManagerTest {
                 val oneSecond = PcmUtils.bufferSize(
                     1000,
                     config.sampleRate,
-                    config.bytesPerSample(),
-                    config.channels())
+                    config.bytesPerSample,
+                    config.channels)
                 return PureMemoryStorage(oneSecond)
             }
         })
@@ -496,8 +496,8 @@ class RecordManagerTest {
                 val oneSecond = PcmUtils.bufferSize(
                     1000,
                     config.sampleRate,
-                    config.bytesPerSample(),
-                    config.channels())
+                    config.bytesPerSample,
+                    config.channels)
                 return PureMemoryStorage(oneSecond)
             }
         })
@@ -527,8 +527,8 @@ class RecordManagerTest {
                 val oneSecond = PcmUtils.bufferSize(
                     1000,
                     config.sampleRate,
-                    config.bytesPerSample(),
-                    config.channels())
+                    config.bytesPerSample,
+                    config.channels)
                 return PureMemoryStorage(oneSecond)
             }
         })
@@ -559,8 +559,8 @@ class RecordManagerTest {
                 val oneSecond = PcmUtils.bufferSize(
                     1000,
                     config.sampleRate,
-                    config.bytesPerSample(),
-                    config.channels())
+                    config.bytesPerSample,
+                    config.channels)
                 return PureMemoryStorage(oneSecond)
             }
         })

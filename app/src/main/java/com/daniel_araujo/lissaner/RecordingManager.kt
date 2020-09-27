@@ -89,9 +89,9 @@ class RecordingManager : AutoCloseable {
 
         val wav = PCM2WAV(
             stream,
-            config!!.channels(),
+            config!!.channels,
             config!!.sampleRate,
-            config!!.bytesPerSample() * 8)
+            config!!.bytesPerSample * 8)
 
         wav.use {
             synchronized(storage!!) {
@@ -126,8 +126,8 @@ class RecordingManager : AutoCloseable {
             return PcmUtils.duration(
                 storage!!.size(),
                 config!!.sampleRate,
-                config!!.bytesPerSample(),
-                config!!.channels())
+                config!!.bytesPerSample,
+                config!!.channels)
         } else {
             return 0
         }

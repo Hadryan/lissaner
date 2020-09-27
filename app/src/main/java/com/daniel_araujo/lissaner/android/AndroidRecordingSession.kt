@@ -1,6 +1,8 @@
 package com.daniel_araujo.lissaner.android
 
+import android.media.AudioFormat
 import android.media.AudioRecord
+import android.media.MediaRecorder
 import com.daniel_araujo.lissaner.rec.RecordingSession
 import com.daniel_araujo.lissaner.rec.RecordingSessionConfig
 import java.nio.ByteBuffer
@@ -9,12 +11,12 @@ class AndroidRecordingSession : RecordingSession, AutoCloseable {
     /**
      * Android provides this API to get access to microphone.
      */
-    private lateinit var recorder: AudioRecord
+    private var recorder: AudioRecord
 
     /**
      * Listener for samples.
      */
-    private lateinit var samplesListener: (ByteBuffer) -> Unit
+    private var samplesListener: (ByteBuffer) -> Unit
 
     /**
      * Listener for errors.
@@ -29,7 +31,7 @@ class AndroidRecordingSession : RecordingSession, AutoCloseable {
     /**
      * Byte buffer that holds samples for the listener.
      */
-    private lateinit var samplesBuffer: ByteBuffer
+    private var samplesBuffer: ByteBuffer
 
     constructor(config: RecordingSessionConfig) {
         samplesListener = config.samplesListener!!
@@ -41,14 +43,14 @@ class AndroidRecordingSession : RecordingSession, AutoCloseable {
         samplesBuffer = ByteBuffer.allocateDirect(bufferSize)
 
         recorder = AudioRecord(
-            config.source,
+            MediaRecorder.AudioSource.MIC,
             config.sampleRate,
-            config.channel,
-            config.encoding,
+            channel(config),
+            encoding(config),
             bufferSize
         )
 
-        val frameSize = bufferSize / config.bytesPerSample()
+        val frameSize = bufferSize / config.bytesPerSample
 
         recorder.setPositionNotificationPeriod(frameSize)
 
@@ -98,7 +100,7 @@ class AndroidRecordingSession : RecordingSession, AutoCloseable {
     private fun decideBufferSize(config: RecordingSessionConfig): Int {
         // We can request the API to tell us the minimum size for its buffer. The buffer cannot be
         // shorter than this.
-        val minBufferSize = AudioRecord.getMinBufferSize(config.sampleRate, config.channel, config.encoding)
+        val minBufferSize = AudioRecord.getMinBufferSize(config.sampleRate, channel(config), encoding(config))
 
         // This is the size that the config wants us to use.
         val requestedSize = config.recordingBufferSizeRequest;
@@ -115,5 +117,31 @@ class AndroidRecordingSession : RecordingSession, AutoCloseable {
     override fun close() {
         recorder.stop()
         recorder.release()
+    }
+
+    /**
+     * Returns encoding value based off values in config.
+     */
+    fun encoding(config: RecordingSessionConfig): Int {
+        return when (config.bitsPerSample) {
+            8 -> AudioFormat.ENCODING_PCM_8BIT
+
+            16 -> AudioFormat.ENCODING_PCM_16BIT
+
+            else -> error("Should never reach this branch.")
+        }
+    }
+
+    /**
+     * Returns channel value based off values in config.
+     */
+    fun channel(config: RecordingSessionConfig): Int {
+        return when (config.channels) {
+            1 -> AudioFormat.CHANNEL_IN_MONO
+
+            2 -> AudioFormat.CHANNEL_IN_STEREO
+
+            else -> error("Should never reach this branch.")
+        }
     }
 }

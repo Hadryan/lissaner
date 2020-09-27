@@ -6,24 +6,19 @@ import java.nio.ByteBuffer
 
 class RecordingSessionConfig {
     /**
-     * Audio source.
-     */
-    var source: Int = MediaRecorder.AudioSource.MIC
-
-    /**
      * Audio sample rate. That's how many samples you get per second.
      */
     var sampleRate: Int = 44100
 
     /**
-     * Which channels or how many channels.
+     * How many channels to record from source.
      */
-    var channel: Int = AudioFormat.CHANNEL_IN_MONO
+    var channels: Int = 1
 
     /**
-     * How a sample is encoded.
+     * Sets number of bits per sample.
      */
-    var encoding: Int = AudioFormat.ENCODING_PCM_16BIT
+    var bitsPerSample: Int = 16
 
     /**
      * Listener for samples.
@@ -44,40 +39,23 @@ class RecordingSessionConfig {
     /**
      * Returns number of bytes per second.
      */
-    fun bytesPerSecond(): Int {
-        return sampleRate * bytesPerSample() * channels()
-    }
+    val bytesPerSecond: Int
+        get() {
+            return sampleRate * bytesPerSample * channels
+        }
 
     /**
      * Returns how many bytes a sample occupies.
      */
-    fun bytesPerSample(): Int {
-        return when (encoding) {
-            AudioFormat.ENCODING_PCM_FLOAT,
-            AudioFormat.ENCODING_PCM_16BIT -> 2
-
-            AudioFormat.ENCODING_PCM_8BIT -> 1
-
-            else -> error("Should never reach this branch.")
+    val bytesPerSample: Int
+        get() {
+            return Math.ceil(bitsPerSample.toDouble() / 8).toInt()
         }
-    }
 
     /**
-     * Returns number of channels.
-     */
-    fun channels(): Int {
-        return when (channel) {
-            AudioFormat.CHANNEL_IN_MONO -> 1
-            AudioFormat.CHANNEL_IN_STEREO -> 2
-
-            else -> error("Should never reach this branch.")
-        }
-    }
-
-    /**
-     * Sets recording buffer size in milliseconds.
+     * Sets recording buffer size in milliseconds. Uses existing config values to calculate size.
      */
     fun setRecordingBufferSizeInMilliseconds(milli: Long) {
-        recordingBufferSizeRequest = (milli * sampleRate * bytesPerSample() * channels() / 1000).toInt()
+        recordingBufferSizeRequest = (milli * sampleRate * bytesPerSample * channels / 1000).toInt()
     }
 }

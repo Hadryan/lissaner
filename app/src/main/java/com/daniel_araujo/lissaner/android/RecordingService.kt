@@ -41,8 +41,8 @@ class RecordingService : Service() {
                         PcmUtils.bufferSize(
                             30 * 60 * 1000,
                             config.sampleRate,
-                            config.bytesPerSample(),
-                            config.channels()
+                            config.bytesPerSample,
+                            config.channels
                         )
                     )
                 }
