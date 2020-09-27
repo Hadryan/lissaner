@@ -3,6 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_main"
     app:startDestination="@id/productivityFragment">
 
+    <action android:id="@+id/action_global_settingsFragment" app:destination="@id/settingsFragment"/>
+
+    <action android:id="@+id/action_global_productivityFragment" app:destination="@id/productivityFragment"/>
+
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.daniel_araujo.lissaner.android.ui.SplashFragment"
+        android:label="SplashFragment" />
+
     <fragment
         android:id="@+id/productivityFragment"
         android:name="com.daniel_araujo.lissaner.android.ui.ProductivityFragment"
@@ -11,6 +20,6 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.daniel_araujo.lissaner.android.ui.SettingsFragment"
-        android:label="SettingsFragment" /><action android:id="@+id/action_global_settingsFragment" app:destination="@id/settingsFragment"/>
+        android:label="SettingsFragment" />
 
 </navigation>

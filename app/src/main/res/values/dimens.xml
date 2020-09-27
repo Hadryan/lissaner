@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="commonTextSize">12dp</dimen>
     <dimen name="windowPadding">20dp</dimen>
     <dimen name="wellPadding">20dp</dimen>
     <dimen name="separator">20dp</dimen>

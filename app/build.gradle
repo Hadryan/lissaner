@@ -60,4 +60,7 @@ dependencies {
     // Android Jetpack navigation library.
     implementation "androidx.navigation:navigation-fragment-ktx:2.3.0"
     implementation "androidx.navigation:navigation-ui-ktx:2.3.0"
+
+    // A reliable number picker.
+    implementation 'com.shawnlin:number-picker:2.4.10'
 }
