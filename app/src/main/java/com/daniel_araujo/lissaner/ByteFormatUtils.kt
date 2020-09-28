@@ -14,4 +14,11 @@ object ByteFormatUtils {
         //  Android environment.
         return android.text.format.Formatter.formatShortFileSize(context, size)
     }
+
+    /**
+     * Returns size with as few digits as possible.
+     */
+    fun shortSize(context: Context, size: Int): String {
+        return shortSize(context, size.toLong())
+    }
 }

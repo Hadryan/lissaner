@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.TextView
+import com.daniel_araujo.lissaner.ByteFormatUtils
+import com.daniel_araujo.lissaner.PcmUtils
 import com.daniel_araujo.lissaner.R
 import com.daniel_araujo.lissaner.TimestampUtils
 import com.daniel_araujo.lissaner.android.Application
@@ -70,8 +73,12 @@ class SettingsFragment : Fragment() {
                     putLong(Application.PREFERENCE_KEEP, options[newVal])
                     commit()
                 }
+
+                updateEstimatedMemoryUsage()
             }
         }
+
+        updateEstimatedMemoryUsage()
 
         // Samples per second
         run {
@@ -100,6 +107,8 @@ class SettingsFragment : Fragment() {
                         putInt(Application.PREFERENCE_SAMPLES_PER_SECOND, adapter.getItem(position)!!)
                         commit()
                     }
+
+                    updateEstimatedMemoryUsage()
                 }
             }
         }
@@ -131,8 +140,24 @@ class SettingsFragment : Fragment() {
                         putInt(Application.PREFERENCE_BITS_PER_SAMPLE, adapter.getItem(position)!!)
                         commit()
                     }
+
+                    updateEstimatedMemoryUsage()
                 }
             }
         }
+    }
+
+    private fun updateEstimatedMemoryUsage() {
+        val preferences = ourActivity.ourApplication.getDefaultSharedPreferences()
+
+        val estimated = requireView().findViewById<TextView>(R.id.estimated)
+
+        val size = PcmUtils.bufferSize(
+            PreferenceUtils.getLongOrFail(preferences, Application.PREFERENCE_KEEP),
+            PreferenceUtils.getIntOrFail(preferences, Application.PREFERENCE_SAMPLES_PER_SECOND),
+            Math.ceil(PreferenceUtils.getIntOrFail(preferences, Application.PREFERENCE_BITS_PER_SAMPLE).toDouble() / 8).toInt(),
+            1)
+
+        estimated.text = ByteFormatUtils.shortSize(requireContext(), size)
     }
 }
