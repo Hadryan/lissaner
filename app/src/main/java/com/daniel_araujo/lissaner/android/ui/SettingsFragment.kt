@@ -4,10 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.navigation.fragment.findNavController
 import com.daniel_araujo.lissaner.ByteFormatUtils
 import com.daniel_araujo.lissaner.PcmUtils
 import com.daniel_araujo.lissaner.R
@@ -40,6 +39,10 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        view.findViewById<AppCompatImageView>(R.id.back_button).setOnClickListener {
+            findNavController().popBackStack()
+        }
 
         val preferences = ourActivity.ourApplication.getDefaultSharedPreferences()
 
