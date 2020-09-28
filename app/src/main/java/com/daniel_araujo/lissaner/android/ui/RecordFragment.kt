@@ -19,7 +19,6 @@ import com.daniel_araujo.lissaner.android.Application
 import com.daniel_araujo.lissaner.android.AutoServiceBind
 import com.daniel_araujo.lissaner.android.PreferenceUtils
 import com.daniel_araujo.lissaner.android.RecordingService
-import com.daniel_araujo.lissaner.rec.RecordingSessionConfig
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.single.BasePermissionListener
@@ -105,9 +104,9 @@ class RecordFragment : Fragment() {
             }
         }
 
-        view.findViewById<Button>(R.id.button_discard).also {
+        view.findViewById<Button>(R.id.button_cancel).also {
             it.setOnClickListener {
-                discardRecording()
+                cancelRecording()
             }
         }
 
@@ -196,10 +195,11 @@ class RecordFragment : Fragment() {
         }
     }
 
-    private fun discardRecording() {
-        Log.v(javaClass.simpleName, "discardRecording")
+    private fun cancelRecording() {
+        Log.v(javaClass.simpleName, "cancelRecording")
 
         recordingService?.run {
+            it.recording.stopRecording()
             it.recording.discardRecording()
         }
     }
