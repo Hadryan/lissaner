@@ -1,6 +1,8 @@
 package com.daniel_araujo.lissaner.android
 
-import android.app.*
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -14,7 +16,6 @@ import com.daniel_araujo.lissaner.RecordingManagerInt
 import com.daniel_araujo.lissaner.rec.*
 import com.daniel_araujo.lissaner.android.ui.MainActivity
 
-
 class RecordingService : Service() {
     /**
      * Notification id of foreground service. Foreground services are required to launch a
@@ -25,7 +26,7 @@ class RecordingService : Service() {
     /**
      * The recording object. This is public on purpose.
      */
-    lateinit var recording : RecordingManager
+    lateinit var recording: RecordingManager
 
     override fun onCreate() {
         recording =
@@ -39,7 +40,10 @@ class RecordingService : Service() {
                 override fun createStorage(config: RecordingSessionConfig): Storage {
                     return PureMemoryStorage(
                         PcmUtils.bufferSize(
-                            30 * 60 * 1000,
+                            PreferenceUtils.getLongOrFail(
+                                ourApplication.getDefaultSharedPreferences(),
+                                Application.PREFERENCE_KEEP
+                            ),
                             config.sampleRate,
                             config.bytesPerSample,
                             config.channels
@@ -82,21 +86,24 @@ class RecordingService : Service() {
             Intent(this, MainActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        val notification: Notification = NotificationCompat.Builder(this, Application.NOTIFICATION_CHANNEL_FOREGROUND_SERVICE)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle("Lissaner")
-            .setContentText("Open the app to stop recording.")
-            .setContentIntent(contentIntent)
-            .build()
+        val notification =
+            NotificationCompat.Builder(this, Application.NOTIFICATION_CHANNEL_FOREGROUND_SERVICE)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle("Lissaner")
+                .setContentText("Open the app to stop recording.")
+                .setContentIntent(contentIntent)
+                .build()
 
         startForeground(SERVICE_NOTIFICATION_ID, notification);
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel() {
-        val chan = NotificationChannel(Application.NOTIFICATION_CHANNEL_FOREGROUND_SERVICE, getText(
-            R.string.app_name
-        ), NotificationManager.IMPORTANCE_LOW)
+        val chan = NotificationChannel(
+            Application.NOTIFICATION_CHANNEL_FOREGROUND_SERVICE, getText(
+                R.string.app_name
+            ), NotificationManager.IMPORTANCE_LOW
+        )
         val service = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         service.createNotificationChannel(chan)
     }

@@ -15,8 +15,11 @@ import androidx.navigation.fragment.findNavController
 import com.daniel_araujo.lissaner.ByteFormatUtils
 import com.daniel_araujo.lissaner.R
 import com.daniel_araujo.lissaner.RecordingManager
+import com.daniel_araujo.lissaner.android.Application
 import com.daniel_araujo.lissaner.android.AutoServiceBind
+import com.daniel_araujo.lissaner.android.PreferenceUtils
 import com.daniel_araujo.lissaner.android.RecordingService
+import com.daniel_araujo.lissaner.rec.RecordingSessionConfig
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.single.BasePermissionListener
@@ -133,6 +136,19 @@ class RecordFragment : Fragment() {
             .withListener(object : BasePermissionListener() {
                 override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
                     recordingService?.run {
+                        val preferences = ourActivity.ourApplication.getDefaultSharedPreferences()
+
+                        if (it.recording.accumulated() == 0L) {
+                            it.recording.sampleRate = PreferenceUtils.getIntOrFail(
+                                preferences,
+                                Application.PREFERENCE_SAMPLES_PER_SECOND
+                            )
+                            it.recording.bitsPerSample = PreferenceUtils.getIntOrFail(
+                                preferences,
+                                Application.PREFERENCE_BITS_PER_SAMPLE
+                            )
+                        }
+
                         try {
                             it.recording.startRecording()
                         } catch (e: OutOfMemoryError) {

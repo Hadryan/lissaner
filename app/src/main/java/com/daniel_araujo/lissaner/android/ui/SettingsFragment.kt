@@ -14,6 +14,8 @@ import com.daniel_araujo.lissaner.android.AudioRecordUtils
 import com.daniel_araujo.lissaner.android.PreferenceUtils
 import com.daniel_araujo.lissaner.android.SpinnerUtils
 import com.shawnlin.numberpicker.NumberPicker
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * A simple [Fragment] subclass.
@@ -42,19 +44,30 @@ class SettingsFragment : Fragment() {
         run {
             val memory = view.findViewById<com.shawnlin.numberpicker.NumberPicker>(R.id.memory)
 
-            val multiplier = 10
+            val options = arrayListOf<Long>(
+                // Index 0 is ignored.
+                0,
+
+                1 * 60 * 1000,
+                2 * 60 * 1000,
+                5 * 60 * 1000
+            )
+            // Add multiples of 10.
+            for (i in 1..15) {
+                options.add((i * 10 * 60 * 1000).toLong())
+            }
 
             memory.maxValue = 15
 
             memory.formatter = NumberPicker.Formatter {
-                (it * multiplier).toString()
+                TimestampUtils.milliToMinutes(options[it]).toString()
             }
 
-            memory.value = TimestampUtils.milliToMinutes(PreferenceUtils.getLongOrFail(preferences, Application.PREFERENCE_KEEP) / multiplier).toInt()
+            memory.value = options.indexOf(PreferenceUtils.getLongOrFail(preferences, Application.PREFERENCE_KEEP))
 
             memory.setOnValueChangedListener { picker, oldVal, newVal ->
                 with(preferences.edit()) {
-                    putLong(Application.PREFERENCE_KEEP, (TimestampUtils.minutesToMilli((newVal * multiplier).toLong())))
+                    putLong(Application.PREFERENCE_KEEP, options[newVal])
                     commit()
                 }
             }

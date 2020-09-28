@@ -102,8 +102,27 @@ class RecordingSessionConfigTest {
         assertEquals(33000, config.recordingBufferSizeRequest);
 
         // 2 bytes per sample.
-        config.sampleRate = 22000
+        config.bitsPerSample = 16
 
         assertEquals(33000, config.recordingBufferSizeRequest);
+    }
+
+    @Test
+    fun constructor_copy_copiesEveryField() {
+        val config = RecordingSessionConfig()
+        config.bitsPerSample = 8
+        config.channels = 1
+        config.sampleRate = 11000
+        config.samplesListener = {}
+        config.errorListener = {}
+        config.recordingBufferSizeRequest = 1000
+
+        val anotherConfig = RecordingSessionConfig(config)
+        assertEquals(config.bitsPerSample, anotherConfig.bitsPerSample)
+        assertEquals(config.channels, anotherConfig.channels)
+        assertEquals(config.sampleRate, anotherConfig.sampleRate)
+        assertEquals(config.samplesListener, anotherConfig.samplesListener)
+        assertEquals(config.errorListener, anotherConfig.errorListener)
+        assertEquals(config.recordingBufferSizeRequest, anotherConfig.recordingBufferSizeRequest)
     }
 }

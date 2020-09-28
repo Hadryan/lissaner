@@ -4,38 +4,41 @@ import android.media.AudioFormat
 import android.media.MediaRecorder
 import java.nio.ByteBuffer
 
-class RecordingSessionConfig {
+/**
+ * Parameters passed to RecordingSession objects.
+ */
+class RecordingSessionConfig(
     /**
      * Audio sample rate. That's how many samples you get per second.
      */
-    var sampleRate: Int = 44100
+    var sampleRate: Int = 44100,
 
     /**
      * How many channels to record from source.
      */
-    var channels: Int = 1
+    var channels: Int = 1,
 
     /**
      * Sets number of bits per sample.
      */
-    var bitsPerSample: Int = 16
+    var bitsPerSample: Int = 16,
 
     /**
      * Listener for samples.
      */
-    var samplesListener: ((ByteBuffer) -> Unit)? = null
+    var samplesListener: ((ByteBuffer) -> Unit)? = null,
 
     /**
      * Listener for errors.
      */
-    var errorListener: ((Exception) -> Unit)? = null
+    var errorListener: ((Exception) -> Unit)? = null,
 
     /**
      * How many samples in bytes to send to the listener. If null then the recording session decides
      * the size.
      */
     var recordingBufferSizeRequest: Int? = null
-
+) {
     /**
      * Returns number of bytes per second.
      */
@@ -51,6 +54,16 @@ class RecordingSessionConfig {
         get() {
             return Math.ceil(bitsPerSample.toDouble() / 8).toInt()
         }
+
+    constructor(other: RecordingSessionConfig) : this(
+        sampleRate = other.sampleRate,
+        channels = other.channels,
+        bitsPerSample = other.bitsPerSample,
+        samplesListener = other.samplesListener,
+        errorListener = other.errorListener,
+        recordingBufferSizeRequest = other.recordingBufferSizeRequest
+    ) {
+    }
 
     /**
      * Sets recording buffer size in milliseconds. Uses existing config values to calculate size.

@@ -4,13 +4,50 @@ import com.daniel_araujo.lissaner.rec.*
 import java.io.OutputStream
 
 class RecordingManager : AutoCloseable {
-    private lateinit var int: RecordingManagerInt
+    /**
+     * The recording manager can be in any of these states.
+     */
+    private enum class State {
+        /**
+         * No recording session is active and storage is empty.
+         */
+        EMPTY,
 
+        /**
+         * Recording session is active.
+         */
+        RECORDING,
+
+        /**
+         * No active recording session but there is something in storage.
+         */
+        PAUSED
+    }
+
+    /**
+     * Current state.
+     */
+    private var state: State = State.EMPTY
+
+    /**
+     * Callbacks for creating specific objects.
+     */
+    private var int: RecordingManagerInt
+
+    /**
+     * Current recording session. Not null when state is RECORDING.
+     */
     private var recordingSession: RecordingSession? = null
 
+    /**
+     * Storage. Not null when state is RECORDING or PAUSED.
+     */
     private var storage: Storage? = null
 
-    private var config: RecordingSessionConfig? = null
+    /**
+     * Recording session configuration.
+     */
+    private val config: RecordingSessionConfig
 
     /**
      * Called whenever an error occurs during recording.
@@ -32,17 +69,63 @@ class RecordingManager : AutoCloseable {
      */
     var onRecordStop: (() -> Unit)? = null
 
-    constructor(int: RecordingManagerInt) {
-        this.int = int
-    }
+    /**
+     * Change sample rate.
+     */
+    var sampleRate: Int
+        get() = config.sampleRate
+        set(value) {
+            if (state != State.EMPTY) {
+                throw Exception("Expected to be empty.")
+            }
 
-    fun startRecording() {
-        if (recordingSession != null) {
-            // Already recording.
-            return
+            if (value == config.sampleRate) {
+                return
+            }
+
+            config.sampleRate = value
         }
 
-        config = RecordingSessionConfig().apply {
+    /**
+     * Change bits per sample.
+     */
+    var bitsPerSample: Int
+        get() = config.bitsPerSample
+        set(value) {
+            if (state != State.EMPTY) {
+                throw Exception("Expected to be empty.")
+            }
+
+            if (value == config.bitsPerSample) {
+                return
+            }
+
+            config.bitsPerSample = value
+        }
+
+    /**
+     * Change number of channels.
+     */
+    var channels: Int
+        get() = config.channels
+        set(value) {
+            if (state != State.EMPTY) {
+                throw Exception("Expected to be empty.")
+            }
+
+            if (value == config.channels) {
+                return
+            }
+
+            config.channels = value
+        }
+
+    constructor(int: RecordingManagerInt) {
+        this.int = int
+
+        config = RecordingSessionConfig()
+
+        config.apply {
             samplesListener = { data ->
                 synchronized(storage!!) {
                     storage!!.feed(data)
@@ -54,66 +137,85 @@ class RecordingManager : AutoCloseable {
             errorListener = { ex ->
                 onRecordError?.invoke(ex)
             }
-
-            setRecordingBufferSizeInMilliseconds(1000)
         }
+    }
 
-        if (storage == null) {
-            storage = int.createStorage(config!!)
+    fun startRecording() {
+        if (state == State.PAUSED || state == State.EMPTY) {
+            config.setRecordingBufferSizeInMilliseconds(1000)
+
+            if (state == State.EMPTY) {
+                storage = int.createStorage(config)
+            }
+
+            recordingSession = int.createSession(config)
+
+            state = State.RECORDING
+
+            onRecordStart?.invoke()
         }
-
-        recordingSession = int.createSession(config!!)
-
-        onRecordStart?.invoke()
     }
 
     fun stopRecording() {
-        if (recordingSession == null) {
-            // Already stopped.
-            return
-        }
+        if (state == State.RECORDING) {
+            recordingSession!!.close()
+            recordingSession = null
 
-        recordingSession?.close()
-        recordingSession = null
-        onRecordStop?.invoke()
+            if (storage!!.size() == 0) {
+                storage = null
+                state = State.EMPTY
+            } else {
+                state = State.PAUSED
+            }
+
+            onRecordStop?.invoke()
+        }
     }
 
     fun isRecording(): Boolean {
-        return recordingSession != null
+        return state == State.RECORDING
     }
 
     fun saveRecording(stream: OutputStream) {
-        if (storage!!.size() == 0) {
-            return;
-        }
+        if (state == State.RECORDING || state == State.PAUSED) {
+            if (storage!!.size() == 0) {
+                // Can't do anything.
+                return
+            }
 
-        val wav = PCM2WAV(
-            stream,
-            config!!.channels,
-            config!!.sampleRate,
-            config!!.bytesPerSample * 8)
+            val wav = PCM2WAV(
+                stream,
+                config.channels,
+                config.sampleRate,
+                config.bitsPerSample)
 
-        wav.use {
-            synchronized(storage!!) {
-                wav.expectSize(storage!!.size())
-                storage!!.move {
-                    wav.feed(it)
+            wav.use {
+                synchronized(storage!!) {
+                    wav.expectSize(storage!!.size())
+                    storage!!.move {
+                        wav.feed(it)
+                    }
                 }
             }
-        }
 
-        onAccumulateListener?.invoke()
+            onAccumulateListener?.invoke()
+        }
     }
 
     /**
      * Empties storage.
      */
     fun discardRecording() {
-        if (storage != null) {
+        if (state == State.RECORDING || state == State.PAUSED) {
             if (storage!!.size() > 0) {
                 storage!!.clear()
 
                 onAccumulateListener?.invoke()
+            }
+
+            if (state == State.PAUSED) {
+                state = State.EMPTY
+                storage = null
             }
         }
     }
@@ -122,21 +224,23 @@ class RecordingManager : AutoCloseable {
      * How much time has been accumulated in temporary storage.
      */
     fun accumulated(): Long {
-        if (storage != null) {
-            return PcmUtils.duration(
+        return when (state) {
+            State.RECORDING, State.PAUSED -> PcmUtils.duration(
                 storage!!.size(),
-                config!!.sampleRate,
-                config!!.bytesPerSample,
-                config!!.channels)
-        } else {
-            return 0
+                config.sampleRate,
+                config.bytesPerSample,
+                config.channels
+            )
+
+            else -> 0
         }
     }
 
     override fun close() {
-        recordingSession?.close()
-
-        storage = null
+        if (state == State.RECORDING || state == State.PAUSED) {
+            recordingSession?.close()
+            storage = null
+        }
 
         onRecordError = null
         onRecordStart = null

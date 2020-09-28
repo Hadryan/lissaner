@@ -7,50 +7,22 @@ import com.daniel_araujo.lissaner.rec.RecordingSession
 import com.daniel_araujo.lissaner.rec.RecordingSessionConfig
 import java.nio.ByteBuffer
 
-class AndroidRecordingSession : RecordingSession, AutoCloseable {
+class AndroidRecordingSession(config: RecordingSessionConfig) : RecordingSession(config) {
     /**
      * Android provides this API to get access to microphone.
      */
-    private var recorder: AudioRecord
+    private lateinit var recorder: AudioRecord
 
-    /**
-     * Listener for samples.
-     */
-    private var samplesListener: (ByteBuffer) -> Unit
-
-    /**
-     * Listener for errors.
-     */
-    private var errorListener: ((Exception) -> Unit)? = null
-
-    /**
-     * The size of the samples buffer.
-     */
-    private var bufferSize: Int = 0
-
-    /**
-     * Byte buffer that holds samples for the listener.
-     */
-    private var samplesBuffer: ByteBuffer
-
-    constructor(config: RecordingSessionConfig) {
-        samplesListener = config.samplesListener!!
-        errorListener = config.errorListener
-
-        bufferSize = decideBufferSize(config)
-
-        // Now we can create our own buffer.
-        samplesBuffer = ByteBuffer.allocateDirect(bufferSize)
-
+    override fun open() {
         recorder = AudioRecord(
             MediaRecorder.AudioSource.MIC,
-            config.sampleRate,
-            channel(config),
-            encoding(config),
-            bufferSize
+            sampleRate,
+            channel(channels),
+            encoding(bitsPerSample),
+            samplesBuffer.capacity()
         )
 
-        val frameSize = bufferSize / config.bytesPerSample
+        val frameSize = samplesBuffer.capacity() / bytesPerSample
 
         recorder.setPositionNotificationPeriod(frameSize)
 
@@ -60,33 +32,37 @@ class AndroidRecordingSession : RecordingSession, AutoCloseable {
             }
 
             override fun onPeriodicNotification(p0: AudioRecord?) {
-                val read = recorder.read(samplesBuffer, bufferSize)
+                try {
+                    // If we passed ByteBuffer directly to read we'd get:
+                    // Buffer direct access is not supported, can't record
+                    val dst = samplesBuffer.array()
+                    val read = recorder.read(
+                        dst,
+                        samplesBuffer.arrayOffset() + samplesBuffer.position(),
+                        samplesBuffer.remaining())
 
-                if (read > 0) {
-                    samplesBuffer.position(samplesBuffer.position() + read)
+                    if (read > 0) {
+                        samplesBuffer.position(samplesBuffer.position() + read)
 
-                    if (!samplesBuffer.hasRemaining()) {
-                        // Only call listener when buffer is completely filled.
-                        samplesListener.invoke(samplesBuffer)
-
-                        // Clearing buffer. Listeners must make copies.
-                        samplesBuffer.rewind()
-                    }
-                } else if (read == 0) {
-                    // Read nothing apparently.
-                } else {
-                    // Error.
-                    if (read == AudioRecord.ERROR_INVALID_OPERATION) {
-                        errorListener?.invoke(Exception(AudioRecord::ERROR_INVALID_OPERATION.name))
-                    } else if (read == AudioRecord.ERROR_BAD_VALUE) {
-                        errorListener?.invoke(Exception(AudioRecord::ERROR_BAD_VALUE.name))
-                    } else if (read == AudioRecord.ERROR_DEAD_OBJECT) {
-                        errorListener?.invoke(Exception(AudioRecord::ERROR_DEAD_OBJECT.name))
-                    } else if (read == AudioRecord.ERROR) {
-                        errorListener?.invoke(Exception(AudioRecord::ERROR.name))
+                        flush()
+                    } else if (read == 0) {
+                        // Read nothing apparently.
                     } else {
-                        errorListener?.invoke(Exception("Unknown error code."))
+                        // Error.
+                        if (read == AudioRecord.ERROR_INVALID_OPERATION) {
+                            throw Exception(AudioRecord::ERROR_INVALID_OPERATION.name)
+                        } else if (read == AudioRecord.ERROR_BAD_VALUE) {
+                            throw Exception(AudioRecord::ERROR_BAD_VALUE.name)
+                        } else if (read == AudioRecord.ERROR_DEAD_OBJECT) {
+                            throw Exception(AudioRecord::ERROR_DEAD_OBJECT.name)
+                        } else if (read == AudioRecord.ERROR) {
+                            throw Exception(AudioRecord::ERROR.name)
+                        } else {
+                            throw Exception("Unknown error code.")
+                        }
                     }
+                } catch (e: Exception) {
+                    emitError(e)
                 }
             }
         })
@@ -94,13 +70,10 @@ class AndroidRecordingSession : RecordingSession, AutoCloseable {
         recorder.startRecording()
     }
 
-    /**
-     * Decides best buffer.
-     */
-    private fun decideBufferSize(config: RecordingSessionConfig): Int {
+    override fun decideBufferSize(config: RecordingSessionConfig): Int {
         // We can request the API to tell us the minimum size for its buffer. The buffer cannot be
         // shorter than this.
-        val minBufferSize = AudioRecord.getMinBufferSize(config.sampleRate, channel(config), encoding(config))
+        val minBufferSize = AudioRecord.getMinBufferSize(config.sampleRate, channel(config.channels), encoding(config.bitsPerSample))
 
         // This is the size that the config wants us to use.
         val requestedSize = config.recordingBufferSizeRequest;
@@ -120,10 +93,10 @@ class AndroidRecordingSession : RecordingSession, AutoCloseable {
     }
 
     /**
-     * Returns encoding value based off values in config.
+     * Returns AudioRecord encoding value.
      */
-    fun encoding(config: RecordingSessionConfig): Int {
-        return when (config.bitsPerSample) {
+    fun encoding(bitsPerSample: Int): Int {
+        return when (bitsPerSample) {
             8 -> AudioFormat.ENCODING_PCM_8BIT
 
             16 -> AudioFormat.ENCODING_PCM_16BIT
@@ -133,10 +106,10 @@ class AndroidRecordingSession : RecordingSession, AutoCloseable {
     }
 
     /**
-     * Returns channel value based off values in config.
+     * Returns AudioRecord channel value.
      */
-    fun channel(config: RecordingSessionConfig): Int {
-        return when (config.channels) {
+    fun channel(channels: Int): Int {
+        return when (channels) {
             1 -> AudioFormat.CHANNEL_IN_MONO
 
             2 -> AudioFormat.CHANNEL_IN_STEREO
