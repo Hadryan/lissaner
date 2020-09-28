@@ -34,7 +34,7 @@
 
     <string name="record_continue">Press to continue recording</string>
     <string name="record_start">Press to start recording</string>
-    <string name="record_stop">Press to stop recording</string>
+    <string name="record_stop">Press to pause recording</string>
 
     <string name="rec_button_view_start">START</string>
     <string name="rec_button_view_stop">STOP</string>
