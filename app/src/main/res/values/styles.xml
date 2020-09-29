@@ -10,6 +10,9 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColor">@color/textColor</item>
 
+        <!-- Hides action bar -->
+        <item name="windowNoTitle">true</item>
+
         <!-- Window -->
         <item name="android:windowBackground">@color/background</item>
 

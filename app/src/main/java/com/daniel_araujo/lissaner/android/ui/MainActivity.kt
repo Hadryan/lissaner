@@ -16,8 +16,6 @@ class MainActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        supportActionBar?.hide()
-
         if (!ourApplication.splash) {
             val nav = findNavController(R.id.fragment)
 
