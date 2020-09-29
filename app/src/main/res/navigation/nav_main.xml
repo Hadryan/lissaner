@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_main"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_main"
     app:startDestination="@id/productivityFragment">
 
     <action android:id="@+id/action_global_settingsFragment" app:destination="@id/settingsFragment"/>
@@ -10,16 +12,28 @@
     <fragment
         android:id="@+id/splashFragment"
         android:name="com.daniel_araujo.lissaner.android.ui.SplashFragment"
-        android:label="SplashFragment" />
+        android:label="SplashFragment"
+        tools:layout="@layout/fragment_splash" />
 
     <fragment
         android:id="@+id/productivityFragment"
         android:name="com.daniel_araujo.lissaner.android.ui.ProductivityFragment"
-        android:label="RecordFragment" />
+        android:label="RecordFragment"
+        tools:layout="@layout/fragment_record" />
 
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.daniel_araujo.lissaner.android.ui.SettingsFragment"
-        android:label="SettingsFragment" />
+        android:label="SettingsFragment"
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_settingsFragment_to_aboutFragment"
+            app:destination="@id/aboutFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.daniel_araujo.lissaner.android.ui.AboutFragment"
+        android:label="fragment_about"
+        tools:layout="@layout/fragment_about" />
 
 </navigation>

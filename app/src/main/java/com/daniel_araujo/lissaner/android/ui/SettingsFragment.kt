@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.navigation.fragment.findNavController
 import com.daniel_araujo.lissaner.ByteFormatUtils
 import com.daniel_araujo.lissaner.PcmUtils
@@ -16,8 +15,6 @@ import com.daniel_araujo.lissaner.android.AudioRecordUtils
 import com.daniel_araujo.lissaner.android.PreferenceUtils
 import com.daniel_araujo.lissaner.android.SpinnerUtils
 import com.shawnlin.numberpicker.NumberPicker
-import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * A simple [Fragment] subclass.
@@ -40,8 +37,12 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.findViewById<AppCompatImageView>(R.id.back_button).setOnClickListener {
+        view.findViewById<TopView>(R.id.top).setLeftButton(R.drawable.ic_arrow_left, View.OnClickListener {
             findNavController().popBackStack()
+        })
+
+        view.findViewById<Button>(R.id.about_button).setOnClickListener {
+            findNavController().navigate(R.id.action_settingsFragment_to_aboutFragment)
         }
 
         val preferences = ourActivity.ourApplication.getDefaultSharedPreferences()
@@ -54,13 +55,13 @@ class SettingsFragment : Fragment() {
                 // Index 0 is ignored.
                 0,
 
-                1 * 60 * 1000,
-                2 * 60 * 1000,
-                5 * 60 * 1000
+                TimestampUtils.minutesToMilli(1),
+                TimestampUtils.minutesToMilli(2),
+                TimestampUtils.minutesToMilli(5)
             )
             // Add multiples of 10.
             for (i in 1..15) {
-                options.add((i * 10 * 60 * 1000).toLong())
+                options.add(TimestampUtils.minutesToMilli(i * 10L).toLong())
             }
 
             memory.maxValue = 15

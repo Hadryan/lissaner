@@ -1,6 +1,7 @@
 package com.daniel_araujo.lissaner.android.ui
 
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
