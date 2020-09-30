@@ -5,19 +5,18 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
+import android.widget.LinearLayout
 import androidx.navigation.fragment.findNavController
-import com.daniel_araujo.lissaner.BuildConfig
+import com.daniel_araujo.lissaner.IOUtils
 import com.daniel_araujo.lissaner.R
 
-class AboutFragment : Fragment() {
+class LicensesFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_about, container, false)
+        return inflater.inflate(R.layout.fragment_licenses, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -27,10 +26,18 @@ class AboutFragment : Fragment() {
             findNavController().popBackStack()
         })
 
-        view.findViewById<TextView>(R.id.version).text = BuildConfig.VERSION_NAME
+        val layout = view.findViewById<LinearLayout>(R.id.layout)
 
-        view.findViewById<Button>(R.id.licenses_button).setOnClickListener {
-            findNavController().navigate(R.id.action_aboutFragment_to_licensesFragment)
+        val licenses = requireActivity().application.assets.list("licenses")
+
+        licenses?.forEach { filename ->
+            requireActivity().application.assets.open("licenses/$filename").use {
+                val entryView = LicenseEntryView(requireContext())
+                entryView.name = filename
+                entryView.text = IOUtils.readAll(it)
+
+                layout.addView(entryView)
+            }
         }
     }
 }

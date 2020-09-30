@@ -56,7 +56,7 @@ class TopView : FrameLayout {
 
         // I tried putting a negative margin on the button but it would clip.
 
-        val layout = findViewById<LinearLayout>(R.id.layout)
+        val layout = findViewById<LinearLayout>(R.id.top_layout)
         layout.setPadding(0, 0, 0, 0)
 
         button.setOnClickListener(onClickListener)

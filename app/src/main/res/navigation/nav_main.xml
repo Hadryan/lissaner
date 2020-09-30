@@ -30,10 +30,21 @@
             android:id="@+id/action_settingsFragment_to_aboutFragment"
             app:destination="@id/aboutFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/aboutFragment"
         android:name="com.daniel_araujo.lissaner.android.ui.AboutFragment"
         android:label="fragment_about"
-        tools:layout="@layout/fragment_about" />
+        tools:layout="@layout/fragment_about" >
+        <action
+            android:id="@+id/action_aboutFragment_to_licensesFragment"
+            app:destination="@id/licensesFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/licensesFragment"
+        android:name="com.daniel_araujo.lissaner.android.ui.LicensesFragment"
+        android:label="LicensesFragment"
+        tools:layout="@layout/fragment_licenses" />
 
 </navigation>
