@@ -43,4 +43,19 @@
     <string name="item_remove_permanently">Delete</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="license">Copyright 2020 Daniel Araujo\n
+&lt;contact@daniel-araujo.pt&gt;\n
+\n
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.\n
+\n
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.\n
+\n
+For more details, visit:\n
+https://github.com/daniel-araujo/lissaner</string>
 </resources>

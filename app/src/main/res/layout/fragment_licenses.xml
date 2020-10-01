@@ -17,13 +17,38 @@
             app:title="Licenses" />
 
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/windowPadding"
+            android:layout_marginTop="@dimen/separator"
+            android:layout_marginRight="@dimen/windowPadding"
+            android:layout_marginBottom="@dimen/separator"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/license" />
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/separator"
+                android:text="These are the libraries and their corresponding licenses that are used in this program:" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:divider="@drawable/separator"
             android:dividerPadding="@dimen/separator"
             android:orientation="vertical"
-            android:showDividers="middle|beginning|end"></LinearLayout>
+            android:showDividers="middle">
+
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>
