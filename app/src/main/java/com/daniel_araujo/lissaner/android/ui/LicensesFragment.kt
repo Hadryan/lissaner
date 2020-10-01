@@ -33,7 +33,7 @@ class LicensesFragment : Fragment() {
         licenses?.forEach { filename ->
             requireActivity().application.assets.open("licenses/$filename").use {
                 val entryView = LicenseEntryView(requireContext())
-                entryView.name = filename
+                entryView.name = filename.substring(0, filename.lastIndexOf('.'))
                 entryView.text = IOUtils.readAll(it)
 
                 layout.addView(entryView)
