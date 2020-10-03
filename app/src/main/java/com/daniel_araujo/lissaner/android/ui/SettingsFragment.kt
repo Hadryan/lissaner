@@ -10,10 +10,7 @@ import com.daniel_araujo.lissaner.ByteFormatUtils
 import com.daniel_araujo.lissaner.PcmUtils
 import com.daniel_araujo.lissaner.R
 import com.daniel_araujo.lissaner.TimestampUtils
-import com.daniel_araujo.lissaner.android.Application
-import com.daniel_araujo.lissaner.android.AudioRecordUtils
-import com.daniel_araujo.lissaner.android.PreferenceUtils
-import com.daniel_araujo.lissaner.android.SpinnerUtils
+import com.daniel_araujo.lissaner.android.*
 import com.shawnlin.numberpicker.NumberPicker
 
 /**
@@ -149,6 +146,29 @@ class SettingsFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val recordingService = AutoServiceBind(
+            RecordingService::class,
+            requireContext()
+        )
+
+        recordingService.run { enableRecordingOptions(!it.recording.isRecording()) }
+    }
+
+    private fun enableRecordingOptions(enable: Boolean) {
+        val memory = requireView().findViewById<View>(R.id.memory)
+        val sps = requireView().findViewById<View>(R.id.samples_per_second)
+        val bps = requireView().findViewById<View>(R.id.bits_per_sample)
+        val warning = requireView().findViewById<View>(R.id.recording_warning)
+
+        memory.isEnabled = enable
+        sps.isEnabled = enable
+        bps.isEnabled = enable
+        warning.visibility = if (enable) View.GONE else View.VISIBLE
     }
 
     private fun updateEstimatedMemoryUsage() {

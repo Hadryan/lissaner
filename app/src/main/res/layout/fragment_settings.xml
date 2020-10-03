@@ -34,6 +34,16 @@
                     android:layout_height="wrap_content"
                     android:text="Recording" />
 
+                <TextView
+                    android:id="@+id/recording_warning"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="These settings cannot be changed while recording. Please stop recording."
+                    android:textColor="#FF3737"
+                    android:textSize="10sp"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
                 <View
                     android:id="@+id/divider"
                     android:layout_width="match_parent"
