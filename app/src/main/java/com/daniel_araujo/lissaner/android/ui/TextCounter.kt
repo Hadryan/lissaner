@@ -47,6 +47,7 @@ class TextCounter : FrameLayout {
         init(attrs, defStyle)
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun init(attrs: AttributeSet?, defStyle: Int) {
         textView = AppCompatTextView(context)
 

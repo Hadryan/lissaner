@@ -69,7 +69,7 @@ class SettingsFragment : Fragment() {
 
             memory.value = options.indexOf(PreferenceUtils.getLongOrFail(preferences, Application.PREFERENCE_KEEP))
 
-            memory.setOnValueChangedListener { picker, oldVal, newVal ->
+            memory.setOnValueChangedListener { _, _, newVal ->
                 with(preferences.edit()) {
                     putLong(Application.PREFERENCE_KEEP, options[newVal])
                     commit()

@@ -42,7 +42,10 @@ class AutoServiceBind<T : Any> {
                 return;
             }
 
+            // Intentionally crashing here.
+            @Suppress("UNCHECKED_CAST")
             binder = service as AutoServiceBinder<T>
+
             onConnectListener?.invoke(binder!!.service)
             work()
         }

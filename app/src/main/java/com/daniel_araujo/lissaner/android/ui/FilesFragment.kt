@@ -80,7 +80,7 @@ class FilesFragment : Fragment() {
         super.onResume()
 
         fileList.adapter = FileListAdapter(ourActivity.ourApplication.recordingFiles.list())
-        fileList.setOnItemClickListener { listView: AdapterView<*>, view: View, position: Int, id: Long ->
+        fileList.setOnItemClickListener { _: AdapterView<*>, _: View, position: Int, _: Long ->
             val realAdapter = fileList.adapter as FileListAdapter
 
             val selectedFile = realAdapter.files[position]

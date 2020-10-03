@@ -35,19 +35,6 @@ class Application : android.app.Application() {
     }
 
     /**
-     * Verifies if a service is running.
-     */
-    fun isServiceRunning(serviceClass: Class<*>): Boolean {
-        val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
-            if (serviceClass.name == service.service.className) {
-                return true
-            }
-        }
-        return false
-    }
-
-    /**
      * Returns the SharedPreferences instance that Android Jetpack's preference framework uses.
      */
     fun getDefaultSharedPreferences(): SharedPreferences {

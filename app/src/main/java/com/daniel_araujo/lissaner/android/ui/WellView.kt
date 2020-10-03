@@ -32,6 +32,7 @@ class WellView : FrameLayout {
         init(attrs, defStyle)
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun init(attrs: AttributeSet?, defStyle: Int) {
         setWillNotDraw(false)
         // Set up a default TextPaint object

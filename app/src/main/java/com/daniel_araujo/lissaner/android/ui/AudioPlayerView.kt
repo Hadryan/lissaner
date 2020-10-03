@@ -192,6 +192,7 @@ class AudioPlayerView : FrameLayout {
         // No need to update UI because it is not visible.
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun init(attrs: AttributeSet?, defStyle: Int) {
         inflate(context, R.layout.view_audio_player, this)
 
@@ -270,6 +271,7 @@ class AudioPlayerView : FrameLayout {
         }
     }
 
+    @Suppress("NOTHING_TO_INLINE")
     private inline fun syncSeekBarProgress() {
         seekBar.progress = mediaPlayer.currentPosition
     }

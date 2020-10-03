@@ -25,6 +25,7 @@ class RecButtonView : FrameLayout {
         init(attrs, defStyle)
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun init(attrs: AttributeSet?, defStyle: Int) {
         buttonView = Button(context)
         buttonView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)

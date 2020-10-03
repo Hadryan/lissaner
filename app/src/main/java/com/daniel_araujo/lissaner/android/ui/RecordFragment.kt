@@ -155,7 +155,7 @@ class RecordFragment : Fragment() {
                             AlertDialog.Builder(context!!)
                                 .setTitle("Unable to record")
                                 .setMessage("Out of memory.")
-                                .setNeutralButton(android.R.string.ok) { dialog, which -> dialog.cancel() }
+                                .setNeutralButton(android.R.string.ok) { dialog, _ -> dialog.cancel() }
                                 .setIcon(android.R.drawable.ic_dialog_alert)
                                 .show()
                         }
@@ -186,7 +186,7 @@ class RecordFragment : Fragment() {
 
                 Log.d(javaClass.simpleName, "Creating ${name}")
 
-                stream.use { stream ->
+                stream.use {
                     service.recording.saveRecording(stream)
                 }
             } catch (e: IOException) {
@@ -264,7 +264,7 @@ class RecordFragment : Fragment() {
 
                 // Storage.
                 run {
-                    val stat = StatFs(Environment.getExternalStorageDirectory().getPath())
+                    val stat = StatFs(requireContext().getExternalFilesDir(null)?.path)
 
                     val bytesAvailable = stat.availableBytes
                     val bytesTotal = stat.totalBytes

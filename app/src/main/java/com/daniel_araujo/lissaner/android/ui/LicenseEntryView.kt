@@ -41,6 +41,7 @@ class LicenseEntryView : FrameLayout {
         init(attrs, defStyle)
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun init(attrs: AttributeSet?, defStyle: Int) {
         View.inflate(context, R.layout.view_license_entry, this)
     }

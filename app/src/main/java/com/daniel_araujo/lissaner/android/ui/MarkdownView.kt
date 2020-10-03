@@ -23,6 +23,7 @@ class MarkdownView : androidx.appcompat.widget.AppCompatTextView {
         init(attrs, defStyle)
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun init(attrs: AttributeSet?, defStyle: Int) {
     }
 

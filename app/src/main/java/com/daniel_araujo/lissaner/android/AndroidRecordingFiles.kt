@@ -32,7 +32,8 @@ class AndroidRecordingFiles : RecordingFiles {
     }
 
     override fun list(): List<String> {
-        return recordingsDir.listFiles().map { it.name }
+        val names = recordingsDir.listFiles()?.map { it.name }
+        return names ?: ArrayList<String>()
     }
 
     override fun create(name: String): OutputStream {

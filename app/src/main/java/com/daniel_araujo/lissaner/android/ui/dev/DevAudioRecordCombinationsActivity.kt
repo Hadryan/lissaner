@@ -295,9 +295,13 @@ class DevAudioRecordCombinationsActivity : AppCompatActivity() {
     }
 
     private fun validate() {
+        @Suppress("UNCHECKED_CAST")
         val selectedSource = findViewById<Spinner>(R.id.source_spinner).selectedItem as ListItemWithId<Int>
+        @Suppress("UNCHECKED_CAST")
         val selectedChannel = findViewById<Spinner>(R.id.channel_spinner).selectedItem as ListItemWithId<Int>
+        @Suppress("UNCHECKED_CAST")
         val selectedEncoding = findViewById<Spinner>(R.id.encoding_spinner).selectedItem as ListItemWithId<Int>
+        @Suppress("UNCHECKED_CAST")
         val selectedSampleRate = findViewById<Spinner>(R.id.sample_rate_spinner).selectedItem as ListItemWithId<Int>
 
         val result = findViewById<TextView>(R.id.result)
