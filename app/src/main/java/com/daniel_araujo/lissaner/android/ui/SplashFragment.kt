@@ -94,6 +94,6 @@ class SplashFragment : Fragment() {
      * Ends splash screen.
      */
     private fun move() {
-        findNavController().navigate(R.id.action_global_productivityFragment)
+        findNavController().navigate(R.id.enter_app)
     }
 }
