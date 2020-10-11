@@ -38,10 +38,6 @@ class SettingsFragment : Fragment() {
             findNavController().popBackStack()
         })
 
-        view.findViewById<Button>(R.id.about_button).setOnClickListener {
-            findNavController().navigate(R.id.action_settingsFragment_to_aboutFragment)
-        }
-
         val preferences = ourActivity.ourApplication.getDefaultSharedPreferences()
 
         // Memory.

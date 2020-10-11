@@ -27,6 +27,9 @@
         <action
             android:id="@+id/action_recordFragment_to_filesFragment"
             app:destination="@id/filesFragment" />
+        <action
+            android:id="@+id/action_recordFragment_to_aboutFragment"
+            app:destination="@id/aboutFragment" />
     </fragment>
 
     <fragment
@@ -39,11 +42,7 @@
         android:id="@+id/settingsFragment"
         android:name="com.daniel_araujo.lissaner.android.ui.SettingsFragment"
         android:label="SettingsFragment"
-        tools:layout="@layout/fragment_settings" >
-        <action
-            android:id="@+id/action_settingsFragment_to_aboutFragment"
-            app:destination="@id/aboutFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_settings" />
 
     <fragment
         android:id="@+id/aboutFragment"
