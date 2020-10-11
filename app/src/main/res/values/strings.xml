@@ -11,10 +11,11 @@
         \n
         \n
         #### How to start recording?\n
-        You have to explicitly tell the app to start recording by pressing the big red button on
-        top. On success, a notification will pop up. You can safely close the app
-        and go on your normal day. As long as the notification is present, you can be
-        rest assured that the app is still recording. You can open the app at any time to save the
+        You have to explicitly tell the app to start recording by pressing the big red button. On
+        the first time you do that, it will ask for permission to record. Once the app has
+        permission, a notification will pop up. Now you can close the app and go on your
+        normal day. As long as the notification is present, you can be rest assured that
+        the app is still recording. You can open the app at any time to save the
         last 30 minutes to a file if something interesting happens.\n
         \n
         \n

@@ -100,21 +100,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Settings" />
+
         </LinearLayout>
-
-        <com.daniel_araujo.lissaner.android.ui.WellView
-            android:id="@+id/wellView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <com.daniel_araujo.lissaner.android.ui.MarkdownView
-                android:id="@+id/textView"
-                style="@style/Note"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/recording_description" />
-
-        </com.daniel_araujo.lissaner.android.ui.WellView>
 
     </LinearLayout>
 </ScrollView>

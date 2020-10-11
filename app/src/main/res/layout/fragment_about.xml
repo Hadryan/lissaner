@@ -15,26 +15,19 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/windowPadding"
             android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/app_name"
-                android:textSize="30sp" />
+            android:orientation="vertical"
+            android:padding="@dimen/windowPadding">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/separator"
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:weightSum="1">
@@ -48,12 +41,19 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/textView7"
+                android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/separator"
+                android:text="@string/app_name"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Version"
-                android:textSize="20sp" />
+                android:textSize="10sp" />
 
             <TextView
                 android:id="@+id/version"
@@ -61,12 +61,26 @@
                 android:layout_height="wrap_content"
                 android:text="$version" />
 
+            <com.daniel_araujo.lissaner.android.ui.WellView
+                android:id="@+id/wellView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/separator">
+
+                <com.daniel_araujo.lissaner.android.ui.MarkdownView
+                    android:id="@+id/textView"
+                    style="@style/Note"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/recording_description" />
+
+            </com.daniel_araujo.lissaner.android.ui.WellView>
+
             <Button
                 android:id="@+id/licenses_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/separator"
-                android:background="?android:attr/selectableItemBackground"
                 android:text="Licenses" />
 
         </LinearLayout>
