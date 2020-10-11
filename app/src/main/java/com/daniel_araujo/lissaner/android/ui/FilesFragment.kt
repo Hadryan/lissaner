@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.BaseAdapter
 import android.widget.ListView
+import androidx.navigation.fragment.findNavController
 import com.daniel_araujo.lissaner.R
 import java.util.ArrayList
 
@@ -73,6 +74,11 @@ class FilesFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_files, container, false)
         fileList = view.findViewById<ListView>(R.id.file_list)
         audioPlayer = view.findViewById<AudioPlayerView>(R.id.audio_player)
+
+        view.findViewById<TopView>(R.id.top).setLeftButton(R.drawable.ic_arrow_left, View.OnClickListener {
+            findNavController().popBackStack()
+        })
+
         return view
     }
 

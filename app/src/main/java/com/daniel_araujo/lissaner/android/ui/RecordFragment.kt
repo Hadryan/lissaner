@@ -115,6 +115,12 @@ class RecordFragment : Fragment() {
                 findNavController().navigate(R.id.action_global_settingsFragment)
             }
         }
+
+        view.findViewById<Button>(R.id.files_button).also {
+            it.setOnClickListener {
+                findNavController().navigate(R.id.action_recordFragment_to_filesFragment)
+            }
+        }
     }
 
     private fun toggleRecording() {

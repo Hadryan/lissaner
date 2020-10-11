@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_main"
-    app:startDestination="@id/productivityFragment">
+    app:startDestination="@id/recordFragment">
 
     <action android:id="@+id/action_global_settingsFragment" app:destination="@id/settingsFragment"/>
 
@@ -14,16 +14,26 @@
         tools:layout="@layout/fragment_splash" >
         <action
             android:id="@+id/enter_app"
-            app:destination="@id/productivityFragment"
+            app:destination="@id/recordFragment"
             app:popUpTo="@id/nav_main"
             app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
-        android:id="@+id/productivityFragment"
-        android:name="com.daniel_araujo.lissaner.android.ui.ProductivityFragment"
+        android:id="@+id/recordFragment"
+        android:name="com.daniel_araujo.lissaner.android.ui.RecordFragment"
         android:label="RecordFragment"
-        tools:layout="@layout/fragment_record" />
+        tools:layout="@layout/fragment_record" >
+        <action
+            android:id="@+id/action_recordFragment_to_filesFragment"
+            app:destination="@id/filesFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/filesFragment"
+        android:name="com.daniel_araujo.lissaner.android.ui.FilesFragment"
+        android:label="FilesFragment"
+        tools:layout="@layout/fragment_files" />
 
     <fragment
         android:id="@+id/settingsFragment"

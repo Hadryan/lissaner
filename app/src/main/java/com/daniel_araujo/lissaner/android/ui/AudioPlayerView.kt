@@ -143,6 +143,11 @@ class AudioPlayerView : FrameLayout {
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
+        if (isInEditMode) {
+            // Design mode was crashing when instantiating MediaPlayer object.
+            return
+        }
+
         mediaPlayer = MediaPlayer()
 
         mediaPlayer.setOnPreparedListener { _ ->
