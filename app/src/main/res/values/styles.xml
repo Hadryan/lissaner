@@ -29,7 +29,7 @@
         <!-- For a number picker library -->
         <item name="np_textSize">@dimen/commonTextSize</item>
         <item name="np_selectedTextSize">@dimen/commonTextSize</item>
-        <item name="np_dividerColor">@color/textColor</item>
+        <item name="np_dividerColor">@color/divider</item>
         <item name="np_selectedTextColor">@color/textColor</item>
         <item name="np_textColor">@color/textColor</item>
     </style>
