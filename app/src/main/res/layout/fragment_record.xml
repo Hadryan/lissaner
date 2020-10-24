@@ -23,13 +23,22 @@
             android:id="@+id/button_record"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_marginTop="@dimen/separator" />
+            android:layout_marginTop="@dimen/separator" >
+
+        </com.daniel_araujo.lissaner.android.ui.RecButtonView>
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/separator"
+            android:text="Total"
+            android:textSize="10sp" />
 
         <com.daniel_araujo.lissaner.android.ui.TextCounter
             android:id="@+id/accumulated_time"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/separator" />
+            android:layout_height="wrap_content" />
 
         <LinearLayout
             android:id="@+id/controls"
