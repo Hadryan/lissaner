@@ -4,10 +4,10 @@
     <string name="recording_description">
         #### What is this?\n
         \n
-        This app provides a feature that many game consoles have had for years. It keeps track of
-        the last 30 minutes of audio recorded by your device\'s microphone. You can tap a button to
-        save the audio to a file at any time. Now you don\'t have to miss out on once-in-a-lifetime
-        real-life moments. Almost no processing power is required, just a lot of memory.\n
+        This app provides a feature that many game consoles have had for years. It records your
+        microphone and allows you to save the last 30 minutes (or more) to a file. Now you do not
+        have to miss out on audible once-in-a-lifetime real-life moments. Almost no processing power
+        is required, just a lot of memory.\n
         \n
         \n
         #### How to start recording?\n
@@ -20,9 +20,9 @@
         \n
         \n
         #### Can I trust this app?\n
-        This app is open-source. That means its code can be read, studied and improved by other
-        programmers. This app only records with your explicit consent and only stores audio files on
-        your device, anyone able to understand the code will confirm that fact.\n
+        This app is open-source. That means its source code can be read, studied and improved by
+        other programmers. The app only records with your explicit consent and only stores audio
+        files on your device. Anyone able to read code will confirm that.\n
         \n
         To get the source code, visit:\n
         \n
