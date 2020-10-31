@@ -1,6 +1,5 @@
 package com.daniel_araujo.lissaner.android
 
-import android.app.ActivityManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Debug
@@ -13,12 +12,13 @@ class Application : android.app.Application() {
         const val PREFERENCE_KEEP = "keep"
         const val PREFERENCE_SAMPLES_PER_SECOND = "samples_per_second"
         const val PREFERENCE_BITS_PER_SAMPLE = "bits_per_sample"
+        const val PREFERENCE_AUTO_START = "auto_start"
     }
 
     /**
-     * Whether the splash screen has been shown.
+     * Whether our initialization code has run.
      */
-    var splash: Boolean = false
+    var initialized: Boolean = false
 
     /**
      * Application's RecordingFiles object.
@@ -42,5 +42,35 @@ class Application : android.app.Application() {
             applicationContext.packageName + "_preferences",
             Context.MODE_PRIVATE
         )
+    }
+
+    /**
+     * Application initialization must go here. It will be called in appropriate places.
+     */
+    fun initialize() {
+        if (initialized) {
+            // Nothing to do.
+            return;
+        }
+
+        val preferences = getDefaultSharedPreferences()
+
+        with(preferences.edit()) {
+            if (!com.daniel_araujo.lissaner.android.PreferenceUtils.hasLong(preferences, PREFERENCE_KEEP)) {
+                putLong(PREFERENCE_KEEP, 30 * 60 * 1000)
+            }
+
+            if (!com.daniel_araujo.lissaner.android.PreferenceUtils.hasInt(preferences, PREFERENCE_SAMPLES_PER_SECOND)) {
+                putInt(PREFERENCE_SAMPLES_PER_SECOND, 44100)
+            }
+
+            if (!com.daniel_araujo.lissaner.android.PreferenceUtils.hasInt(preferences, PREFERENCE_BITS_PER_SAMPLE)) {
+                putInt(PREFERENCE_BITS_PER_SAMPLE, 16)
+            }
+
+            commit()
+        }
+
+        initialized = true
     }
 }

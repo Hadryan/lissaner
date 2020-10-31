@@ -65,6 +65,11 @@ class RecordingManager : AutoCloseable {
     var onRecordStart: (() -> Unit)? = null
 
     /**
+     * Called just before recording starts.
+     */
+    var onBeforeRecordStart: (() -> Unit)? = null
+
+    /**
      * Called when recording stops.
      */
     var onRecordStop: (() -> Unit)? = null
@@ -142,6 +147,8 @@ class RecordingManager : AutoCloseable {
 
     fun startRecording() {
         if (state == State.PAUSED || state == State.EMPTY) {
+            onBeforeRecordStart?.invoke()
+
             config.setRecordingBufferSizeInMilliseconds(1000)
 
             if (state == State.EMPTY) {

@@ -108,6 +108,22 @@ class SettingsFragment : Fragment() {
                 updateEstimatedMemoryUsage()
             }
         }
+
+        // Auto-start
+        run {
+            val bps = view.findViewById<SettingsOptionSwitchView>(R.id.auto_start)
+
+            bps.value = PreferenceUtils.getBooleanOrFail(preferences, Application.PREFERENCE_AUTO_START)
+
+            bps.onValueChangedListener = {
+                with(preferences.edit()) {
+                    putBoolean(Application.PREFERENCE_AUTO_START, it)
+                    commit()
+                }
+
+                updateEstimatedMemoryUsage()
+            }
+        }
     }
 
     override fun onResume() {

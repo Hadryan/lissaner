@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.daniel_araujo.lissaner">
 
+    <!-- So that the app can start recording if the auto-start setting is enabled. -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
     <!-- Necessary to use microphone. -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
@@ -42,6 +45,16 @@
         </activity>
 
         <service android:name="com.daniel_araujo.lissaner.android.RecordingService" />
+
+        <receiver
+            android:enabled="true"
+            android:name=".android.BootCompletedReceiver"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            <intent-filter >
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

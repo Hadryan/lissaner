@@ -147,19 +147,6 @@ class RecordFragment : Fragment() {
             .withListener(object : BasePermissionListener() {
                 override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
                     recordingService?.run {
-                        val preferences = ourActivity.ourApplication.getDefaultSharedPreferences()
-
-                        if (it.recording.accumulated() == 0L) {
-                            it.recording.sampleRate = PreferenceUtils.getIntOrFail(
-                                preferences,
-                                Application.PREFERENCE_SAMPLES_PER_SECOND
-                            )
-                            it.recording.bitsPerSample = PreferenceUtils.getIntOrFail(
-                                preferences,
-                                Application.PREFERENCE_BITS_PER_SAMPLE
-                            )
-                        }
-
                         try {
                             it.recording.startRecording()
                         } catch (e: OutOfMemoryError) {

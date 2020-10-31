@@ -15,10 +15,10 @@ object PreferenceUtils {
             // Making sure the type is right.
             preferences.getInt(key, 0)
         } catch (e: Exception) {
-            return false;
+            return false
         }
 
-        return true;
+        return true
     }
 
     /**
@@ -33,10 +33,28 @@ object PreferenceUtils {
             // Making sure the type is right.
             preferences.getLong(key, 0)
         } catch (e: Exception) {
-            return false;
+            return false
         }
 
-        return true;
+        return true
+    }
+
+    /**
+     * Checks that a key exists and that its value is a long.
+     */
+    fun hasBoolean(preferences: SharedPreferences, key: String): Boolean {
+        if (!preferences.contains(key)) {
+            return false
+        }
+
+        try {
+            // Making sure the type is right.
+            preferences.getBoolean(key, false)
+        } catch (e: Exception) {
+            return false
+        }
+
+        return true
     }
 
     /**
@@ -45,7 +63,7 @@ object PreferenceUtils {
      */
     fun getIntOrFail(preferences: SharedPreferences, key: String): Int {
         if (!preferences.contains(key)) {
-            throw java.lang.Exception("Key ${key} does not have a value.");
+            throw java.lang.Exception("Key ${key} does not have a value.")
         }
 
         return preferences.getInt(key, 0)
@@ -57,9 +75,21 @@ object PreferenceUtils {
      */
     fun getLongOrFail(preferences: SharedPreferences, key: String): Long {
         if (!preferences.contains(key)) {
-            throw java.lang.Exception("Key ${key} does not have a value.");
+            throw java.lang.Exception("Key ${key} does not have a value.")
         }
 
         return preferences.getLong(key, 0)
+    }
+
+    /**
+     * Retrieves a long value. Throws an exception if the value does not exist or is of the wrong
+     * type.
+     */
+    fun getBooleanOrFail(preferences: SharedPreferences, key: String): Boolean {
+        if (!preferences.contains(key)) {
+            throw java.lang.Exception("Key ${key} does not have a value.")
+        }
+
+        return preferences.getBoolean(key, false)
     }
 }

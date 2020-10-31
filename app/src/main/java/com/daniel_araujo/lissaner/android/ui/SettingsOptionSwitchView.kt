@@ -14,6 +14,8 @@ class SettingsOptionSwitchView : SettingsOptionBaseView {
             switch.isChecked = value
         }
 
+    var onValueChangedListener: ((Boolean) -> Unit)? = null
+
     constructor(context: Context) : super(context) {
     }
 
@@ -29,6 +31,9 @@ class SettingsOptionSwitchView : SettingsOptionBaseView {
 
     override fun makeControl(): View {
         switch = Switch(context);
+
+        switch.setOnCheckedChangeListener { buttonView, isChecked -> onValueChangedListener?.invoke(value) }
+
         return switch;
     }
 }

@@ -7,7 +7,6 @@ import com.daniel_araujo.lissaner.rec.Storage
 import org.junit.Test
 
 import org.junit.Assert.*
-import java.nio.ByteBuffer
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -665,6 +664,136 @@ class RecordManagerTest {
         assertEquals("Must have something in storage again.", 1000, recorder.accumulated())
 
         assertEquals(1, calls.size)
+    }
+
+    @Test
+    fun onBeforeRecordStart_isCalledWhenStartRecordingIsCalled() {
+        val recorder = RecordingManager(object : RecordingManagerInt {
+            override fun createSession(config: RecordingSessionConfig): RecordingSession {
+                return RecordingSessionSilence(config)
+            }
+
+            override fun createStorage(config: RecordingSessionConfig): Storage {
+                val oneSecond = PcmUtils.bufferSize(
+                    1000,
+                    config.sampleRate,
+                    config.bytesPerSample,
+                    config.channels
+                )
+                return PureMemoryStorage(oneSecond)
+            }
+        })
+
+        var called = 0
+
+        recorder.onBeforeRecordStart = {
+            called += 1
+        }
+
+        assertEquals(0, called)
+
+        recorder.startRecording()
+
+        assertEquals(1, called)
+    }
+
+    @Test
+    fun onBeforeRecordStart_isCalledBeforeStartingToRecord() {
+        val recorder = RecordingManager(object : RecordingManagerInt {
+            override fun createSession(config: RecordingSessionConfig): RecordingSession {
+                return RecordingSessionSilence(config)
+            }
+
+            override fun createStorage(config: RecordingSessionConfig): Storage {
+                val oneSecond = PcmUtils.bufferSize(
+                    1000,
+                    config.sampleRate,
+                    config.bytesPerSample,
+                    config.channels
+                )
+                return PureMemoryStorage(oneSecond)
+            }
+        })
+
+        recorder.onBeforeRecordStart = {
+            assertFalse(recorder.isRecording())
+        }
+
+        recorder.startRecording()
+    }
+
+    @Test
+    fun onBeforeRecordStart_canChangeSampleRate() {
+        var sessionSampleRate: Int? = null
+        var storageSampleRate: Int? = null
+
+        val recorder = RecordingManager(object : RecordingManagerInt {
+            override fun createSession(config: RecordingSessionConfig): RecordingSession {
+                sessionSampleRate = config.sampleRate
+
+                return RecordingSessionSilence(config)
+            }
+
+            override fun createStorage(config: RecordingSessionConfig): Storage {
+                storageSampleRate = config.sampleRate
+
+                val oneSecond = PcmUtils.bufferSize(
+                    1000,
+                    config.sampleRate,
+                    config.bytesPerSample,
+                    config.channels
+                )
+                return PureMemoryStorage(oneSecond)
+            }
+        })
+
+        recorder.sampleRate = 44100
+
+        recorder.onBeforeRecordStart = {
+            recorder.sampleRate = 8000
+        }
+
+        recorder.startRecording()
+
+        assertEquals(8000, sessionSampleRate)
+        assertEquals(8000, storageSampleRate)
+    }
+
+    @Test
+    fun onBeforeRecordStart_canChangeBitsPerSample() {
+        var sessionBitsPerSample: Int? = null
+        var storageBitsPerSample: Int? = null
+
+        val recorder = RecordingManager(object : RecordingManagerInt {
+            override fun createSession(config: RecordingSessionConfig): RecordingSession {
+                sessionBitsPerSample = config.bitsPerSample
+
+                return RecordingSessionSilence(config)
+            }
+
+            override fun createStorage(config: RecordingSessionConfig): Storage {
+                storageBitsPerSample = config.bitsPerSample
+
+                val oneSecond = PcmUtils.bufferSize(
+                    1000,
+                    config.sampleRate,
+                    config.bytesPerSample,
+                    config.channels
+                )
+                return PureMemoryStorage(oneSecond)
+            }
+        })
+
+        recorder.bitsPerSample = 16
+
+        recorder.onBeforeRecordStart = {
+            recorder.bitsPerSample = 8
+        }
+
+        recorder.startRecording()
+
+        assertEquals(8, sessionBitsPerSample)
+        assertEquals(8, storageBitsPerSample)
     }
 
     @Test

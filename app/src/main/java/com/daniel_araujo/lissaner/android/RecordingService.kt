@@ -56,6 +56,21 @@ class RecordingService : Service() {
             requestToBeForeground()
         }
 
+        recording.onBeforeRecordStart = {
+            val preferences = ourApplication.getDefaultSharedPreferences()
+
+            if (recording.accumulated() == 0L) {
+                recording.sampleRate = PreferenceUtils.getIntOrFail(
+                    preferences,
+                    Application.PREFERENCE_SAMPLES_PER_SECOND
+                )
+                recording.bitsPerSample = PreferenceUtils.getIntOrFail(
+                    preferences,
+                    Application.PREFERENCE_BITS_PER_SAMPLE
+                )
+            }
+        }
+
         recording.onRecordStop = {
             stopForeground(true)
         }

@@ -71,6 +71,13 @@
                     android:layout_height="match_parent"
                     app:name="Bits per sample"/>
 
+                <com.daniel_araujo.lissaner.android.ui.SettingsOptionSwitchView
+                    android:id="@+id/auto_start"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:description="Start recording when device turns on."
+                    app:name="Auto-start" />
+
                 <View
                     android:id="@+id/divider3"
                     android:layout_width="match_parent"
