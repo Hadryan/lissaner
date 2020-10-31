@@ -60,4 +60,8 @@ class SettingsOptionSelectValueView : SettingsOptionBaseView {
 
         return spinner;
     }
+
+    override fun onControlEnabled(state: Boolean) {
+        spinner.isEnabled = state
+    }
 }

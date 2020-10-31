@@ -79,4 +79,8 @@ class SettingsOptionSelectNumberView : SettingsOptionBaseView {
 
         return picker;
     }
+
+    override fun onControlEnabled(state: Boolean) {
+        picker.isEnabled = state
+    }
 }

@@ -82,5 +82,19 @@ abstract class SettingsOptionBaseView : FrameLayout {
         wrapper.addView(makeControl())
     }
 
+    override fun setEnabled(enabled: Boolean) {
+        super.setEnabled(enabled)
+
+        val name = findViewById<TextView>(R.id.name)
+        name.isEnabled = enabled
+
+        val description = findViewById<TextView>(R.id.description)
+        description.isEnabled = enabled
+
+        onControlEnabled(enabled)
+    }
+
     protected abstract fun makeControl(): View
+
+    protected abstract fun onControlEnabled(state: Boolean)
 }

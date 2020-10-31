@@ -36,4 +36,8 @@ class SettingsOptionSwitchView : SettingsOptionBaseView {
 
         return switch;
     }
+
+    override fun onControlEnabled(state: Boolean) {
+        switch.isEnabled = state
+    }
 }

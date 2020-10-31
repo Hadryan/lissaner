@@ -25,24 +25,24 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/separator"
                 android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/recording_warning"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/separator"
+                    android:text="Some settings cannot be changed while recording. You have to stop recording to be able to change them."
+                    android:textColor="#FF3737"
+                    android:textSize="10sp"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
 
                 <TextView
                     android:id="@+id/textView3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Recording" />
-
-                <TextView
-                    android:id="@+id/recording_warning"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="These settings cannot be changed while recording. Please stop recording."
-                    android:textColor="#FF3737"
-                    android:textSize="10sp"
-                    android:visibility="gone"
-                    tools:visibility="visible" />
 
                 <View
                     android:id="@+id/divider"
@@ -56,20 +56,20 @@
                     android:id="@+id/memory"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:name="Store in memory (minutes)"
-                    app:description="Estimated size: "/>
+                    app:description="Estimated size: "
+                    app:name="Store in memory (minutes)" />
 
                 <com.daniel_araujo.lissaner.android.ui.SettingsOptionSelectValueView
                     android:id="@+id/samples_per_second"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:name="Samples per second (hz)"/>
+                    app:name="Samples per second (hz)" />
 
                 <com.daniel_araujo.lissaner.android.ui.SettingsOptionSelectValueView
                     android:id="@+id/bits_per_sample"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:name="Bits per sample"/>
+                    app:name="Bits per sample" />
 
                 <com.daniel_araujo.lissaner.android.ui.SettingsOptionSwitchView
                     android:id="@+id/auto_start"
