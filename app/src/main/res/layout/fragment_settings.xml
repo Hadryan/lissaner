@@ -56,9 +56,6 @@
                     android:id="@+id/memory"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:minHeight="50dp"
                     app:name="Store in memory (minutes)"
                     app:description="Estimated size: "/>
 
@@ -66,18 +63,12 @@
                     android:id="@+id/samples_per_second"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:minHeight="50dp"
                     app:name="Samples per second (hz)"/>
 
                 <com.daniel_araujo.lissaner.android.ui.SettingsOptionSelectValueView
                     android:id="@+id/bits_per_sample"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:minHeight="50dp"
                     app:name="Bits per sample"/>
 
                 <View
