@@ -11,7 +11,6 @@ import com.daniel_araujo.lissaner.PcmUtils
 import com.daniel_araujo.lissaner.R
 import com.daniel_araujo.lissaner.TimestampUtils
 import com.daniel_araujo.lissaner.android.*
-import com.shawnlin.numberpicker.NumberPicker
 
 /**
  * A simple [Fragment] subclass.
@@ -42,32 +41,29 @@ class SettingsFragment : Fragment() {
 
         // Memory.
         run {
-            val memory = view.findViewById<com.shawnlin.numberpicker.NumberPicker>(R.id.memory)
+            val memory = view.findViewById<SettingsOptionSelectNumberView>(R.id.memory)
 
-            val options = arrayListOf<Long>(
-                // Index 0 is ignored.
-                0,
-
-                TimestampUtils.minutesToMilli(1),
-                TimestampUtils.minutesToMilli(2),
-                TimestampUtils.minutesToMilli(5)
+            val options = arrayListOf<Int>(
+                TimestampUtils.minutesToMilli(1).toInt(),
+                TimestampUtils.minutesToMilli(2).toInt(),
+                TimestampUtils.minutesToMilli(5).toInt()
             )
             // Add multiples of 10.
             for (i in 1..15) {
-                options.add(TimestampUtils.minutesToMilli(i * 10L).toLong())
+                options.add(TimestampUtils.minutesToMilli(i * 10L).toInt())
             }
 
-            memory.maxValue = 15
+            memory.available = options.toList()
 
-            memory.formatter = NumberPicker.Formatter {
-                TimestampUtils.milliToMinutes(options[it]).toString()
+            memory.formatter = {
+                TimestampUtils.milliToMinutes(it.toLong()).toString()
             }
 
-            memory.value = options.indexOf(PreferenceUtils.getLongOrFail(preferences, Application.PREFERENCE_KEEP))
+            memory.value = PreferenceUtils.getLongOrFail(preferences, Application.PREFERENCE_KEEP).toInt()
 
-            memory.setOnValueChangedListener { _, _, newVal ->
+            memory.onValueChangedListener = {
                 with(preferences.edit()) {
-                    putLong(Application.PREFERENCE_KEEP, options[newVal])
+                    putLong(Application.PREFERENCE_KEEP, memory.value.toLong())
                     commit()
                 }
 
@@ -79,67 +75,37 @@ class SettingsFragment : Fragment() {
 
         // Samples per second
         run {
-            val sps = view.findViewById<Spinner>(R.id.samples_per_second)
+            val sps = view.findViewById<SettingsOptionSelectValueView>(R.id.samples_per_second)
 
-            val values = AudioRecordUtils.supportedSampleRates()
+            sps.available = AudioRecordUtils.supportedSampleRates()
 
-            val adapter = ArrayAdapter<Int>(requireContext(), android.R.layout.simple_spinner_item, values)
+            sps.value = PreferenceUtils.getIntOrFail(preferences, Application.PREFERENCE_SAMPLES_PER_SECOND)
 
-            sps.adapter = adapter
-
-            SpinnerUtils.selectItemByValue(sps, PreferenceUtils.getIntOrFail(preferences, Application.PREFERENCE_SAMPLES_PER_SECOND))
-
-            sps.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                    // Do nothing.
+            sps.onValueChangedListener = {
+                with(preferences.edit()) {
+                    putInt(Application.PREFERENCE_SAMPLES_PER_SECOND, it as Int)
+                    commit()
                 }
 
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long
-                ) {
-                    with(preferences.edit()) {
-                        putInt(Application.PREFERENCE_SAMPLES_PER_SECOND, adapter.getItem(position)!!)
-                        commit()
-                    }
-
-                    updateEstimatedMemoryUsage()
-                }
+                updateEstimatedMemoryUsage()
             }
         }
 
         // Bits per sample
         run {
-            val bps = view.findViewById<Spinner>(R.id.bits_per_sample)
+            val bps = view.findViewById<SettingsOptionSelectValueView>(R.id.bits_per_sample)
 
-            val values = AudioRecordUtils.supportedPcmBits()
+            bps.available = AudioRecordUtils.supportedPcmBits()
 
-            val adapter = ArrayAdapter<Int>(requireContext(), android.R.layout.simple_spinner_item, values)
+            bps.value = PreferenceUtils.getIntOrFail(preferences, Application.PREFERENCE_BITS_PER_SAMPLE)
 
-            bps.adapter = adapter
-
-            SpinnerUtils.selectItemByValue(bps, PreferenceUtils.getIntOrFail(preferences, Application.PREFERENCE_BITS_PER_SAMPLE))
-
-            bps.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                    // Do nothing.
+            bps.onValueChangedListener = {
+                with(preferences.edit()) {
+                    putInt(Application.PREFERENCE_BITS_PER_SAMPLE, it as Int)
+                    commit()
                 }
 
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long
-                ) {
-                    with(preferences.edit()) {
-                        putInt(Application.PREFERENCE_BITS_PER_SAMPLE, adapter.getItem(position)!!)
-                        commit()
-                    }
-
-                    updateEstimatedMemoryUsage()
-                }
+                updateEstimatedMemoryUsage()
             }
         }
     }
@@ -170,14 +136,15 @@ class SettingsFragment : Fragment() {
     private fun updateEstimatedMemoryUsage() {
         val preferences = ourActivity.ourApplication.getDefaultSharedPreferences()
 
-        val estimated = requireView().findViewById<TextView>(R.id.estimated)
-
         val size = PcmUtils.bufferSize(
             PreferenceUtils.getLongOrFail(preferences, Application.PREFERENCE_KEEP),
             PreferenceUtils.getIntOrFail(preferences, Application.PREFERENCE_SAMPLES_PER_SECOND),
             Math.ceil(PreferenceUtils.getIntOrFail(preferences, Application.PREFERENCE_BITS_PER_SAMPLE).toDouble() / 8).toInt(),
             1)
 
-        estimated.text = ByteFormatUtils.shortSize(requireContext(), size)
+        view?.findViewById<SettingsOptionSelectNumberView>(R.id.memory)?.also {
+            it.description =
+                "Estimated size: " + ByteFormatUtils.shortSize(requireContext(), size)
+        }
     }
 }
