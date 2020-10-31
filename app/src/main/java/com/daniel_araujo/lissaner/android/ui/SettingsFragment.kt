@@ -18,8 +18,15 @@ import com.daniel_araujo.lissaner.android.*
  * create an instance of this fragment.
  */
 class SettingsFragment : Fragment() {
+    private lateinit var recordingService: AutoServiceBind<RecordingService>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        recordingService = AutoServiceBind(
+            RecordingService::class,
+            requireContext()
+        )
     }
 
     override fun onCreateView(
@@ -43,17 +50,7 @@ class SettingsFragment : Fragment() {
         run {
             val memory = view.findViewById<SettingsOptionSelectNumberView>(R.id.memory)
 
-            val options = arrayListOf<Int>(
-                TimestampUtils.minutesToMilli(1).toInt(),
-                TimestampUtils.minutesToMilli(2).toInt(),
-                TimestampUtils.minutesToMilli(5).toInt()
-            )
-            // Add multiples of 10.
-            for (i in 1..15) {
-                options.add(TimestampUtils.minutesToMilli(i * 10L).toInt())
-            }
-
-            memory.available = options.toList()
+            memory.available = makeMemoryOptions()
 
             memory.formatter = {
                 TimestampUtils.milliToMinutes(it.toLong()).toString()
@@ -129,11 +126,6 @@ class SettingsFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        val recordingService = AutoServiceBind(
-            RecordingService::class,
-            requireContext()
-        )
-
         recordingService.run { enableRecordingOptions(!it.recording.isRecording()) }
     }
 
@@ -155,12 +147,57 @@ class SettingsFragment : Fragment() {
         val size = PcmUtils.bufferSize(
             PreferenceUtils.getLongOrFail(preferences, Application.PREFERENCE_KEEP),
             PreferenceUtils.getIntOrFail(preferences, Application.PREFERENCE_SAMPLES_PER_SECOND),
-            Math.ceil(PreferenceUtils.getIntOrFail(preferences, Application.PREFERENCE_BITS_PER_SAMPLE).toDouble() / 8).toInt(),
+            PcmUtils.bytesPerSample(PreferenceUtils.getIntOrFail(preferences, Application.PREFERENCE_BITS_PER_SAMPLE)),
             1)
 
         view?.findViewById<SettingsOptionSelectNumberView>(R.id.memory)?.also {
             it.description =
                 "Estimated size: " + ByteFormatUtils.shortSize(requireContext(), size)
+            it.available = makeMemoryOptions()
         }
+    }
+
+    private fun makeMemoryOptions(): List<Int> {
+        val preferences = ourActivity.ourApplication.getDefaultSharedPreferences()
+
+        val options = arrayListOf<Int>(
+            // These are available on every device.
+            TimestampUtils.minutesToMilli(1).toInt(),
+            TimestampUtils.minutesToMilli(2).toInt(),
+            TimestampUtils.minutesToMilli(5).toInt(),
+            TimestampUtils.minutesToMilli(10L).toInt(),
+            TimestampUtils.minutesToMilli(15L).toInt(),
+            TimestampUtils.minutesToMilli(20L).toInt(),
+            TimestampUtils.minutesToMilli(25L).toInt(),
+            TimestampUtils.minutesToMilli(30L).toInt()
+        )
+
+        val runtime = Runtime.getRuntime()
+
+        // TODO: Get more accurate estimation of memory used by everything else in the app.
+        val usedMemory = 7000000
+        val availableMemory = Math.max(0, runtime.maxMemory() - usedMemory)
+
+        // These are only available to devices that, in theory, should be capable of storing this
+        // much data in memory.
+        var i = 1;
+        while (true) {
+            val time = TimestampUtils.minutesToMilli(30L + i * 10L)
+            val memory = PcmUtils.bufferSize(
+                time,
+                PreferenceUtils.getIntOrFail(preferences, Application.PREFERENCE_SAMPLES_PER_SECOND),
+                PcmUtils.bytesPerSample(PreferenceUtils.getIntOrFail(preferences, Application.PREFERENCE_BITS_PER_SAMPLE)),
+                1)
+
+            if (memory > availableMemory) {
+                // Can't any more.
+                break;
+            }
+
+            options.add(time.toInt())
+            i += 1
+        }
+
+        return options
     }
 }

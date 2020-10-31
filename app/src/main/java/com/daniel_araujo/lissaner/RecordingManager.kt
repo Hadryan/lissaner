@@ -125,6 +125,12 @@ class RecordingManager : AutoCloseable {
             config.channels = value
         }
 
+    /**
+     * Change bits per sample.
+     */
+    val bytesPerSample: Int
+        get() = config.bytesPerSample
+
     constructor(int: RecordingManagerInt) {
         this.int = int
 
