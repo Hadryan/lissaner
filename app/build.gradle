@@ -14,8 +14,8 @@ android {
         applicationId "com.daniel_araujo.lissaner"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 6
-        versionName "6"
+        versionCode 7
+        versionName "7"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
