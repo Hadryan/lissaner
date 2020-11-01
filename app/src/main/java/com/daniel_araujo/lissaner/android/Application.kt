@@ -68,7 +68,7 @@ class Application : android.app.Application() {
                 putInt(PREFERENCE_BITS_PER_SAMPLE, 16)
             }
 
-            if (!PreferenceUtils.hasInt(preferences, PREFERENCE_AUTO_START)) {
+            if (!PreferenceUtils.hasBoolean(preferences, PREFERENCE_AUTO_START)) {
                 putBoolean(PREFERENCE_AUTO_START, false)
             }
 
