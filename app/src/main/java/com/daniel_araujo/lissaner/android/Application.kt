@@ -56,16 +56,20 @@ class Application : android.app.Application() {
         val preferences = getDefaultSharedPreferences()
 
         with(preferences.edit()) {
-            if (!com.daniel_araujo.lissaner.android.PreferenceUtils.hasLong(preferences, PREFERENCE_KEEP)) {
+            if (!PreferenceUtils.hasLong(preferences, PREFERENCE_KEEP)) {
                 putLong(PREFERENCE_KEEP, 30 * 60 * 1000)
             }
 
-            if (!com.daniel_araujo.lissaner.android.PreferenceUtils.hasInt(preferences, PREFERENCE_SAMPLES_PER_SECOND)) {
+            if (!PreferenceUtils.hasInt(preferences, PREFERENCE_SAMPLES_PER_SECOND)) {
                 putInt(PREFERENCE_SAMPLES_PER_SECOND, 44100)
             }
 
-            if (!com.daniel_araujo.lissaner.android.PreferenceUtils.hasInt(preferences, PREFERENCE_BITS_PER_SAMPLE)) {
+            if (!PreferenceUtils.hasInt(preferences, PREFERENCE_BITS_PER_SAMPLE)) {
                 putInt(PREFERENCE_BITS_PER_SAMPLE, 16)
+            }
+
+            if (!PreferenceUtils.hasInt(preferences, PREFERENCE_AUTO_START)) {
+                putBoolean(PREFERENCE_AUTO_START, false)
             }
 
             commit()
