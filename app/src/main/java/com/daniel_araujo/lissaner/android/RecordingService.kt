@@ -103,7 +103,7 @@ class RecordingService : Service() {
 
         val notification =
             NotificationCompat.Builder(this, Application.NOTIFICATION_CHANNEL_FOREGROUND_SERVICE)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setSmallIcon(R.drawable.ic_stat_name)
                 .setContentTitle("Lissaner")
                 .setContentText("Open the app to stop recording.")
                 .setContentIntent(contentIntent)
