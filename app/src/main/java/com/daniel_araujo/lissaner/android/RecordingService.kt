@@ -28,6 +28,10 @@ class RecordingService : Service() {
      */
     lateinit var recording: RecordingManager
 
+    var onRecordStart: (() -> Unit)? = null
+
+    var onRecordStop: (() -> Unit)? = null
+
     override fun onCreate() {
         recording =
             RecordingManager(object : RecordingManagerInt {
@@ -54,6 +58,7 @@ class RecordingService : Service() {
 
         recording.onRecordStart = {
             requestToBeForeground()
+            onRecordStart?.invoke()
         }
 
         recording.onBeforeRecordStart = {
@@ -73,6 +78,7 @@ class RecordingService : Service() {
 
         recording.onRecordStop = {
             stopForeground(true)
+            onRecordStop?.invoke()
         }
     }
 
@@ -105,7 +111,7 @@ class RecordingService : Service() {
             NotificationCompat.Builder(this, Application.NOTIFICATION_CHANNEL_FOREGROUND_SERVICE)
                 .setSmallIcon(R.drawable.ic_stat_name)
                 .setContentTitle("Lissaner")
-                .setContentText("Open the app to stop recording.")
+                .setContentText("Activated! Open the app to save or deactivate.")
                 .setContentIntent(contentIntent)
                 .build()
 

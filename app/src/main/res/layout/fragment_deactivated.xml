@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <com.daniel_araujo.lissaner.android.ui.RecButtonView
+        android:id="@+id/button_activate"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content" >
+
+    </com.daniel_araujo.lissaner.android.ui.RecButtonView>
+
+    <com.daniel_araujo.lissaner.android.ui.WellView
+        android:layout_marginTop="@dimen/separator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lissaner respects your privacy and only records with your explicit consent. You can press the button any time to activate."
+            android:textAlignment="center" />
+    </com.daniel_araujo.lissaner.android.ui.WellView>
+</LinearLayout>

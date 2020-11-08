@@ -32,7 +32,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/separator"
-                    android:text="Some settings cannot be changed while recording. You have to stop recording to be able to change them."
+                    android:text="@string/settings_readonly"
                     android:textColor="#FF3737"
                     android:textSize="10sp"
                     android:visibility="gone"

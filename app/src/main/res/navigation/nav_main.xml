@@ -21,9 +21,9 @@
 
     <fragment
         android:id="@+id/recordFragment"
-        android:name="com.daniel_araujo.lissaner.android.ui.RecordFragment"
+        android:name="com.daniel_araujo.lissaner.android.ui.MainFragment"
         android:label="RecordFragment"
-        tools:layout="@layout/fragment_record" >
+        tools:layout="@layout/fragment_main" >
         <action
             android:id="@+id/action_recordFragment_to_filesFragment"
             app:destination="@id/filesFragment" />
