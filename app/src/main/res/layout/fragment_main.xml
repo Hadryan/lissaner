@@ -12,10 +12,19 @@
         android:orientation="vertical"
         android:padding="@dimen/windowPadding">
 
+        <com.daniel_araujo.lissaner.android.ui.RecButtonView
+            android:id="@+id/button_activate"
+            android:layout_width="200dip"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+        </com.daniel_araujo.lissaner.android.ui.RecButtonView>
+
         <FrameLayout
             android:id="@+id/content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/separator">
 
         </FrameLayout>
 

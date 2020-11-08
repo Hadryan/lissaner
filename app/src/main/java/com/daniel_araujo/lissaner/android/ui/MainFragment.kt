@@ -23,6 +23,11 @@ class MainFragment : Fragment() {
      */
     var recordingService: AutoServiceBind<RecordingService>? = null
 
+    /**
+     * The button that starts and stops recording.
+     */
+    lateinit var buttonRecord: RecButtonView
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -34,7 +39,7 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         view.findViewById<Button>(R.id.settings_button).also {
-             it.setOnClickListener {
+            it.setOnClickListener {
                 findNavController().navigate(R.id.action_global_settingsFragment)
             }
         }
@@ -50,6 +55,12 @@ class MainFragment : Fragment() {
                 findNavController().navigate(R.id.action_recordFragment_to_aboutFragment)
             }
         }
+
+        buttonRecord = view.findViewById<RecButtonView>(R.id.button_activate).also {
+            it.setOnClickListener {
+                toggleRecording()
+            }
+        }
     }
 
     override fun onResume() {
@@ -61,22 +72,17 @@ class MainFragment : Fragment() {
         )
 
         recordingService?.run {
-            it.onRecordStart = {
-                update(it.recording)
-            }
-            it.onRecordStop = {
-                update(it.recording)
-            }
             update(it.recording)
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-
+    private fun toggleRecording() {
         recordingService?.run {
-            it.onRecordStart = null
-            it.onRecordStop = null
+            if (!it.recording.isRecording()) {
+                startRecording()
+            } else {
+                stopRecording()
+            }
         }
     }
 
@@ -90,6 +96,7 @@ class MainFragment : Fragment() {
                     recordingService?.run {
                         try {
                             it.recording.startRecording()
+                            update(it.recording)
                         } catch (e: OutOfMemoryError) {
                             // We may have some left to show an error message.
                             AlertDialog.Builder(context!!)
@@ -105,11 +112,23 @@ class MainFragment : Fragment() {
             .check();
     }
 
+    private fun stopRecording() {
+        Log.v(javaClass.simpleName, "stopRecording")
+
+        recordingService?.run {
+            it.recording.stopRecording()
+            it.recording.discardRecording()
+            update(it.recording)
+        }
+    }
+
     private fun update(recording: RecordingManager) {
         val ft = childFragmentManager.beginTransaction()
         if (recording.isRecording()) {
+            buttonRecord.isActivated = true
             ft.replace(R.id.content, RecordingFragment())
         } else {
+            buttonRecord.isActivated = false
             ft.replace(R.id.content, DeactivatedFragment())
         }
         ft.commit()

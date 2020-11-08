@@ -50,45 +50,6 @@ class RecordingFragment : Fragment() {
                 saveRecording()
             }
         }
-
-        view.findViewById<Button>(R.id.button_cancel).also {
-            it.setOnClickListener {
-                cancelRecording()
-            }
-        }
-    }
-
-    private fun startRecording() {
-        Log.v(javaClass.simpleName, "startRecording")
-
-        Dexter.withContext(activity)
-            .withPermission(android.Manifest.permission.RECORD_AUDIO)
-            .withListener(object : BasePermissionListener() {
-                override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
-                    recordingService?.run {
-                        try {
-                            it.recording.startRecording()
-                        } catch (e: OutOfMemoryError) {
-                            // We may have some left to show an error message.
-                            AlertDialog.Builder(context!!)
-                                .setTitle("Unable to record")
-                                .setMessage("Out of memory.")
-                                .setNeutralButton(android.R.string.ok) { dialog, _ -> dialog.cancel() }
-                                .setIcon(android.R.drawable.ic_dialog_alert)
-                                .show()
-                        }
-                    }
-                }
-            })
-            .check();
-    }
-
-    private fun stopRecording() {
-        Log.v(javaClass.simpleName, "stopRecording")
-
-        recordingService?.run {
-            it.recording.stopRecording()
-        }
     }
 
     private fun saveRecording() {
@@ -107,15 +68,6 @@ class RecordingFragment : Fragment() {
             } catch (e: IOException) {
                 Log.e(javaClass.simpleName, "File write failed.", e)
             }
-        }
-    }
-
-    private fun cancelRecording() {
-        Log.v(javaClass.simpleName, "cancelRecording")
-
-        recordingService?.run {
-            it.recording.stopRecording()
-            it.recording.discardRecording()
         }
     }
 
