@@ -46,20 +46,9 @@
 
         <service android:name="com.daniel_araujo.lissaner.android.RecordingService" />
 
-        <receiver
-            android:enabled="true"
-            android:name=".android.BootCompletedReceiver"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+        <receiver android:name=".android.GeneralReceiver">
             <intent-filter >
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </receiver>
-
-        <receiver
-            android:enabled="true"
-            android:name=".android.MyPackageReplacedReceiver">
-            <intent-filter >
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
             </intent-filter>
         </receiver>
