@@ -20,13 +20,12 @@
         \n
         \n
         #### Can I trust this app?\n
-        This app is open-source. That means its source code can be read, studied and improved by
-        other programmers. The app only records with your explicit consent and only stores audio
-        files on your device. Anyone able to read code will confirm that.\n
+        Lissaner is open-source. That means the source code is available to everyone. Any programmer
+        can read, study and improve Lissaner. Lissaner only records with your explicit consent and
+        only stores audio files on your device. Anyone able to read code can confirm that.\n
         \n
-        To get the source code, visit:\n
-        \n
-        [https://github.com/daniel-araujo/lissaner](https://github.com/daniel-araujo/lissaner)
+        If Lissaner is useful to you and you would like to show support you can rate 5 stars on
+        Google Play and leave a star on GitHub!\n
     </string>
 
     <string name="main_activity_tab_info">Info</string>
