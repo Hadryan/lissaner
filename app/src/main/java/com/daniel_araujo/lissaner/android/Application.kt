@@ -137,6 +137,16 @@ class Application : android.app.Application() {
             recordingService.bind()
         }
 
+        val autoStart = PreferenceUtils.getBooleanOrFail(
+            preferences,
+            PREFERENCE_AUTO_START
+        )
+
+        if (autoStart) {
+            // Will most likely work in the context of the service.
+            recording.startRecording()
+        }
+
         initialized = true
     }
 }
