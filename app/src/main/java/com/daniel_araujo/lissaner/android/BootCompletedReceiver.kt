@@ -7,24 +7,22 @@ import android.util.Log
 
 class BootCompletedReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
-            Log.v("BootCompletedReceiver", "Starting up application from boot.")
+        Log.v("BootCompletedReceiver", "Received action: " + intent.action)
 
-            val application = context.applicationContext as Application
+        val application = context.applicationContext as Application
 
-            application.initialize()
+        application.initialize()
 
-            val preferences = application.getDefaultSharedPreferences()
+        val preferences = application.getDefaultSharedPreferences()
 
-            val autoStart = PreferenceUtils.getBooleanOrFail(
-                preferences,
-                Application.PREFERENCE_AUTO_START
-            )
+        val autoStart = PreferenceUtils.getBooleanOrFail(
+            preferences,
+            Application.PREFERENCE_AUTO_START
+        )
 
-            if (autoStart) {
-                // Will most like work in the context of the service.
-                application.recording.startRecording()
-            }
+        if (autoStart) {
+            // Will most likely work in the context of the service.
+            application.recording.startRecording()
         }
     }
 }
