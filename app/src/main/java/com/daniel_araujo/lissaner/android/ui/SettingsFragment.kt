@@ -115,7 +115,7 @@ class SettingsFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        enableRecordingOptions(ourActivity.ourApplication.recording.isRecording())
+        enableRecordingOptions(!ourActivity.ourApplication.recording.isRecording())
     }
 
     private fun enableRecordingOptions(enable: Boolean) {
