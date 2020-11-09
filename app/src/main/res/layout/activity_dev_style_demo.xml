@@ -11,6 +11,15 @@
         android:orientation="vertical"
         android:padding="@dimen/windowPadding">
 
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <View
+            style="@style/AppTheme.Divider.Horizontal" />
+
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="wrap_content"
@@ -47,6 +56,7 @@
             android:id="@+id/switch1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:checked="true"
             android:text="Switch" />
 
         <EditText
@@ -70,6 +80,17 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textEmailAddress" />
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@android:array/phoneTypes" />
+
+        <com.shawnlin.numberpicker.NumberPicker
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:np_orientation="horizontal"/>
 
         <com.daniel_araujo.lissaner.android.ui.RecButtonView
             android:id="@+id/recButtonView"
@@ -122,5 +143,25 @@
                 android:layout_height="wrap_content"
                 android:text="Wednesday" />
         </com.google.android.material.tabs.TabLayout>
+
+        <ProgressBar
+            android:id="@+id/progressBar2"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <ProgressBar
+            android:id="@+id/progressBar3"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:progress="25" />
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:progress="50" />
+
     </LinearLayout>
 </ScrollView>

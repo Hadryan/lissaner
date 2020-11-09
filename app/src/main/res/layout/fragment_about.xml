@@ -77,12 +77,11 @@
             </com.daniel_araujo.lissaner.android.ui.WellView>
 
             <LinearLayout
+                style="@style/AppTheme.ListThings"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/separator"
-                android:divider="@drawable/separator"
-                android:orientation="vertical"
-                android:showDividers="middle">
+                android:orientation="vertical">
 
                 <Button
                     android:id="@+id/button_store"

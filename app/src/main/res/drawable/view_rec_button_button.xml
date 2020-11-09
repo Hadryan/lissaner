@@ -10,7 +10,7 @@
         android:endColor="#A00000" />
     <stroke
         android:width="4dp"
-        android:color="#444444" />
+        android:color="@color/divider" />
     <padding
         android:top="4dp"
         android:right="4dp"

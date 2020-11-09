@@ -45,12 +45,8 @@
                     android:text="Recording" />
 
                 <View
-                    android:id="@+id/divider"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
                     android:layout_marginTop="@dimen/windowPadding"
-                    android:background="?android:attr/listDivider" />
-
+                    style="@style/AppTheme.Divider.Horizontal" />
 
                 <com.daniel_araujo.lissaner.android.ui.SettingsOptionSelectNumberView
                     android:id="@+id/memory"
@@ -79,10 +75,7 @@
                     app:name="Auto-start" />
 
                 <View
-                    android:id="@+id/divider3"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="?android:attr/listDivider" />
+                    style="@style/AppTheme.Divider.Horizontal" />
 
             </LinearLayout>
 
