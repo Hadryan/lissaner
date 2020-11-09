@@ -22,11 +22,8 @@ class BootCompletedReceiver : BroadcastReceiver() {
             )
 
             if (autoStart) {
-                val recordingService = AutoServiceBind(RecordingService::class, application)
-
-                recordingService.run {
-                    it.recording.startRecording()
-                }
+                // Will most like work in the context of the service.
+                application.recording.startRecording()
             }
         }
     }

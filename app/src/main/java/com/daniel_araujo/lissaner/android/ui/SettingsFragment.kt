@@ -18,17 +18,6 @@ import com.daniel_araujo.lissaner.android.*
  * create an instance of this fragment.
  */
 class SettingsFragment : Fragment() {
-    private lateinit var recordingService: AutoServiceBind<RecordingService>
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        recordingService = AutoServiceBind(
-            RecordingService::class,
-            requireContext()
-        )
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -126,7 +115,7 @@ class SettingsFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        recordingService.run { enableRecordingOptions(!it.recording.isRecording()) }
+        enableRecordingOptions(ourActivity.ourApplication.recording.isRecording())
     }
 
     private fun enableRecordingOptions(enable: Boolean) {

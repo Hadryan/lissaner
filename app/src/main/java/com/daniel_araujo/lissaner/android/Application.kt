@@ -3,7 +3,14 @@ package com.daniel_araujo.lissaner.android
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Debug
+import com.daniel_araujo.lissaner.PcmUtils
+import com.daniel_araujo.lissaner.RecordingManager
+import com.daniel_araujo.lissaner.RecordingManagerInt
 import com.daniel_araujo.lissaner.files.RecordingFiles
+import com.daniel_araujo.lissaner.rec.PureMemoryStorage
+import com.daniel_araujo.lissaner.rec.RecordingSession
+import com.daniel_araujo.lissaner.rec.RecordingSessionConfig
+import com.daniel_araujo.lissaner.rec.Storage
 
 class Application : android.app.Application() {
     companion object {
@@ -19,6 +26,16 @@ class Application : android.app.Application() {
      * Whether our initialization code has run.
      */
     var initialized: Boolean = false
+
+    /**
+     * We only have a service so that we can record with the app closed.
+     */
+    lateinit var recordingService: AutoServiceBind<RecordingService>
+
+    /**
+     * The recording object.
+     */
+    lateinit var recording: RecordingManager
 
     /**
      * Application's RecordingFiles object.
@@ -73,6 +90,51 @@ class Application : android.app.Application() {
             }
 
             commit()
+        }
+
+        recordingService = AutoServiceBind(
+            RecordingService::class,
+            this
+        )
+
+        recording =
+            RecordingManager(object : RecordingManagerInt {
+                override fun createSession(config: RecordingSessionConfig): RecordingSession {
+                    return AndroidRecordingSession(
+                        config
+                    )
+                }
+
+                override fun createStorage(config: RecordingSessionConfig): Storage {
+                    return PureMemoryStorage(
+                        PcmUtils.bufferSize(
+                            PreferenceUtils.getLongOrFail(
+                                preferences,
+                                PREFERENCE_KEEP
+                            ),
+                            config.sampleRate,
+                            config.bytesPerSample,
+                            config.channels
+                        )
+                    )
+                }
+            })
+
+        recording.onBeforeRecordStart = {
+            if (recording.accumulated() == 0L) {
+                recording.sampleRate = PreferenceUtils.getIntOrFail(
+                    preferences,
+                    PREFERENCE_SAMPLES_PER_SECOND
+                )
+                recording.bitsPerSample = PreferenceUtils.getIntOrFail(
+                    preferences,
+                    PREFERENCE_BITS_PER_SAMPLE
+                )
+            }
+        }
+
+        recording.onRecordStart = {
+            recordingService.bind()
         }
 
         initialized = true

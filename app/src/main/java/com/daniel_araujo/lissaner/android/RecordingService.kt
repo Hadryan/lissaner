@@ -23,64 +23,21 @@ class RecordingService : Service() {
      */
     private val SERVICE_NOTIFICATION_ID = 1
 
-    /**
-     * The recording object. This is public on purpose.
-     */
-    lateinit var recording: RecordingManager
-
     override fun onCreate() {
-        recording =
-            RecordingManager(object : RecordingManagerInt {
-                override fun createSession(config: RecordingSessionConfig): RecordingSession {
-                    return AndroidRecordingSession(
-                        config
-                    )
-                }
-
-                override fun createStorage(config: RecordingSessionConfig): Storage {
-                    return PureMemoryStorage(
-                        PcmUtils.bufferSize(
-                            PreferenceUtils.getLongOrFail(
-                                ourApplication.getDefaultSharedPreferences(),
-                                Application.PREFERENCE_KEEP
-                            ),
-                            config.sampleRate,
-                            config.bytesPerSample,
-                            config.channels
-                        )
-                    )
-                }
-            })
-
-        recording.onRecordStart = {
+        ourApplication.recording.onRecordStart = {
             requestToBeForeground()
         }
 
-        recording.onBeforeRecordStart = {
-            val preferences = ourApplication.getDefaultSharedPreferences()
-
-            if (recording.accumulated() == 0L) {
-                recording.sampleRate = PreferenceUtils.getIntOrFail(
-                    preferences,
-                    Application.PREFERENCE_SAMPLES_PER_SECOND
-                )
-                recording.bitsPerSample = PreferenceUtils.getIntOrFail(
-                    preferences,
-                    Application.PREFERENCE_BITS_PER_SAMPLE
-                )
-            }
-        }
-
-        recording.onRecordStop = {
+        ourApplication.recording.onRecordStop = {
             stopForeground(true)
         }
     }
 
-    override fun onDestroy() {
-        recording.close()
-    }
-
     override fun onBind(p0: Intent?): IBinder? {
+        if (ourApplication.recording.isRecording()) {
+            requestToBeForeground();
+        }
+
         return AutoServiceBinder(
             this
         )

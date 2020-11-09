@@ -19,11 +19,6 @@ import com.karumi.dexter.listener.single.BasePermissionListener
 
 class MainFragment : Fragment() {
     /**
-     * We only have a service so that we can record with the app closed.
-     */
-    var recordingService: AutoServiceBind<RecordingService>? = null
-
-    /**
      * The button that starts and stops recording.
      */
     lateinit var buttonRecord: RecButtonView
@@ -66,23 +61,14 @@ class MainFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        recordingService = AutoServiceBind(
-            RecordingService::class,
-            requireActivity().application
-        )
-
-        recordingService?.run {
-            update(it.recording)
-        }
+        update()
     }
 
     private fun toggleRecording() {
-        recordingService?.run {
-            if (!it.recording.isRecording()) {
-                startRecording()
-            } else {
-                stopRecording()
-            }
+        if (!ourActivity.ourApplication.recording.isRecording()) {
+            startRecording()
+        } else {
+            stopRecording()
         }
     }
 
@@ -93,19 +79,17 @@ class MainFragment : Fragment() {
             .withPermission(android.Manifest.permission.RECORD_AUDIO)
             .withListener(object : BasePermissionListener() {
                 override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
-                    recordingService?.run {
-                        try {
-                            it.recording.startRecording()
-                            update(it.recording)
-                        } catch (e: OutOfMemoryError) {
-                            // We may have some left to show an error message.
-                            AlertDialog.Builder(context!!)
-                                .setTitle("Unable to record")
-                                .setMessage("Out of memory.")
-                                .setNeutralButton(android.R.string.ok) { dialog, _ -> dialog.cancel() }
-                                .setIcon(android.R.drawable.ic_dialog_alert)
-                                .show()
-                        }
+                    try {
+                        ourActivity.ourApplication.recording.startRecording()
+                        update()
+                    } catch (e: OutOfMemoryError) {
+                        // We may have some left to show an error message.
+                        AlertDialog.Builder(context!!)
+                            .setTitle("Unable to record")
+                            .setMessage("Out of memory.")
+                            .setNeutralButton(android.R.string.ok) { dialog, _ -> dialog.cancel() }
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show()
                     }
                 }
             })
@@ -115,22 +99,22 @@ class MainFragment : Fragment() {
     private fun stopRecording() {
         Log.v(javaClass.simpleName, "stopRecording")
 
-        recordingService?.run {
-            it.recording.stopRecording()
-            it.recording.discardRecording()
-            update(it.recording)
-        }
+        ourActivity.ourApplication.recording.stopRecording()
+        ourActivity.ourApplication.recording.discardRecording()
+        update()
     }
 
-    private fun update(recording: RecordingManager) {
+    private fun update() {
+        buttonRecord.isActivated = ourActivity.ourApplication.recording.isRecording()
+
         val ft = childFragmentManager.beginTransaction()
-        if (recording.isRecording()) {
-            buttonRecord.isActivated = true
+
+        if (buttonRecord.isActivated) {
             ft.replace(R.id.content, RecordingFragment())
         } else {
-            buttonRecord.isActivated = false
             ft.replace(R.id.content, DeactivatedFragment())
         }
+
         ft.commit()
     }
 }
