@@ -29,14 +29,16 @@ class SplashFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.addOnAttachStateChangeListener(object: View.OnAttachStateChangeListener {
+        view.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
             override fun onViewDetachedFromWindow(v: View?) {
             }
 
             override fun onViewAttachedToWindow(v: View?) {
                 if (ourActivity.ourApplication.initialized) {
-                    Log.e(javaClass.simpleName, "Did not expect this to run when already initialized.")
-                    return
+                    Log.w(
+                        "SplashFragment",
+                        "Did not expect this to run when already initialized. Something else must have called initialize"
+                    )
                 }
 
                 initialize()
@@ -48,8 +50,13 @@ class SplashFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
+        Log.i(
+            "SplashFragment",
+            "Application initialization status: " + ourActivity.ourApplication.initialized
+        )
+
         if (ourActivity.ourApplication.initialized) {
-            Log.w(javaClass.simpleName, "Already initialized.")
+            Log.w("SplashFragment", "Already initialized.")
             // Already loaded.
             move()
         }
