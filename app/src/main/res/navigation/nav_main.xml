@@ -5,7 +5,13 @@
     android:id="@+id/nav_main"
     app:startDestination="@id/recordFragment">
 
-    <action android:id="@+id/action_global_settingsFragment" app:destination="@id/settingsFragment"/>
+    <action
+        android:id="@+id/action_global_settingsFragment"
+        app:destination="@id/settingsFragment"
+        app:enterAnim="@anim/page_enter_anim"
+        app:exitAnim="@anim/page_exit_anim"
+        app:popEnterAnim="@anim/page_pop_enter_anim"
+        app:popExitAnim="@anim/page_pop_exit_anim" />
 
     <fragment
         android:id="@+id/splashFragment"
@@ -15,6 +21,7 @@
         <action
             android:id="@+id/enter_app"
             app:destination="@id/recordFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
             app:popUpTo="@id/nav_main"
             app:popUpToInclusive="true" />
     </fragment>
@@ -26,10 +33,18 @@
         tools:layout="@layout/fragment_main" >
         <action
             android:id="@+id/action_recordFragment_to_filesFragment"
-            app:destination="@id/filesFragment" />
+            app:destination="@id/filesFragment"
+            app:enterAnim="@anim/page_enter_anim"
+            app:exitAnim="@anim/page_exit_anim"
+            app:popEnterAnim="@anim/page_pop_enter_anim"
+            app:popExitAnim="@anim/page_pop_exit_anim" />
         <action
             android:id="@+id/action_recordFragment_to_aboutFragment"
-            app:destination="@id/aboutFragment" />
+            app:destination="@id/aboutFragment"
+            app:enterAnim="@anim/page_enter_anim"
+            app:exitAnim="@anim/page_exit_anim"
+            app:popEnterAnim="@anim/page_pop_enter_anim"
+            app:popExitAnim="@anim/page_pop_exit_anim" />
     </fragment>
 
     <fragment
@@ -51,7 +66,11 @@
         tools:layout="@layout/fragment_about" >
         <action
             android:id="@+id/action_aboutFragment_to_licensesFragment"
-            app:destination="@id/licensesFragment" />
+            app:destination="@id/licensesFragment"
+            app:enterAnim="@anim/page_enter_anim"
+            app:exitAnim="@anim/page_exit_anim"
+            app:popEnterAnim="@anim/page_pop_enter_anim"
+            app:popExitAnim="@anim/page_pop_exit_anim" />
     </fragment>
 
     <fragment
