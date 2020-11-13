@@ -3,6 +3,7 @@ package com.daniel_araujo.lissaner.android
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Debug
+import android.util.Log
 import com.daniel_araujo.lissaner.PcmUtils
 import com.daniel_araujo.lissaner.RecordingManager
 import com.daniel_araujo.lissaner.RecordingManagerInt
@@ -67,9 +68,12 @@ class Application : android.app.Application() {
      */
     fun initialize() {
         if (initialized) {
+            Log.d("Initialize", "Another initialization attempt. Ignoring")
             // Nothing to do.
             return;
         }
+
+        Log.d("Initialize", "Begin")
 
         val preferences = getDefaultSharedPreferences()
 
@@ -178,5 +182,7 @@ class Application : android.app.Application() {
         }
 
         initialized = true
+
+        Log.d("Initialize", "End")
     }
 }

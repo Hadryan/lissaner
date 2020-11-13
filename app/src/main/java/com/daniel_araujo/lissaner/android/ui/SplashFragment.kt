@@ -73,6 +73,7 @@ class SplashFragment : Fragment() {
      * Ends splash screen.
      */
     private fun move() {
+        Log.d("SplashFragment", "Move")
         findNavController().navigate(R.id.enter_app)
     }
 }
