@@ -16,6 +16,7 @@ class Application : android.app.Application() {
     companion object {
         const val NOTIFICATION_CHANNEL_FOREGROUND_SERVICE = "channel_0"
 
+        const val PREFERENCE_ACTIVATED = "activated"
         const val PREFERENCE_KEEP = "keep"
         const val PREFERENCE_SAMPLES_PER_SECOND = "samples_per_second"
         const val PREFERENCE_BITS_PER_SAMPLE = "bits_per_sample"
@@ -73,6 +74,10 @@ class Application : android.app.Application() {
         val preferences = getDefaultSharedPreferences()
 
         with(preferences.edit()) {
+            if (!PreferenceUtils.hasBoolean(preferences, PREFERENCE_ACTIVATED)) {
+                putBoolean(PREFERENCE_ACTIVATED, false)
+            }
+
             if (!PreferenceUtils.hasLong(preferences, PREFERENCE_KEEP)) {
                 putLong(PREFERENCE_KEEP, 30 * 60 * 1000)
             }
@@ -134,7 +139,27 @@ class Application : android.app.Application() {
         }
 
         recording.onRecordStart = {
-            recordingService.bind()
+            recordingService.run {
+                it.requestToBeForeground()
+            }
+
+            with(preferences.edit()) {
+                putBoolean(PREFERENCE_ACTIVATED, true)
+
+                commit()
+            }
+        }
+
+        recording.onRecordStop = {
+            with(preferences.edit()) {
+                putBoolean(PREFERENCE_ACTIVATED, false)
+
+                commit()
+            }
+
+            recordingService.run {
+                it.stopForeground(true)
+            }
         }
 
         val autoStart = PreferenceUtils.getBooleanOrFail(
@@ -142,7 +167,12 @@ class Application : android.app.Application() {
             PREFERENCE_AUTO_START
         )
 
-        if (autoStart) {
+        val activated = PreferenceUtils.getBooleanOrFail(
+            preferences,
+            PREFERENCE_ACTIVATED
+        )
+
+        if (autoStart || activated) {
             // Will most likely work in the context of the service.
             recording.startRecording()
         }

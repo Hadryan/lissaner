@@ -23,21 +23,7 @@ class RecordingService : Service() {
      */
     private val SERVICE_NOTIFICATION_ID = 1
 
-    override fun onCreate() {
-        ourApplication.recording.onRecordStart = {
-            requestToBeForeground()
-        }
-
-        ourApplication.recording.onRecordStop = {
-            stopForeground(true)
-        }
-    }
-
     override fun onBind(p0: Intent?): IBinder? {
-        if (ourApplication.recording.isRecording()) {
-            requestToBeForeground();
-        }
-
         return AutoServiceBinder(
             this
         )
@@ -46,7 +32,7 @@ class RecordingService : Service() {
     /**
      * Requests Android to turn this service into a foreground service.
      */
-    private fun requestToBeForeground() {
+    fun requestToBeForeground() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Without a custom channel, this version of android fails. Previous versions fall back
             // to the default channel.
