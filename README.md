@@ -2,8 +2,11 @@
 
 ![Preview](preview.gif)
 
-An Android app that records your microphone in the background and keeps the
-last 30 minutes in memory that you can save to a file whenever you want.
+An Android app that records audio from the past. Have you ever gone through a moment in your life
+that you wish you had recorded? With this app you no longer have to remember to press start to
+record. You don't even need to have the app open. This app provides a feature that many game
+consoles have had for years. It allows you to save the past 30 minutes (or more) of your microphone
+audio to a file.
 
 
 ## Contributing
