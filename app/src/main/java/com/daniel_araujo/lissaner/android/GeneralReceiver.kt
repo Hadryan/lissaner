@@ -12,5 +12,18 @@ class GeneralReceiver : BroadcastReceiver() {
         val application = context.applicationContext as Application
 
         application.initialize()
+
+        if (intent.action.equals(Intent.ACTION_BOOT_COMPLETED)) {
+            val preferences = application.getDefaultSharedPreferences()
+
+            val autoStart = PreferenceUtils.getBooleanOrFail(
+                preferences,
+                Application.PREFERENCE_AUTO_START
+            )
+
+            if (autoStart) {
+                application.recording.startRecording()
+            }
+        }
     }
 }

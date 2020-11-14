@@ -71,7 +71,7 @@
                     android:id="@+id/auto_start"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:description="Automatically start recording when Lissaner is opened, updated or device turns on."
+                    app:description="Always activate Lissaner when opening app or when device turns on."
                     app:name="Auto-start" />
 
                 <View

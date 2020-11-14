@@ -63,4 +63,7 @@ dependencies {
 
     // A reliable number picker.
     implementation 'com.shawnlin:number-picker:2.4.10'
+
+    // For detecting when app is opened and closed.
+    implementation 'androidx.lifecycle:lifecycle-process:2.2.0'
 }

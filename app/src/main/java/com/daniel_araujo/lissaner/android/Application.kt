@@ -4,6 +4,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Debug
 import android.util.Log
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.daniel_araujo.lissaner.PcmUtils
 import com.daniel_araujo.lissaner.RecordingManager
 import com.daniel_araujo.lissaner.RecordingManagerInt
@@ -166,22 +170,32 @@ class Application : android.app.Application() {
             }
         }
 
-        val autoStart = PreferenceUtils.getBooleanOrFail(
-            preferences,
-            PREFERENCE_AUTO_START
-        )
-
         val activated = PreferenceUtils.getBooleanOrFail(
             preferences,
             PREFERENCE_ACTIVATED
         )
 
-        if (autoStart || activated) {
-            // Will most likely work in the context of the service.
+        if (activated) {
             recording.startRecording()
         }
 
         initialized = true
+
+        ProcessLifecycleOwner.get().lifecycle.addObserver(object : LifecycleObserver {
+            @OnLifecycleEvent(Lifecycle.Event.ON_START)
+            fun onStart() {
+                Log.d("ProcessLifecycleOwner", "onStart")
+
+                val autoStart = PreferenceUtils.getBooleanOrFail(
+                    preferences,
+                    PREFERENCE_AUTO_START
+                )
+
+                if (autoStart) {
+                    recording.startRecording()
+                }
+            }
+        })
 
         Log.d("Initialize", "End")
     }
