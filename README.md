@@ -1,6 +1,6 @@
 # Lissaner
 
-![Preview](preview.gif)
+<p align="center"><img src="preview.gif" /></p>
 
 An Android app that records audio from the past. Have you ever gone through a moment in your life
 that you wish you had recorded? With this app you no longer have to remember to press start to
